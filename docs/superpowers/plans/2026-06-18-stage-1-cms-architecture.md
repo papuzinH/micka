@@ -14,7 +14,7 @@
 - i18n con next-intl, rutas localizadas; locales `en` (default) y `fr`.
 - Todo acceso a PocketBase pasa por `src/lib/pocketbase` (ningún componente importa el SDK directo).
 - Campos de texto de contenido en PocketBase tienen variantes `_en` y `_fr`.
-- PocketBase expuesto en `https://micka-api.lhstudio.com.ar` con SSL.
+- PocketBase expuesto en `https://micka.lhstudio.com.ar` con SSL.
 - Storage de archivos de PocketBase: Cloudflare R2 (S3-compatible). El VPS no sirve archivos.
 - Design tokens (Figma): colores Negro `#000000`, Gris `#202020`, Gris fondo `#212121`, Gris claro `#373636`, Blanco `#ffffff`, Violeta `#a020f0`, Violeta oscuro `#8315c8`. Fuentes: Syne (titulares, bold), Inter (body).
 - URL de PocketBase y credenciales viven en variables de entorno (`.env.local`, nunca commiteadas).
@@ -176,7 +176,7 @@ Run: `rtk next build` → Expected: build sin errores.
 
 `.env.local.example`:
 ```
-NEXT_PUBLIC_POCKETBASE_URL=https://micka-api.lhstudio.com.ar
+NEXT_PUBLIC_POCKETBASE_URL=https://micka.lhstudio.com.ar
 POCKETBASE_ADMIN_EMAIL=
 POCKETBASE_ADMIN_PASSWORD=
 ```
@@ -388,15 +388,15 @@ rtk git commit -m "feat: add next-intl bilingual routing (/en default, /fr)"
 > Tarea de infraestructura (manual vía SSH). No lleva test unitario; la verificación es la respuesta HTTP del API.
 
 **Files:**
-- Create (en el VPS): `/opt/micka-pb/` (binario + datos), unidad systemd `micka-pb.service`, bloque de reverse proxy para `micka-api.lhstudio.com.ar`.
+- Create (en el VPS): `/opt/micka-pb/` (binario + datos), unidad systemd `micka-pb.service`, bloque de reverse proxy para `micka.lhstudio.com.ar`.
 
 **Interfaces:**
 - Consumes: VPS `lhstudio.com.ar` con reverse proxy existente (nginx o caddy).
-- Produces: API PocketBase accesible en `https://micka-api.lhstudio.com.ar` y panel admin en `/_/`.
+- Produces: API PocketBase accesible en `https://micka.lhstudio.com.ar` y panel admin en `/_/`.
 
 - [ ] **Step 1: Crear el registro DNS del subdominio**
 
-En el panel DNS de `lhstudio.com.ar`, crear `micka-api` → A/CNAME apuntando al VPS (igual que las instancias actuales). Expected: `nslookup micka-api.lhstudio.com.ar` resuelve a la IP del VPS.
+En el panel DNS de `lhstudio.com.ar`, crear `micka` → A/CNAME apuntando al VPS (igual que las instancias actuales). Expected: `nslookup micka.lhstudio.com.ar` resuelve a la IP del VPS.
 
 - [ ] **Step 2: Descargar e instalar PocketBase en el VPS**
 
@@ -440,17 +440,17 @@ Expected: `active (running)`.
 Agregar el server block del subdominio en el proxy (mismo método que las instancias actuales). Ejemplo nginx:
 ```nginx
 server {
-  server_name micka-api.lhstudio.com.ar;
+  server_name micka.lhstudio.com.ar;
   client_max_body_size 50M;          # uploads de fotos
   location / { proxy_pass http://127.0.0.1:8092; proxy_set_header Host $host; }
 }
 ```
-Run: `sudo nginx -t && sudo systemctl reload nginx` y emitir cert con `sudo certbot --nginx -d micka-api.lhstudio.com.ar`.
+Run: `sudo nginx -t && sudo systemctl reload nginx` y emitir cert con `sudo certbot --nginx -d micka.lhstudio.com.ar`.
 Expected: `nginx -t` OK; certbot emite certificado.
 
 - [ ] **Step 5: Verificar el API por HTTPS**
 
-Run (local): `rtk curl https://micka-api.lhstudio.com.ar/api/health`
+Run (local): `rtk curl https://micka.lhstudio.com.ar/api/health`
 Expected: JSON `{"code":200,"message":"API is healthy."...}`.
 
 - [ ] **Step 6: Crear el superuser (admin de PocketBase)**
@@ -465,7 +465,7 @@ Expected: confirmación de superuser creado. Guardar credenciales en gestor segu
 
 Crear `.env.local` (no commiteado) con:
 ```
-NEXT_PUBLIC_POCKETBASE_URL=https://micka-api.lhstudio.com.ar
+NEXT_PUBLIC_POCKETBASE_URL=https://micka.lhstudio.com.ar
 ```
 Expected: variable disponible para Tasks 5–7. (No hay commit de código en esta tarea; documentar el procedimiento en `pocketbase/README.md` y commitearlo.)
 
@@ -497,7 +497,7 @@ En Cloudflare → R2: crear bucket `micka-media`. Crear API Token R2 (Access Key
 
 - [ ] **Step 2: Configurar S3 storage en PocketBase**
 
-En `https://micka-api.lhstudio.com.ar/_/` → Settings → Files storage → habilitar "Use S3 storage" con:
+En `https://micka.lhstudio.com.ar/_/` → Settings → Files storage → habilitar "Use S3 storage" con:
 - Endpoint: `https://<accountid>.r2.cloudflarestorage.com`
 - Bucket: `micka-media`
 - Region: `auto`
@@ -614,16 +614,16 @@ import { createPocketBase, getPocketBaseUrl } from "../client";
 
 describe("pocketbase client", () => {
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_POCKETBASE_URL = "https://micka-api.lhstudio.com.ar";
+    process.env.NEXT_PUBLIC_POCKETBASE_URL = "https://micka.lhstudio.com.ar";
   });
 
   it("getPocketBaseUrl devuelve la URL del env", () => {
-    expect(getPocketBaseUrl()).toBe("https://micka-api.lhstudio.com.ar");
+    expect(getPocketBaseUrl()).toBe("https://micka.lhstudio.com.ar");
   });
 
   it("createPocketBase usa baseURL del env", () => {
     const pb = createPocketBase();
-    expect(pb.baseURL).toBe("https://micka-api.lhstudio.com.ar");
+    expect(pb.baseURL).toBe("https://micka.lhstudio.com.ar");
   });
 
   it("lanza si falta la env var", () => {

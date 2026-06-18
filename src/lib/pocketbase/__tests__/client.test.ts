@@ -3,7 +3,7 @@ import { createPocketBase, getPocketBaseUrl } from "../client";
 
 describe("pocketbase client", () => {
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_POCKETBASE_URL = "https://micka-api.lhstudio.com.ar";
+    process.env.NEXT_PUBLIC_POCKETBASE_URL = "https://micka.lhstudio.com.ar";
   });
 
   afterEach(() => {
@@ -11,12 +11,12 @@ describe("pocketbase client", () => {
   });
 
   it("getPocketBaseUrl devuelve la URL del env", () => {
-    expect(getPocketBaseUrl()).toBe("https://micka-api.lhstudio.com.ar");
+    expect(getPocketBaseUrl()).toBe("https://micka.lhstudio.com.ar");
   });
 
   it("createPocketBase usa baseURL del env", () => {
     const pb = createPocketBase();
-    expect(pb.baseURL).toBe("https://micka-api.lhstudio.com.ar");
+    expect(pb.baseURL).toBe("https://micka.lhstudio.com.ar");
   });
 
   it("lanza si falta la env var", () => {

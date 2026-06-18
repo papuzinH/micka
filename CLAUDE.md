@@ -21,7 +21,7 @@ páginas + panel admin custom para que Micka gestione el contenido sin programad
 ## Stack
 
 - **Front + admin:** Next.js (App Router, TypeScript) + Tailwind + GSAP → Vercel.
-- **Backend/CMS:** PocketBase (3ª instancia) en VPS `lhstudio.com.ar`, en `https://micka-api.lhstudio.com.ar` (SSL, reverse proxy).
+- **Backend/CMS:** PocketBase (3ª instancia) en VPS `lhstudio.com.ar`, en `https://micka.lhstudio.com.ar` (SSL, reverse proxy).
 - **Imágenes:** Cloudflare R2 (S3) como storage de PocketBase, servidas por CDN. El VPS no sirve archivos.
 - **i18n:** next-intl, rutas localizadas `/en` (default) y `/fr`.
 - **Email contacto:** Resend (o SMTP) vía Server Action.

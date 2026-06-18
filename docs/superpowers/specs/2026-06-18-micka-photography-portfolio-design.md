@@ -18,7 +18,7 @@ contenido sin depender de un programador.
 - **Frontend + admin:** Next.js (App Router, última estable) + Tailwind CSS + GSAP, deploy en Vercel.
 - **Backend/CMS:** PocketBase como 3ª instancia en el VPS existente `lhstudio.com.ar`
   (Ubuntu 24.04, 2.5 GB RAM, 2 cores). Expuesto en un subdominio dedicado
-  (ej. `micka-api.lhstudio.com.ar`) con SSL, detrás del reverse proxy actual.
+  (ej. `micka.lhstudio.com.ar`) con SSL, detrás del reverse proxy actual.
   PocketBase es muy liviano y no compromete los recursos del VPS.
 - **Almacenamiento de imágenes:** Cloudflare R2 (S3-compatible) configurado como storage
   de PocketBase. Servidas por CDN — el VPS no sirve archivos pesados. Egress gratis.
