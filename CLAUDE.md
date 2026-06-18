@@ -34,6 +34,7 @@ páginas + panel admin custom para que Micka gestione el contenido sin programad
 - URL/credenciales de PocketBase y R2 → variables de entorno (`.env.local`, nunca commiteadas).
 - TDD bite-sized, commits frecuentes (uno por task mínimo). Prefijar comandos con `rtk` (ver CLAUDE.md global).
 - Respetar `prefers-reduced-motion` en toda animación GSAP.
+- El middleware de Next vive en `src/proxy.ts` (Next.js 16 renombró la convención `middleware`→`proxy`).
 
 ## Design tokens (Figma)
 
