@@ -479,9 +479,23 @@ rtk git commit -m "docs: document PocketBase VPS provisioning for Micka"
 
 ---
 
-## Task 4: Configurar Cloudflare R2 como storage de PocketBase
+## Task 4: Storage de imágenes
 
-> Infra/config. Verificación: un archivo subido aparece en el bucket R2.
+> **Actualización 2026-06-18 — SUPERSEDED:** se optó por **storage LOCAL en el VPS**
+> (default de PocketBase), descartando Cloudflare R2 por ahora (requería tarjeta). R2 queda
+> como migración futura opcional. Los pasos de R2 abajo quedan archivados por si se migra.
+>
+> **Lo que aplica ahora (Task 4 efectiva):**
+> 1. Confirmar en el panel `…/_/` → Settings → Files storage que **"Use S3 storage" está OFF**
+>    (archivos en `pb_data/storage` del VPS).
+> 2. Asegurar que el reverse proxy permite uploads grandes (`client_max_body_size 50M` en nginx).
+> 3. Los archivos se sirven vía `https://micka.lhstudio.com.ar/api/files/<collection>/<id>/<file>`
+>    → al armar el front, agregar ese host a `images.remotePatterns` de `next.config`.
+> 4. Backups: incluir `pb_data/` en el backup periódico (parte del soporte mensual).
+
+### (Archivado) Pasos para migrar a Cloudflare R2 en el futuro
+
+> Verificación: un archivo subido aparece en el bucket R2.
 
 **Files:**
 - Modify (en el VPS): settings de storage de PocketBase (vía panel admin `/_/`).

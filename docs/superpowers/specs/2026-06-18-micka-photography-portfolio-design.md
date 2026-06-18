@@ -20,8 +20,10 @@ contenido sin depender de un programador.
   (Ubuntu 24.04, 2.5 GB RAM, 2 cores). Expuesto en un subdominio dedicado
   (ej. `micka.lhstudio.com.ar`) con SSL, detrás del reverse proxy actual.
   PocketBase es muy liviano y no compromete los recursos del VPS.
-- **Almacenamiento de imágenes:** Cloudflare R2 (S3-compatible) configurado como storage
-  de PocketBase. Servidas por CDN — el VPS no sirve archivos pesados. Egress gratis.
+- **Almacenamiento de imágenes:** local en el VPS (storage por defecto de PocketBase),
+  servidas vía `…/api/files/...`. **Decisión 2026-06-18:** se descarta Cloudflare R2 por ahora
+  (requería tarjeta); queda como migración futura opcional si el tráfico/peso lo exige (PocketBase
+  soporta cambiar a S3 sin tocar el front).
 - **i18n:** `next-intl` con rutas localizadas (`/en` por defecto, `/fr`). Contenido del CMS bilingüe.
 - **Email (contacto):** Resend (o SMTP) vía Server Action.
 - **GSAP:** gratuito desde 2025 (incluye ScrollTrigger y demás plugins). Sin costos de licencia.
@@ -48,12 +50,13 @@ Navegador (visitante / Micka)
         · Panel admin custom (/admin)
         · GSAP (motion) · next/image
         · Server Actions (contacto → email + persist)
-                      │ REST + Auth (SDK)        │ imágenes (CDN)
-                      ▼                           ▼
-        PocketBase (VPS lhstudio.com.ar)   Cloudflare R2
-        · SQLite (datos)                   (archivos/fotos)
-        · Auth (login admin)        ◀──────  vía S3 API + CDN
+                      │ REST + Auth + archivos (SDK)
+                      ▼
+        PocketBase (VPS micka.lhstudio.com.ar)
+        · SQLite (datos)
+        · Auth (login admin)
         · API REST
+        · Storage LOCAL de archivos/fotos (→ R2 futuro opcional)
 ```
 
 ## Módulos (límites claros)
@@ -65,7 +68,7 @@ Navegador (visitante / Micka)
 | `lib/pocketbase` | Cliente SDK tipado + modelos | PocketBase API |
 | `lib/motion` | Wrappers GSAP reutilizables (+ `prefers-reduced-motion`) | — |
 | `lib/i18n` | Config next-intl, mensajes de UI | — |
-| PocketBase | Datos, auth, archivos→R2 | R2 |
+| PocketBase | Datos, auth, archivos (storage local en VPS) | — |
 
 Cada unidad expone una interfaz clara y puede entenderse/probarse de forma aislada.
 
