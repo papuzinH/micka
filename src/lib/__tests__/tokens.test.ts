@@ -7,5 +7,9 @@ describe("design tokens", () => {
     expect(colors.violet).toBe("#a020f0");
     expect(colors["gray-bg"]).toBe("#212121");
     expect(colors.black).toBe("#000000");
+    expect(colors.gray).toBe("#202020");
+    expect(colors["gray-light"]).toBe("#373636");
+    expect(colors.white).toBe("#ffffff");
+    expect(colors["violet-dark"]).toBe("#8315c8");
   });
 });
