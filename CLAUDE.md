@@ -72,13 +72,14 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Estado actual
 
-- **Stage 1: en curso, Task 1 completada.** Scaffold Next.js hecho, tokens de marca definidos, Vitest corriendo. Próximo paso: Task 2 (next-intl i18n).
+- **Stage 1: en curso, Task 2 completada.** next-intl bilingual routing operativo: rutas `/en` (default) y `/fr`, layout `[locale]` con Syne+Inter, mensajes en/fr. Vitest + Playwright verdes. Próximo paso: Tasks 3 y 4 (usuario: PocketBase en VPS, DNS/SSL, bucket R2).
 - Tasks 3 y 4 (PocketBase en VPS, DNS/SSL, bucket R2) las ejecuta el usuario (requieren SSH + Cloudflare); el resto las implementa el agente.
 
 ## Decisiones y cambios (changelog)
 
 - **2026-06-18** — Brainstorming + diseño aprobado. Decisiones: backend PocketBase en VPS propio (no Supabase), panel admin custom en Next.js, imágenes en R2+CDN, i18n con rutas localizadas (default EN), contacto = email (Resend) + persistencia en CMS. Spec y plan de Stage 1 escritos.
 - **2026-06-18** — Task 1: Scaffold completado. create-next-app@16.2.9 instala Tailwind v4 (CSS-based config); se mantiene `tailwind.config.ts` para tokens importables desde tests (compatible con `@config` directive de Tailwind v4). Vitest fijado en v2.x y jsdom en v24.x por restricción de Node 20.14 (rolldown de vitest 4.x requiere Node >=20.19). Build (Turbopack) y test unitario de tokens: PASS.
+- **2026-06-18** — Task 2: next-intl@4.13.0 instalado. Routing bilíngüe `/en` (default) y `/fr` operativo. Root `layout.tsx`/`page.tsx` eliminados; reemplazados por `src/app/[locale]/layout.tsx` con Syne+Inter fonts. Middleware renombrado a `src/proxy.ts` (Next.js 16 depreca `middleware.ts`). Mock de `next-intl/navigation` en Vitest para entorno jsdom. Playwright configurado con `webServer` + `baseURL`. Unit test routing: PASS (TDD RED→GREEN). E2e locale: 2/2 PASS. Build: PASS.
 
 ## Documentos clave
 
