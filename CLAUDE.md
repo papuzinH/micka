@@ -73,7 +73,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Estado actual
 
-- **Stage 1: en curso, Task 6 completada.** Typed PocketBase data layer operativo: `src/lib/pocketbase/client.ts` + `src/lib/pocketbase/types.ts`. 3/3 unit tests PASS (TDD RED→GREEN). `tsc --noEmit` limpio.
+- **Stage 1: en curso, Task 7 completada.** Admin login + dashboard protegido operativos: `src/lib/pocketbase/auth.ts`, `src/app/admin/actions.ts`, `src/app/admin/login/page.tsx`, `src/app/admin/page.tsx`. 3/3 unit tests PASS (TDD RED→GREEN). E2e test 1 (redirect unauthenticated) PASS; test 2 (credenciales inválidas) `test.skip` hasta que Task 3 esté provisionada. `tsc --noEmit` limpio. Build PASS.
 - Tasks 3 y 4 (PocketBase en VPS, DNS/SSL, bucket R2) las ejecuta el usuario (requieren SSH + Cloudflare); el resto las implementa el agente.
 
 ## Decisiones y cambios (changelog)
@@ -81,6 +81,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 - **2026-06-18** — Brainstorming + diseño aprobado. Decisiones: backend PocketBase en VPS propio (no Supabase), panel admin custom en Next.js, imágenes en R2+CDN, i18n con rutas localizadas (default EN), contacto = email (Resend) + persistencia en CMS. Spec y plan de Stage 1 escritos.
 - **2026-06-18** — Task 1: Scaffold completado. create-next-app@16.2.9 instala Tailwind v4 (CSS-based config); se mantiene `tailwind.config.ts` para tokens importables desde tests (compatible con `@config` directive de Tailwind v4). Vitest fijado en v2.x y jsdom en v24.x por restricción de Node 20.14 (rolldown de vitest 4.x requiere Node >=20.19). Build (Turbopack) y test unitario de tokens: PASS.
 - **2026-06-18** — Task 6: pocketbase@0.27.0 instalado. `src/lib/pocketbase/client.ts` con `getPocketBaseUrl()` + `createPocketBase()`. `src/lib/pocketbase/types.ts` con 7 interfaces tipadas (Category, Album, Photo, Review, Collab, SiteContent, ContactMessage). SDK expone `baseURL` (uppercase) como propiedad canónica. 3/3 tests PASS. `tsc --noEmit` limpio.
+- **2026-06-18** — Task 7: Admin login implementado. `src/lib/pocketbase/auth.ts` (parseAuthCookie, isValidAuth, ADMIN_COOKIE). Server Actions `loginAdmin`/`logoutAdmin` en `src/app/admin/actions.ts`. Login page con `useActionState` (React 19). Dashboard protegido con cookie check + redirect. 3/3 unit tests PASS (TDD). E2e redirect test PASS; credenciales inválidas test `test.skip` (requiere PocketBase Task 3). Build PASS.
 - **2026-06-18** — Task 2: next-intl@4.13.0 instalado. Routing bilíngüe `/en` (default) y `/fr` operativo. Root `layout.tsx`/`page.tsx` eliminados; reemplazados por `src/app/[locale]/layout.tsx` con Syne+Inter fonts. Middleware renombrado a `src/proxy.ts` (Next.js 16 depreca `middleware.ts`). Mock de `next-intl/navigation` en Vitest para entorno jsdom. Playwright configurado con `webServer` + `baseURL`. Unit test routing: PASS (TDD RED→GREEN). E2e locale: 2/2 PASS. Build: PASS.
 
 ## Documentos clave
