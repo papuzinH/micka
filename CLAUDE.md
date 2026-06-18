@@ -79,15 +79,25 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Estado actual
 
-- **Stage 1: porción front/código COMPLETA (Tasks 1, 2, 6, 7).** Rama `stage-1-cms`. Verificación conjunta en verde: `tsc --noEmit` limpio, 8/8 unit tests PASS, `next build` OK (rutas `/[locale]`, `/admin`, `/admin/login`, `ƒ Proxy (Middleware)`).
+- **✅ STAGE 1 COMPLETO** (rama `stage-1-cms`). Verificación integral en verde: `tsc --noEmit` limpio, **11/11 unit tests**, `next build` OK, **5/5 e2e** (incluido login admin exitoso contra el PocketBase real). Pasó review final de rama (un Critical encontrado y corregido: mismatch de cookie en el login).
   - Task 1: scaffold Next.js + Tailwind v4 + Vitest + design tokens.
   - Task 2: i18n next-intl (`/en` default, `/fr`), fuentes Syne+Inter, `src/proxy.ts`.
+  - Task 3 ✅ (usuario): PocketBase en `https://micka.lhstudio.com.ar` (server actualizado 0.22.14 → 0.39.4).
+  - Task 4 ✅: storage local en el VPS (R2 descartado por ahora).
+  - Task 5 ✅: 7 colecciones creadas vía `pocketbase/seed-collections.mjs` (esquema en `pb_schema.json`).
   - Task 6: data layer tipado (`src/lib/pocketbase`: client + 7 types).
-  - Task 7: admin login (auth helpers, Server Actions, login page, dashboard protegido). e2e de credenciales inválidas en `test.skip` (espera backend).
-- **Task 3 ✅ (usuario):** PocketBase en `https://micka.lhstudio.com.ar`, `/api/health` 200, superuser creado.
-- **Task 4 ✅ (decisión):** storage **local en el VPS** (default de PocketBase, sin S3/R2). Resta confirmar en el panel que "Use S3 storage" está OFF y que el límite de upload del reverse proxy permite fotos pesadas (`client_max_body_size`).
-- **Siguiente (agente + usuario):** Task 5 — autoría de `pocketbase/pb_schema.json` con las 7 colecciones, importarlo en el panel, verificar; luego activar el e2e `test.skip` de login.
-- Al cerrar Stage 1 completo: review de rama (final whole-branch) y `finishing-a-development-branch`. Hay minor findings acumulados en el ledger (`.git/sdd/progress.md`) para ese review.
+  - Task 7: admin login completo (auth + Server Actions + login + dashboard) — login exitoso verificado e2e contra backend real.
+  - Fix estructural: route groups `(site)`/`(admin)` para root layouts separados.
+- **Pendiente del usuario (no bloquea código):** confirmar en el panel que "Use S3 storage" está OFF y que el reverse proxy permite uploads grandes (`client_max_body_size 50M`).
+- **Próximo:** integrar la rama (`finishing-a-development-branch`) y, con aprobación del cliente, planificar **Stage 2** (Home pixel-perfect + 5 subpáginas + admin CRUD + formulario de contacto). Minor findings diferidos a Stage 2 en el ledger (`.git/sdd/progress.md`) y abajo.
+
+### Minor findings diferidos a Stage 2 (del review final)
+- `as any` en `tokens.test.ts` y `i18n/request.ts:6` (usar `(typeof routing.locales)[number]`).
+- `fr.json` == `en.json` (traducciones reales en Stage 2).
+- `(site)/[locale]/page.tsx`: `useTranslations` sin `setRequestLocale` propio (riesgo cuando haya más páginas).
+- a11y: `aria-label` en botones del admin (tienen texto visible; pasada de a11y en Stage 2).
+- `pb_schema.json` es **input del seeder**, no un export fiel de PocketBase (no re-importable por el panel). Documentado.
+- Agregar `micka.lhstudio.com.ar` a `images.remotePatterns` cuando el front consuma imágenes del CMS.
 
 ## Decisiones y cambios (changelog)
 
