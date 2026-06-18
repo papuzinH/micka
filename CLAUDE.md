@@ -52,14 +52,19 @@ Esquema versionado en `pocketbase/pb_schema.json`. Detalle de campos en el spec 
 ## Estructura de carpetas (objetivo)
 
 ```
-src/app/[locale]/   → sitio público (6 páginas)
-src/app/admin/      → login + panel custom
-src/lib/pocketbase/ → cliente tipado, types, auth, queries
-src/lib/i18n/       → routing + request next-intl
-src/lib/motion/     → wrappers GSAP (Stage 3)
-src/messages/       → en.json / fr.json
-pocketbase/         → pb_schema.json + README de provisión
+src/app/(site)/[locale]/   → sitio público (6 páginas) — route group (site), root layout con <html lang={locale}>
+src/app/(admin)/admin/     → login + panel custom — route group (admin), root layout con <html lang="en">
+src/lib/pocketbase/        → cliente tipado, types, auth, queries
+src/lib/i18n/              → routing + request next-intl
+src/lib/motion/            → wrappers GSAP (Stage 3)
+src/messages/              → en.json / fr.json
+pocketbase/                → pb_schema.json + README de provisión
 ```
+
+Nota: Los paréntesis en `(site)` y `(admin)` son route groups de Next.js — NO afectan las URLs.
+Las rutas siguen siendo `/en`, `/fr`, `/admin`, `/admin/login`. Cada grupo tiene su propio root layout
+con `<html><body>` para cumplir la restricción de Next.js App Router (no puede haber un único layout
+raíz en `src/app/layout.tsx` cuando los grupos tienen layouts incompatibles — i18n vs. admin).
 
 ## Plan por stages (Phase 2 de la propuesta)
 
@@ -86,6 +91,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-06-18** — **fix route groups (site)/(admin)**: `src/app/[locale]/` movido a `src/app/(site)/[locale]/` y `src/app/admin/` movido a `src/app/(admin)/admin/`. Se creó `src/app/(admin)/admin/layout.tsx` como root layout con `<html lang="en"><body>` + Syne/Inter fonts + globals.css. Razón: sin un root layout propio, las rutas `/admin` lanzaban "Missing `<html>` and `<body>` tags". La solución "multiple root layouts via route groups" es el patrón oficial de Next.js para este caso. URLs no cambian. `tsc --noEmit` limpio; build OK; 4/4 e2e PASS; 11/11 unit tests PASS.
 - **2026-06-18** — Brainstorming + diseño aprobado. Decisiones: backend PocketBase en VPS propio (no Supabase), panel admin custom en Next.js, imágenes en R2+CDN, i18n con rutas localizadas (default EN), contacto = email (Resend) + persistencia en CMS. Spec y plan de Stage 1 escritos.
 - **2026-06-18** — Task 1: Scaffold completado. create-next-app@16.2.9 instala Tailwind v4 (CSS-based config); se mantiene `tailwind.config.ts` para tokens importables desde tests (compatible con `@config` directive de Tailwind v4). Vitest fijado en v2.x y jsdom en v24.x por restricción de Node 20.14 (rolldown de vitest 4.x requiere Node >=20.19). Build (Turbopack) y test unitario de tokens: PASS.
 - **2026-06-18** — Task 6: pocketbase@0.27.0 instalado. `src/lib/pocketbase/client.ts` con `getPocketBaseUrl()` + `createPocketBase()`. `src/lib/pocketbase/types.ts` con 7 interfaces tipadas (Category, Album, Photo, Review, Collab, SiteContent, ContactMessage). SDK expone `baseURL` (uppercase) como propiedad canónica. 3/3 tests PASS. `tsc --noEmit` limpio.
