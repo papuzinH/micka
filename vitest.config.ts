@@ -8,8 +8,16 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
+    exclude: ["**/node_modules/**", "**/tests/e2e/**"],
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // Stub next-intl/navigation so routing.ts can be imported in jsdom
+      "next-intl/navigation": path.resolve(
+        __dirname,
+        "src/__mocks__/next-intl-navigation.ts"
+      ),
+    },
   },
 });
