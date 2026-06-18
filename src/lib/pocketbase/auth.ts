@@ -1,6 +1,7 @@
 export const ADMIN_COOKIE = "pb_admin_auth";
 
-export interface AuthCookie { token: string; record: { id: string } }
+// record is typed broadly so it is assignable to PocketBase's RecordModel (which uses [key: string]: any)
+export interface AuthCookie { token: string; record: Record<string, unknown> & { id: string } }
 
 export function parseAuthCookie(raw: string | undefined): AuthCookie | null {
   if (!raw) return null;
@@ -14,5 +15,5 @@ export function parseAuthCookie(raw: string | undefined): AuthCookie | null {
 }
 
 export function isValidAuth(raw: string | undefined): boolean {
-  return parseAuthCookie(raw)?.token ? true : false;
+  return Boolean(parseAuthCookie(raw)?.token);
 }

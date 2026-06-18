@@ -15,12 +15,11 @@ export async function loginAdmin(_prev: unknown, formData: FormData) {
     return { error: "Credenciales inválidas" };
   }
   const store = await cookies();
-  store.set(ADMIN_COOKIE, pb.authStore.exportToCookie(), {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    path: "/admin",
-  });
+  store.set(
+    ADMIN_COOKIE,
+    JSON.stringify({ token: pb.authStore.token, record: pb.authStore.record }),
+    { httpOnly: true, secure: true, sameSite: "strict", path: "/admin" },
+  );
   redirect("/admin");
 }
 
