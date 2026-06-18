@@ -1,9 +1,10 @@
 # Micka Photography Portfolio — Diseño técnico
 
 **Fecha:** 2026-06-18
-**Estado:** Aprobado (pendiente de plan de implementación)
+**Estado:** Aprobado · Stage 1 planificado (ver `docs/superpowers/plans/2026-06-18-stage-1-cms-architecture.md`)
 **Figma:** https://www.figma.com/design/D1d7pqScYAAPmXHEqkW3Cm/Micka---Photography
 **Propuesta:** `Project Proposal Web Development - Micka.pdf`
+**Contexto operativo:** `CLAUDE.md` (raíz) — estado, convenciones y changelog por stage.
 
 ## Resumen
 
