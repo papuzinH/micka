@@ -73,8 +73,14 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Estado actual
 
-- **Stage 1: en curso, Task 7 completada.** Admin login + dashboard protegido operativos: `src/lib/pocketbase/auth.ts`, `src/app/admin/actions.ts`, `src/app/admin/login/page.tsx`, `src/app/admin/page.tsx`. 3/3 unit tests PASS (TDD RED→GREEN). E2e test 1 (redirect unauthenticated) PASS; test 2 (credenciales inválidas) `test.skip` hasta que Task 3 esté provisionada. `tsc --noEmit` limpio. Build PASS.
-- Tasks 3 y 4 (PocketBase en VPS, DNS/SSL, bucket R2) las ejecuta el usuario (requieren SSH + Cloudflare); el resto las implementa el agente.
+- **Stage 1: porción front/código COMPLETA (Tasks 1, 2, 6, 7).** Rama `stage-1-cms`. Verificación conjunta en verde: `tsc --noEmit` limpio, 8/8 unit tests PASS, `next build` OK (rutas `/[locale]`, `/admin`, `/admin/login`, `ƒ Proxy (Middleware)`).
+  - Task 1: scaffold Next.js + Tailwind v4 + Vitest + design tokens.
+  - Task 2: i18n next-intl (`/en` default, `/fr`), fuentes Syne+Inter, `src/proxy.ts`.
+  - Task 6: data layer tipado (`src/lib/pocketbase`: client + 7 types).
+  - Task 7: admin login (auth helpers, Server Actions, login page, dashboard protegido). e2e de credenciales inválidas en `test.skip` (espera backend).
+- **Pendiente (lo ejecuta el usuario):** Task 3 (PocketBase 3ª instancia en VPS + subdominio + SSL) y Task 4 (bucket R2 + storage S3 en PocketBase). Requieren SSH + Cloudflare.
+- **Bloqueado por lo anterior (lo retoma el agente después):** Task 5 (crear/exportar las 7 colecciones), y activar el e2e `test.skip` de login + el resto de e2e de admin.
+- Al cerrar Stage 1 completo: review de rama (final whole-branch) y `finishing-a-development-branch`. Hay minor findings acumulados en el ledger (`.git/sdd/progress.md`) para ese review.
 
 ## Decisiones y cambios (changelog)
 
