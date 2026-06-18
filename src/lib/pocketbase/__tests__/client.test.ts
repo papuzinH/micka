@@ -1,9 +1,13 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPocketBase, getPocketBaseUrl } from "../client";
 
 describe("pocketbase client", () => {
   beforeEach(() => {
     process.env.NEXT_PUBLIC_POCKETBASE_URL = "https://micka-api.lhstudio.com.ar";
+  });
+
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_POCKETBASE_URL;
   });
 
   it("getPocketBaseUrl devuelve la URL del env", () => {
