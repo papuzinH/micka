@@ -18,7 +18,7 @@ export async function loginAdmin(_prev: unknown, formData: FormData) {
   store.set(ADMIN_COOKIE, pb.authStore.exportToCookie(), {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/admin",
   });
   redirect("/admin");
