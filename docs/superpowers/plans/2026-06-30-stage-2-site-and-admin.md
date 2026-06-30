@@ -212,9 +212,12 @@ Nodos Figma de referencia:
 
 # FASE 2b — Datos del CMS + las 5 subpáginas
 
-> Esbozo. Se detalla just-in-time al cerrar 2a (medidas/diseño de subpáginas se definen ahí, ya que las diseño yo derivándolas del design system).
+> **✅ COMPLETA (2026-06-30).** Sitio público conectado al PocketBase real. Verde: `tsc` limpio, 44/44 unit, 12/12 e2e, `next build` OK; Home + 6 subpáginas validadas visualmente en EN. Detalle en el changelog del `CLAUDE.md`. Subpáginas diseñadas derivándolas del design system y aprobadas por el cliente vía screenshots ("Avanzá y mostrame").
 
-**Tasks previstas:**
+**Tasks (todas hechas):**
+- [x] 1. Seed `seed-content.mjs` (ejecutado) · [x] 2. `fileUrl()` + `remotePatterns` · [x] 3. Queries tipadas + tests · [x] 4. Home conectado · [x] 5. Portfolio + detalle · [x] 6. About/Reviews/Collabs · [x] 7. Contact (UI; action → 2c) · [x] 8. 404/error localizados + verificación.
+
+**Tasks previstas (referencia original):**
 1. **Seed script** (`pocketbase/seed-content.mjs`): categorías, álbumes (con `starred`), fotos, reviews, collabs, `site_content`, con imágenes placeholder temáticas subidas vía SDK autenticado. Idempotente (mismo patrón que `seed-collections.mjs`).
 2. **`images.remotePatterns`** → `micka.lhstudio.com.ar` en `next.config.ts` + helper `fileUrl(record, filename)` en `src/lib/pocketbase`.
 3. **Queries tipadas** (`src/lib/pocketbase/queries.ts`): `getStarredAlbums`, `getCategories`, `getAlbums`, `getAlbumBySlug`, `getPhotosByAlbum`, `getReviews`, `getCollabs`, `getSiteContent` — con tests unit (mock del SDK) y filtro `published`. Helper de localización `localized(record, field, locale)`.
