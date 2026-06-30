@@ -23,5 +23,5 @@ test("login exitoso lleva al dashboard y permanece en /admin", async ({ page }) 
   await page.fill('input[name="password"]', process.env.POCKETBASE_ADMIN_PASSWORD!);
   await page.click('button[type="submit"]');
   await expect(page).toHaveURL(/\/admin$/, { timeout: 10000 });
-  await expect(page.getByRole("heading", { name: "Panel Micka" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 });

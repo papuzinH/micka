@@ -1,32 +1,26 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useTranslations } from "next-intl";
+import { useActionState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { submitContact, type ContactState } from "@/lib/contact/action";
 import { Button } from "@/components/ui/Button";
-
-type Status = "idle" | "sending" | "success" | "error";
 
 const fieldClasses =
   "border border-brand-light-gray bg-brand-gray-bg px-4 py-3 font-body text-brand-white placeholder:text-brand-white/30 focus:border-brand-violet focus:outline-none";
 
 /**
- * Formulario de contacto. La UI y los estados (idle/sending/success/error)
- * están completos; la persistencia en `contact_messages` + email (Resend)
- * detrás de env var se conectan vía Server Action en la Fase 2c.
+ * Formulario de contacto. Envía vía Server Action (`submitContact`): valida con
+ * Zod, persiste en `contact_messages` y manda email por Resend si está
+ * configurado (si no, solo persiste). Honeypot anti-spam.
  */
 export function ContactForm() {
   const t = useTranslations("contact");
-  const [status, setStatus] = useState<Status>("idle");
+  const locale = useLocale();
+  const [state, action, pending] = useActionState(submitContact, {
+    status: "idle",
+  } as ContactState);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("sending");
-    // TODO (Fase 2c): reemplazar por Server Action (Zod → persistir + email).
-    await new Promise((r) => setTimeout(r, 700));
-    setStatus("success");
-  }
-
-  if (status === "success") {
+  if (state.status === "success") {
     return (
       <p
         role="status"
@@ -38,7 +32,18 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form action={action} className="flex flex-col gap-5">
+      <input type="hidden" name="locale" value={locale} />
+      {/* honeypot: invisible para humanos, atractivo para bots */}
+      <input
+        type="text"
+        name="company"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+
       <label className="flex flex-col gap-2">
         <span className="font-display text-h4 uppercase text-brand-white">
           {t("name")}
@@ -79,12 +84,12 @@ export function ContactForm() {
       </label>
 
       <div className="mt-2">
-        <Button type="submit" disabled={status === "sending"}>
-          {status === "sending" ? t("sending") : t("send")}
+        <Button type="submit" disabled={pending}>
+          {pending ? t("sending") : t("send")}
         </Button>
       </div>
 
-      {status === "error" && (
+      {state.status === "error" && (
         <p role="alert" className="font-body text-sm text-brand-violet">
           {t("error")}
         </p>
