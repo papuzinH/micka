@@ -32,9 +32,11 @@
       "text": "Capturer la puissance | Structurer le mouvement | Élever l'image du sport."
     },
     "editorial": {
-      "intro": "Spécialisée dans le cyclisme féminin, je développe une approche visuelle exigeante appliquée au sport. Mon travail se situe à l'intersection de la performance et de la direction artistique. Chaque image est conçue, construite et maîtrisée.",
+      "intro": "Spécialisée dans le cyclisme féminin, je développe une approche visuelle exigeante appliquée au sport.",
+      "introAccent": "Mon travail se situe à l'intersection de la performance et de la direction artistique. Chaque image est conçue, construite et maîtrisée.",
       "focusTitle": "Axe principal",
-      "focus": "Le cyclisme féminin est au cœur de mon travail. Discipline, endurance, rigueur. Une esthétique brute traduite en images fortes et éditoriales. Chaque projet vise à redéfinir la représentation de l'athlète."
+      "focus": "Le cyclisme féminin est au cœur de mon travail. Discipline, endurance, rigueur. Une esthétique brute traduite en images fortes et éditoriales.",
+      "focusAccent": "Chaque projet vise à redéfinir la représentation de l'athlète."
     },
     "starred": {
       "title": "Albums à la une",
@@ -44,8 +46,10 @@
       "title": "Mes préférées de tous les temps"
     },
     "craft": {
-      "light": "La lumière sculpte le corps. Le mouvement devient composition. L'effort devient esthétique. Je ne documente pas le sport. Je le façonne avec précision.",
-      "standard": "Cette exigence visuelle s'étend à d'autres disciplines. Football, environnements d'entraînement, projets hybrides. Le terrain change. L'intention demeure."
+      "light": "La lumière sculpte le corps. Le mouvement devient composition. L'effort devient esthétique.",
+      "lightAccent": "Je ne documente pas le sport. Je le façonne avec précision.",
+      "standard": "Cette exigence visuelle s'étend à d'autres disciplines. Football, environnements d'entraînement, projets hybrides.",
+      "standardAccent": "Le terrain change. L'intention demeure."
     },
     "nothingBar": {
       "text": "Rien n'est laissé au hasard"

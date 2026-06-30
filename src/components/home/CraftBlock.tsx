@@ -16,7 +16,10 @@ export function CraftBlock() {
             className="object-cover"
           />
         </div>
-        <p className="text-body text-brand-white/80">{t("light")}</p>
+        <p className="text-body text-brand-white/80">
+          {t("light")}{" "}
+          <span className="text-brand-violet">{t("lightAccent")}</span>
+        </p>
         <div className="relative h-56 overflow-hidden md:h-full md:min-h-56">
           <Image
             src="/placeholders/cyclist-portrait.jpg"
@@ -26,7 +29,10 @@ export function CraftBlock() {
             className="object-cover"
           />
         </div>
-        <p className="text-body text-brand-white/80">{t("standard")}</p>
+        <p className="text-body text-brand-white/80">
+          {t("standard")}{" "}
+          <span className="text-brand-violet">{t("standardAccent")}</span>
+        </p>
       </div>
     </section>
   );

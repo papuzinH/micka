@@ -39,7 +39,7 @@ export function ImageDescription({
         sizes={sizes}
         className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
-      <div className="absolute inset-x-0 bottom-4 mx-auto w-[88%] max-w-[205px] bg-white/40 p-5 backdrop-blur-sm">
+      <div className="absolute bottom-4 right-0 w-[88%] max-w-[205px] bg-white/40 p-5 text-right backdrop-blur-sm">
         <h3 className="font-display text-card uppercase text-brand-violet-dark">
           {title}
         </h3>
