@@ -88,7 +88,8 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   - Task 6: data layer tipado (`src/lib/pocketbase`: client + 7 types).
   - Task 7: admin login completo (auth + Server Actions + login + dashboard) — login exitoso verificado e2e contra backend real.
   - Fix estructural: route groups `(site)`/`(admin)` para root layouts separados.
-- **Pendiente del usuario (no bloquea código):** confirmar en el panel que "Use S3 storage" está OFF y que el reverse proxy permite uploads grandes (`client_max_body_size 50M`).
+- **Infra confirmada:** el reverse proxy del VPS es **Caddy dockerizado** (contenedor `n8n-stack-caddy-1`, Caddyfile con `micka.lhstudio.com.ar { reverse_proxy 192.227.152.170:8093 }`). Caddy **no limita el tamaño de body por defecto** → subidas de fotos OK sin configurar nada (el `client_max_body_size` era un tema de nginx, no aplica). SSL automático por Caddy.
+- **Único pendiente del usuario (no bloquea código):** confirmar en el panel de PocketBase que "Use S3 storage" está OFF (es el default, storage local).
 - **Próximo:** integrar la rama (`finishing-a-development-branch`) y, con aprobación del cliente, planificar **Stage 2** (Home pixel-perfect + 5 subpáginas + admin CRUD + formulario de contacto). Minor findings diferidos a Stage 2 en el ledger (`.git/sdd/progress.md`) y abajo.
 
 ### Minor findings diferidos a Stage 2 (del review final)
