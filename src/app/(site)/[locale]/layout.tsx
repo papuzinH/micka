@@ -3,6 +3,8 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Syne, Inter } from "next/font/google";
 import { routing } from "@/lib/i18n/routing";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import "../../globals.css";
 
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["700", "800"] });
@@ -25,7 +27,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${syne.variable} ${inter.variable}`}>
       <body className="bg-brand-black text-brand-white font-body">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <Navbar />
+          <div className="pt-15">{children}</div>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

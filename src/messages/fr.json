@@ -1,1 +1,18 @@
-{ "common": { "siteName": "Micka's Photos" } }
+{
+  "common": { "siteName": "Micka's Photos" },
+  "nav": {
+    "home": "Accueil",
+    "portfolio": "Portfolio",
+    "about": "À propos",
+    "reviews": "Avis",
+    "collabs": "Collabs",
+    "contact": "Contact"
+  },
+  "footer": {
+    "tagline": "Photographie de performance — cyclisme féminin"
+  },
+  "a11y": {
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  }
+}

@@ -3,7 +3,9 @@ import tailwindConfig from "../../../tailwind.config";
 
 describe("design tokens", () => {
   it("define los colores de marca del Figma", () => {
-    const colors = (tailwindConfig.theme?.extend?.colors as any).brand;
+    const colors = (
+      tailwindConfig.theme?.extend?.colors as { brand: Record<string, string> }
+    ).brand;
     expect(colors.violet).toBe("#a020f0");
     expect(colors["gray-bg"]).toBe("#212121");
     expect(colors.black).toBe("#000000");
@@ -14,7 +16,10 @@ describe("design tokens", () => {
   });
 
   it("define la escala tipográfica del Figma", () => {
-    const fontSize = (tailwindConfig.theme?.extend?.fontSize as any);
+    const fontSize = tailwindConfig.theme?.extend?.fontSize as Record<
+      string,
+      [string, { fontWeight?: string; lineHeight?: string }]
+    >;
     // H1 = Syne ExtraBold 45px
     expect(fontSize.h1[0]).toBe("45px");
     expect(fontSize.h1[1].fontWeight).toBe("800");
