@@ -233,9 +233,12 @@ Nodos Figma de referencia:
 
 # FASE 2c — Admin CRUD custom (7 colecciones) + contacto
 
-> Esbozo. Se detalla just-in-time al cerrar 2b.
+> **✅ COMPLETA (2026-06-30) → STAGE 2 CERRADO.** Admin CRUD config-driven de las 7 colecciones + contacto funcional. Decisiones del cliente: límite de archivo 15MB; Server Actions nativas + Zod (sin react-hook-form). Verde: `tsc` limpio, 44/44 unit, 15/15 e2e, `next build` OK. Detalle en el changelog del `CLAUDE.md`. Mejoras futuras no bloqueantes: upload múltiple + drag-reorder de fotos, WYSIWYG para campos editor.
 
-**Tasks previstas:**
+**Tasks (todas hechas):**
+- [x] 1. Admin shell + guard (`requireAdminPb`, route group `(panel)` + sidebar) · [x] 2. Mutaciones genéricas (`saveRecord`/`deleteRecord` + revalidación) · [x] 3. Forms Zod + config (`collections.ts`, `form.ts`) · [x] 4. Upload de imágenes con preview · [x] 5. CRUD de las 7 colecciones (config-driven; `contact_messages` read-only) · [x] 6. Contacto público (`submitContact`: Zod + honeypot + persist + Resend tras env var) · [x] 7. e2e admin + contacto · [x] 8. Verificación + `CLAUDE.md`.
+
+**Tasks previstas (referencia original):**
 1. **Admin shell**: layout del panel (sidebar/nav de colecciones), reutilizando la sesión + guard de Stage 1. Cliente PB autenticado server-side desde la cookie (`src/lib/pocketbase/admin.ts`).
 2. **Capa de mutaciones** genérica: Server Actions `createRecord/updateRecord/deleteRecord/uploadFile` por colección, con revalidación (`revalidatePath`/tags) del front público.
 3. **Forms** con `react-hook-form` + `zod` (schemas compartidos): campos `_en`/`_fr`, relaciones (`category`, `album`), toggles (`published`, `starred`), `order`.
