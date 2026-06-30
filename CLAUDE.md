@@ -73,7 +73,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 | Stage | Semana | Foco | Plan |
 |---|---|---|---|
 | 1 | 1 | Arquitectura y estructura del CMS | `docs/superpowers/plans/2026-06-18-stage-1-cms-architecture.md` |
-| 2 | 2 | Layout Home + 5 subpáginas + admin CRUD + contacto | _pendiente de planificar_ |
+| 2 | 2 | Layout Home + 5 subpáginas + admin CRUD + contacto | `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md` (Fase 2a detallada; 2b/2c esbozadas) |
 | 3 | 3 | Motion Engineering (GSAP) | _pendiente de planificar_ |
 | 4 | 4 | Optimización, testing, SEO, deploy | _pendiente de planificar_ |
 
@@ -102,6 +102,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-06-30** — **Stage 2 planificado** (brainstorming + plan en `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md`). Hallazgo clave del Figma: **solo el Home está diseñado** (Desktop `128:154`, Mobile `3:6`) + UI Kit (`20:3`); las 5 subpáginas NO tienen mockup. Decisiones: (1) las subpáginas las diseña el agente derivándolas del design system; (2) contenido vía **seed propio** (el cliente carga lo real luego); (3) admin = **CRUD custom completo de las 7 colecciones**; (4) email de contacto detrás de env var (persiste igual si falta key); (5) orden **2a→2b→2c**; (6) motion 100% diferido a Stage 3. Design system exacto extraído del Figma (tipografía H1 Syne ExtraBold/800 45px — el layout hoy solo carga Syne 700/Inter 400; Task 1 suma 800/600). Stage 2 dividido en 3 fases internas; arranca por 2a (design system + shell + Home pixel-perfect estático/responsive).
 - **2026-06-18** — **fix admin login cookie write/read mismatch + token expiry validation**: `loginAdmin` (actions.ts) pasó de usar `pb.authStore.exportToCookie()` (retornaba un string Set-Cookie completo, no JSON) a `JSON.stringify({ token, record })`. `page.tsx` ahora usa `parseAuthCookie` + `pb.authStore.save()` + `pb.authStore.isValid` para validar expiración JWT real. `AuthCookie.record` ampliado a `Record<string, unknown> & { id: string }` para compatibilidad con el tipo `RecordModel` del SDK. `playwright.config.ts` carga `.env.local` manualmente para que las variables POCKETBASE_ADMIN_* estén disponibles en los tests. Nuevo e2e de login exitoso añadido y verificado contra PocketBase real. `tsc` limpio; 11/11 unit tests PASS; build OK; 5/5 e2e PASS (nuevo test corre sin skip).
 - **2026-06-18** — **fix route groups (site)/(admin)**: `src/app/[locale]/` movido a `src/app/(site)/[locale]/` y `src/app/admin/` movido a `src/app/(admin)/admin/`. Se creó `src/app/(admin)/admin/layout.tsx` como root layout con `<html lang="en"><body>` + Syne/Inter fonts + globals.css. Razón: sin un root layout propio, las rutas `/admin` lanzaban "Missing `<html>` and `<body>` tags". La solución "multiple root layouts via route groups" es el patrón oficial de Next.js para este caso. URLs no cambian. `tsc --noEmit` limpio; build OK; 4/4 e2e PASS; 11/11 unit tests PASS.
 - **2026-06-18** — Brainstorming + diseño aprobado. Decisiones: backend PocketBase en VPS propio (no Supabase), panel admin custom en Next.js, imágenes en R2+CDN, i18n con rutas localizadas (default EN), contacto = email (Resend) + persistencia en CMS. Spec y plan de Stage 1 escritos.
