@@ -2,15 +2,16 @@ import type { ComponentProps, ReactNode } from "react";
 import { Link } from "@/lib/i18n/routing";
 import { cn } from "@/lib/cn";
 
-type ButtonSize = "lg" | "sm";
+type ButtonSize = "lg" | "sm" | "xl";
 
 const sizeClasses: Record<ButtonSize, string> = {
-  lg: "h-10 text-h3", // 40px · Syne Bold 16px
-  sm: "h-7 text-h4", //  28px · Syne Bold 14px
+  sm: "h-7 px-2 py-2 text-h4", //   28px · Syne Bold 14px
+  lg: "h-10 px-2 py-2.5 text-h3", // 40px · Syne Bold 16px
+  xl: "h-[58px] px-6 text-h3", //    58px · hero CTAs
 };
 
 const baseClasses = cn(
-  "inline-flex items-center justify-center gap-2.5 px-2 py-2.5 font-display uppercase text-white",
+  "inline-flex items-center justify-center gap-2.5 font-display uppercase text-white",
   "bg-brand-violet hover:bg-brand-violet-dark shadow-button transition-colors",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet",
   "focus-visible:ring-offset-2 focus-visible:ring-offset-brand-black",

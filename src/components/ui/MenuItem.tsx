@@ -33,6 +33,7 @@ export function MenuItem({
         "group relative inline-flex items-center gap-[5px] px-[5px] py-2.5 font-body text-body whitespace-nowrap transition-colors",
         active ? "text-brand-violet" : "text-white hover:text-brand-violet",
         isMobile && "w-full justify-end",
+        isMobile && active && "bg-brand-gray pl-[5px] pr-2.5",
         className
       )}
     >

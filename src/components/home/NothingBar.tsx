@@ -4,12 +4,12 @@ import { useTranslations } from "next-intl";
 export function NothingBar() {
   const t = useTranslations("home.nothingBar");
   return (
-    <div className="relative overflow-hidden bg-brand-gray py-7">
+    <div className="relative overflow-hidden bg-brand-gray py-10 md:py-7">
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle,#a020f0_1.5px,transparent_1.5px)] [background-size:16px_16px]"
+        className="absolute inset-0 opacity-40 bg-[radial-gradient(circle,#a020f0_1.5px,transparent_1.5px)] bg-size-[16px_16px]"
       />
-      <p className="relative text-center font-display text-h2 text-brand-white">
+      <p className="relative mx-auto max-w-[12ch] text-center font-display text-h2 leading-tight text-brand-white md:max-w-none">
         {t("text")}
       </p>
     </div>

@@ -1,11 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  House,
+  Briefcase,
+  User,
+  MessageSquareQuote,
+  Users,
+  AtSign,
+  type LucideIcon,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/i18n/routing";
 import { MenuItem } from "@/components/ui/MenuItem";
 import { ToggleLanguage } from "@/components/ui/ToggleLanguage";
 import { NAV_LINKS } from "./nav-links";
+
+// Íconos temáticos del Figma (Material Symbols → equivalentes lucide).
+const NAV_ICONS: Record<string, LucideIcon> = {
+  home: House, // home
+  portfolio: Briefcase, // business_center
+  about: User, // person
+  reviews: MessageSquareQuote, // reviews
+  collabs: Users, // supervisor_account
+  contact: AtSign, // alternate_email
+};
 
 export function Navbar() {
   const t = useTranslations("nav");
@@ -30,60 +49,76 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-15 border-b border-white/5 bg-brand-black/85 backdrop-blur">
-      <nav className="mx-auto flex h-full max-w-360 items-center justify-between px-5 md:px-10">
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className="font-display text-sm font-bold uppercase tracking-tight text-brand-white whitespace-nowrap md:text-base"
-        >
-          Don Micka de la Vega
-        </Link>
-
-        <div className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((l) => (
-            <MenuItem
-              key={l.key}
-              href={l.href}
-              label={t(l.key)}
-              active={isActive(l.href)}
-            />
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <ToggleLanguage locale={locale} />
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            aria-label={open ? a11y("closeMenu") : a11y("openMenu")}
-            className="inline-flex size-8 items-center justify-center text-brand-white md:hidden"
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 h-15 border-b border-white/5 bg-brand-black/85 backdrop-blur">
+        <nav className="mx-auto flex h-full max-w-360 items-center justify-between px-5 md:px-10">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="font-display text-sm font-bold uppercase tracking-tight text-brand-white whitespace-nowrap md:text-base"
           >
-            {open ? <CloseIcon /> : <BurgerIcon />}
-          </button>
-        </div>
-      </nav>
+            Don Micka de la Vega
+          </Link>
+
+          <div className="hidden items-center gap-1 md:flex">
+            {NAV_LINKS.map((l) => {
+              const Icon = NAV_ICONS[l.key];
+              return (
+                <MenuItem
+                  key={l.key}
+                  href={l.href}
+                  label={t(l.key)}
+                  active={isActive(l.href)}
+                  icon={<Icon className="size-5" aria-hidden="true" />}
+                />
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* En mobile, el toggle de la barra se oculta cuando el overlay abre. */}
+            <span className={open ? "hidden md:block" : "block"}>
+              <ToggleLanguage locale={locale} />
+            </span>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-label={open ? a11y("closeMenu") : a11y("openMenu")}
+              className="inline-flex size-8 items-center justify-center text-brand-white md:hidden"
+            >
+              {open ? <CloseIcon /> : <BurgerIcon />}
+            </button>
+          </div>
+        </nav>
+      </header>
 
       {open && (
         <div
           className="fixed inset-x-0 bottom-0 top-15 z-40 bg-brand-black md:hidden"
           onClick={() => setOpen(false)}
         >
-          <nav className="flex flex-col gap-1 px-6 py-8">
-            {NAV_LINKS.map((l) => (
-              <MenuItem
-                key={l.key}
-                href={l.href}
-                label={t(l.key)}
-                active={isActive(l.href)}
-                variant="mobile"
-              />
-            ))}
-          </nav>
+          <div className="flex flex-col items-end gap-1 px-6 py-8">
+            <div className="mb-3">
+              <ToggleLanguage locale={locale} />
+            </div>
+            {NAV_LINKS.map((l) => {
+              const Icon = NAV_ICONS[l.key];
+              return (
+                <MenuItem
+                  key={l.key}
+                  href={l.href}
+                  label={t(l.key)}
+                  active={isActive(l.href)}
+                  variant="mobile"
+                  icon={<Icon className="size-5" aria-hidden="true" />}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
