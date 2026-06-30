@@ -103,6 +103,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 - ⏳ a11y `aria-label` en botones del admin → pendiente (admin en Fase 2c).
 - `pb_schema.json` es **input del seeder**, no un export fiel de PocketBase (no re-importable por el panel). Documentado.
 - ⏳ Agregar `micka.lhstudio.com.ar` a `images.remotePatterns` → Fase 2b (cuando el front consuma imágenes del CMS).
+- ⏳ **Pequeños fixes de fidelidad del Home pendientes** (feedback del cliente, aún sin detallar) → se harán en una **pasada final de pulido antes de cerrar Stage 2**.
 
 ## Decisiones y cambios (changelog)
 
