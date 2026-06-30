@@ -15,11 +15,12 @@ export type Locale = "en" | "fr";
  * Cae a la variante `_en` si la del locale pedido no existe.
  */
 export function localized(
-  record: Record<string, unknown>,
+  record: object,
   field: string,
   locale: string,
 ): string {
-  const value = record[`${field}_${locale}`] ?? record[`${field}_en`];
+  const rec = record as Record<string, unknown>;
+  const value = rec[`${field}_${locale}`] ?? rec[`${field}_en`];
   return typeof value === "string" ? value : "";
 }
 

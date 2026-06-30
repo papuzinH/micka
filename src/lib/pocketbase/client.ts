@@ -7,5 +7,10 @@ export function getPocketBaseUrl(): string {
 }
 
 export function createPocketBase(): PocketBase {
-  return new PocketBase(getPocketBaseUrl());
+  const pb = new PocketBase(getPocketBaseUrl());
+  // En SSR/SSG las páginas se renderizan en paralelo (p. ej. /en y /fr a la
+  // vez); con auto-cancelación las requests idénticas colisionan y se cancelan.
+  // Server-side la desactivamos para que cada query corra hasta el final.
+  pb.autoCancellation(false);
+  return pb;
 }
