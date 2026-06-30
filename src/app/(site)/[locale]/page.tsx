@@ -8,6 +8,9 @@ import {
   type StarredAlbumItem,
 } from "@/components/home/StarredAlbums";
 import { FavesGallery, type FaveItem } from "@/components/home/FavesGallery";
+import { CraftBlock } from "@/components/home/CraftBlock";
+import { NothingBar } from "@/components/home/NothingBar";
+import { ContactCta } from "@/components/home/ContactCta";
 
 // Datos placeholder de la Fase 2a — en la Fase 2b vienen del CMS (PocketBase).
 const STARRED: StarredAlbumItem[] = [
@@ -39,7 +42,10 @@ export default async function HomePage({
       <Marquee />
       <EditorialIntro />
       <StarredAlbums albums={STARRED} />
+      <CraftBlock />
       <FavesGallery photos={FAVES} />
+      <NothingBar />
+      <ContactCta />
     </main>
   );
 }

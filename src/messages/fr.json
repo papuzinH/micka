@@ -42,6 +42,18 @@
     },
     "faves": {
       "title": "Mes préférées de tous les temps"
+    },
+    "craft": {
+      "light": "La lumière sculpte le corps. Le mouvement devient composition. L'effort devient esthétique. Je ne documente pas le sport. Je le façonne avec précision.",
+      "standard": "Cette exigence visuelle s'étend à d'autres disciplines. Football, environnements d'entraînement, projets hybrides. Le terrain change. L'intention demeure."
+    },
+    "nothingBar": {
+      "text": "Rien n'est laissé au hasard"
+    },
+    "cta": {
+      "title": "Marques. Équipes. Athlètes.",
+      "subtitle": "Vous cherchez des images à la hauteur de votre ambition ?",
+      "button": "Prendre contact"
     }
   }
 }

@@ -42,6 +42,18 @@
     },
     "faves": {
       "title": "My faves of all time"
+    },
+    "craft": {
+      "light": "Light shapes the body. Movement becomes composition. Effort becomes aesthetic. I don't document sport. I craft it with precision.",
+      "standard": "This visual standard extends to other disciplines. Football, training environments, hybrid projects. The field changes. The intention remains."
+    },
+    "nothingBar": {
+      "text": "Nothing is left to chance"
+    },
+    "cta": {
+      "title": "Brands. Teams. Athletes.",
+      "subtitle": "Looking for imagery that matches your level of ambition?",
+      "button": "Get in touch"
     }
   }
 }
