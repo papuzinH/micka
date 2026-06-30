@@ -59,5 +59,43 @@
       "subtitle": "Looking for imagery that matches your level of ambition?",
       "button": "Get in touch"
     }
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "subtitle": "Selected work across racing, training and portraits — women's cycling captured with intent.",
+    "empty": "No albums to show yet."
+  },
+  "album": {
+    "back": "Back to portfolio"
+  },
+  "about": {
+    "title": "About Me",
+    "role": "Performance Photography",
+    "cta": "Work with me"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "subtitle": "What teams, athletes and directors say about working together.",
+    "empty": "No reviews yet."
+  },
+  "collabs": {
+    "title": "Collabs",
+    "subtitle": "Brands, teams and publications I have worked with.",
+    "empty": "No collaborations yet.",
+    "visit": "Visit site"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Looking for imagery that matches your level of ambition? Tell me about your project.",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@example.com",
+    "messagePlaceholder": "Tell me about your team, brand or project…",
+    "send": "Send message",
+    "sending": "Sending…",
+    "success": "Thanks — your message has been sent. I'll get back to you soon.",
+    "error": "Something went wrong. Please try again."
   }
 }

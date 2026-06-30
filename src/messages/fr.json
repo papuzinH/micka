@@ -59,5 +59,43 @@
       "subtitle": "Vous cherchez des images à la hauteur de votre ambition ?",
       "button": "Prendre contact"
     }
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "subtitle": "Une sélection de travaux — course, entraînement et portraits — le cyclisme féminin capté avec intention.",
+    "empty": "Aucun album à afficher pour le moment."
+  },
+  "album": {
+    "back": "Retour au portfolio"
+  },
+  "about": {
+    "title": "À propos",
+    "role": "Photographie de performance",
+    "cta": "Travailler avec moi"
+  },
+  "reviews": {
+    "title": "Avis",
+    "subtitle": "Ce que les équipes, athlètes et directeurs disent de notre collaboration.",
+    "empty": "Aucun avis pour le moment."
+  },
+  "collabs": {
+    "title": "Collabs",
+    "subtitle": "Marques, équipes et publications avec lesquelles j'ai travaillé.",
+    "empty": "Aucune collaboration pour le moment.",
+    "visit": "Voir le site"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Vous cherchez des images à la hauteur de votre ambition ? Parlez-moi de votre projet.",
+    "name": "Nom",
+    "email": "E-mail",
+    "message": "Message",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "vous@exemple.com",
+    "messagePlaceholder": "Parlez-moi de votre équipe, votre marque ou votre projet…",
+    "send": "Envoyer le message",
+    "sending": "Envoi…",
+    "success": "Merci — votre message a été envoyé. Je vous répondrai bientôt.",
+    "error": "Une erreur est survenue. Veuillez réessayer."
   }
 }
