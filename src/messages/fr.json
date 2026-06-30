@@ -14,5 +14,22 @@
   "a11y": {
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu"
+  },
+  "home": {
+    "hero": {
+      "tagline": "Un œil. Une vision. Zéro limite.",
+      "ctaExplore": "Explorer",
+      "ctaCollaborate": "Collaborer"
+    },
+    "bio": {
+      "name": "Don Micka de la Vega",
+      "role": "Photographie de performance",
+      "about": "À propos",
+      "heading": "Cyclisme féminin — Esthétique & Intensité",
+      "portraitAlt": "Don Micka de la Vega, photographe sportive"
+    },
+    "marquee": {
+      "text": "Capturer la puissance | Structurer le mouvement | Élever l'image du sport."
+    }
   }
 }

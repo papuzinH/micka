@@ -16,7 +16,7 @@ describe("design tokens", () => {
   });
 
   it("define la escala tipográfica del Figma", () => {
-    const fontSize = tailwindConfig.theme?.extend?.fontSize as Record<
+    const fontSize = tailwindConfig.theme?.extend?.fontSize as unknown as Record<
       string,
       [string, { fontWeight?: string; lineHeight?: string }]
     >;

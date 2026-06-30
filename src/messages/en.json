@@ -14,5 +14,22 @@
   "a11y": {
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
+  },
+  "home": {
+    "hero": {
+      "tagline": "One eye. One Vision. Zero Limits",
+      "ctaExplore": "Explore",
+      "ctaCollaborate": "Collaborate"
+    },
+    "bio": {
+      "name": "Don Micka de la Vega",
+      "role": "Performance Photography",
+      "about": "About Me",
+      "heading": "Women's Cycling — Aesthetics & Intensity",
+      "portraitAlt": "Don Micka de la Vega, sports photographer"
+    },
+    "marquee": {
+      "text": "Capturing power | Structuring movement | Elevating the image of sport."
+    }
   }
 }

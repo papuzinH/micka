@@ -10,7 +10,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 const baseClasses = cn(
-  "inline-flex items-center justify-center gap-2.5 px-2 py-2.5 font-display text-white",
+  "inline-flex items-center justify-center gap-2.5 px-2 py-2.5 font-display uppercase text-white",
   "bg-brand-violet hover:bg-brand-violet-dark shadow-button transition-colors",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet",
   "focus-visible:ring-offset-2 focus-visible:ring-offset-brand-black",
