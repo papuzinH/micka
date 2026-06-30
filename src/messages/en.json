@@ -97,5 +97,15 @@
     "sending": "Sending…",
     "success": "Thanks — your message has been sent. I'll get back to you soon.",
     "error": "Something went wrong. Please try again."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you're looking for doesn't exist or has moved.",
+    "home": "Back to homepage"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred. Please try again.",
+    "retry": "Try again"
   }
 }
