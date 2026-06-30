@@ -5,8 +5,8 @@ import { Syne, Inter } from "next/font/google";
 import { routing } from "@/lib/i18n/routing";
 import "../../globals.css";
 
-const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["700"] });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["700", "800"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["400", "600"] });
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

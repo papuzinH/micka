@@ -23,6 +23,29 @@
   --font-display: var(--font-syne), sans-serif;
   --font-body: var(--font-inter), sans-serif;
 
+  /* Typography scale (Figma): Syne titulares / Inter body */
+  --text-h1: 45px;
+  --text-h1--line-height: 1;
+  --text-h1--font-weight: 800;
+  --text-h2: 30px;
+  --text-h2--line-height: 1;
+  --text-h2--font-weight: 700;
+  --text-card: 20px;
+  --text-card--line-height: 1;
+  --text-card--font-weight: 700;
+  --text-h3: 16px;
+  --text-h3--line-height: 1;
+  --text-h3--font-weight: 700;
+  --text-h4: 14px;
+  --text-h4--line-height: 1;
+  --text-h4--font-weight: 700;
+  --text-body: 14px;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 400;
+  --text-body-semibold: 14px;
+  --text-body-semibold--line-height: 1.5;
+  --text-body-semibold--font-weight: 600;
+
   /* Shadows */
   --shadow-button: 0 4px 4px 0 #00000040;
 }
