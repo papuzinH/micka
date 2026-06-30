@@ -81,6 +81,8 @@ Nodos Figma de referencia:
 
 # FASE 2a — Design system + shell + Home pixel-perfect
 
+> **✅ COMPLETA (2026-06-30).** Las 8 tasks implementadas y commiteadas en `stage-2-site`. Verde: `tsc`/ESLint limpios, 25/25 unit, 9/9 e2e, `next build` OK; Home Desktop+Mobile validado vs Figma en EN y FR. Desvío menor: el menú mobile quedó consolidado dentro de `Navbar.tsx` (no en un `MobileMenu.tsx` aparte). Nav desktop sin íconos por item (el `MenuItem` los soporta opcionalmente).
+
 **Salida de fase:** Home completo y responsive en ambos locales, ensamblado con componentes del UI Kit y el shell (navbar/footer). Datos de las secciones dinámicas (Starred albums, My faves) con placeholders locales — la conexión al CMS es 2b.
 
 ## Task 1: Fundamentos del design system (tipografía + tokens + fuentes)
