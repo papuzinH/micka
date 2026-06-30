@@ -30,6 +30,18 @@
     },
     "marquee": {
       "text": "Capturer la puissance | Structurer le mouvement | Élever l'image du sport."
+    },
+    "editorial": {
+      "intro": "Spécialisée dans le cyclisme féminin, je développe une approche visuelle exigeante appliquée au sport. Mon travail se situe à l'intersection de la performance et de la direction artistique. Chaque image est conçue, construite et maîtrisée.",
+      "focusTitle": "Axe principal",
+      "focus": "Le cyclisme féminin est au cœur de mon travail. Discipline, endurance, rigueur. Une esthétique brute traduite en images fortes et éditoriales. Chaque projet vise à redéfinir la représentation de l'athlète."
+    },
+    "starred": {
+      "title": "Albums à la une",
+      "cta": "Tous les albums"
+    },
+    "faves": {
+      "title": "Mes préférées de tous les temps"
     }
   }
 }

@@ -30,6 +30,18 @@
     },
     "marquee": {
       "text": "Capturing power | Structuring movement | Elevating the image of sport."
+    },
+    "editorial": {
+      "intro": "Specializing in women's cycling, I develop a demanding visual approach applied to sport. My work stands at the intersection of performance and art direction. Every image is conceived, constructed, and controlled.",
+      "focusTitle": "Core Focus",
+      "focus": "Women's cycling is at the heart of my work. Discipline, endurance, rigor. A raw aesthetic translated into strong, editorial imagery. Each project aims to redefine how the athlete is represented."
+    },
+    "starred": {
+      "title": "Starred albums",
+      "cta": "All albums"
+    },
+    "faves": {
+      "title": "My faves of all time"
     }
   }
 }
