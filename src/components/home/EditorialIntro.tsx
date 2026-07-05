@@ -10,10 +10,12 @@ export function EditorialIntro() {
   return (
     <section className="mx-auto max-w-360 px-5 py-16 md:px-10">
       <div className="grid items-stretch gap-6 md:grid-cols-4">
-        <div className="border-l-2 border-brand-violet bg-brand-gray p-5">
+        <div className="border-l-2 border-brand-violet bg-brand-gray-light p-5">
           <p className="text-body text-brand-white/80">
-            {t("intro")}{" "}
-            <span className="text-brand-violet">{t("introAccent")}</span>
+            {t("intro")}
+            <span className="mt-3 block text-brand-violet">
+              {t("introAccent")}
+            </span>
           </p>
         </div>
         <div className="relative h-44 overflow-hidden md:h-full md:min-h-44">
@@ -25,13 +27,15 @@ export function EditorialIntro() {
             className="object-cover"
           />
         </div>
-        <div className="border-l-2 border-brand-violet bg-brand-gray p-5">
-          <h3 className="mb-3 font-display text-h3 text-brand-violet">
+        <div className="border-l-2 border-brand-violet bg-brand-gray-light p-5">
+          <h3 className="mb-3 font-display text-h3 text-brand-white">
             {t("focusTitle")}
           </h3>
           <p className="text-body text-brand-white/80">
-            {t("focus")}{" "}
-            <span className="text-brand-violet">{t("focusAccent")}</span>
+            {t("focus")}
+            <span className="mt-3 block text-brand-violet">
+              {t("focusAccent")}
+            </span>
           </p>
         </div>
         <div className="relative h-44 overflow-hidden md:h-full md:min-h-44">

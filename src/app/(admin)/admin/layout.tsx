@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", weight: ["40
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`}>
-      <body className="bg-brand-black text-brand-white font-body">
+      <body className="bg-brand-gray-bg text-brand-white font-body">
         {children}
       </body>
     </html>

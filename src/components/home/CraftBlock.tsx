@@ -16,9 +16,11 @@ export function CraftBlock() {
             className="object-cover"
           />
         </div>
-        <p className="text-body text-brand-white/80">
-          {t("light")}{" "}
-          <span className="text-brand-violet">{t("lightAccent")}</span>
+        <p className="font-display text-h4 text-brand-white">
+          {t("light")}
+          <span className="block text-brand-violet-dark">
+            {t("lightAccent")}
+          </span>
         </p>
         <div className="relative h-56 overflow-hidden md:h-full md:min-h-56">
           <Image
@@ -29,9 +31,11 @@ export function CraftBlock() {
             className="object-cover"
           />
         </div>
-        <p className="text-body text-brand-white/80">
-          {t("standard")}{" "}
-          <span className="text-brand-violet">{t("standardAccent")}</span>
+        <p className="font-display text-h4 text-brand-white">
+          {t("standard")}
+          <span className="block text-brand-violet-dark">
+            {t("standardAccent")}
+          </span>
         </p>
       </div>
     </section>

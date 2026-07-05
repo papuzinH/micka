@@ -1,8 +1,25 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 
-const SIDE_PHOTOS = ["cyclist-duo", "cyclist-road", "cyclist-bw-race"] as const;
+// Proporciones y offsets replican el Figma (Group 13, 2413:248): la foto 1 es
+// la más grande (~4:3), 2 y 3 más chicas (~5:4) y escalonadas verticalmente.
+const SIDE_PHOTOS = [
+  { img: "cyclist-duo", ratio: "aspect-[4/3]", grow: "md:flex-[307]", offset: "" },
+  {
+    img: "cyclist-road",
+    ratio: "aspect-[5/4]",
+    grow: "md:flex-[210]",
+    offset: "md:mt-[61px]",
+  },
+  {
+    img: "cyclist-bw-race",
+    ratio: "aspect-[5/4]",
+    grow: "md:flex-[212]",
+    offset: "md:mt-2",
+  },
+] as const;
 
 export function BioBlock() {
   const t = useTranslations("home.bio");
@@ -34,21 +51,26 @@ export function BioBlock() {
         </div>
 
         {/* Heading editorial + tira de fotos */}
-        <div className="flex flex-1 flex-col gap-6 md:border-l md:border-white/15 md:pl-16">
+        <div className="flex flex-1 flex-col gap-6 text-left md:border-l-2 md:border-brand-violet md:pl-16">
           <h2 className="font-display text-h2 text-brand-white">
             {t("heading")}
           </h2>
-          <div className="grid grid-cols-3 gap-3">
-            {SIDE_PHOTOS.map((img) => (
+          <div className="flex flex-col gap-3 md:flex-row md:items-start">
+            {SIDE_PHOTOS.map(({ img, ratio, grow, offset }) => (
               <div
                 key={img}
-                className="relative aspect-[3/4] overflow-hidden"
+                className={cn(
+                  "relative overflow-hidden",
+                  ratio,
+                  grow,
+                  offset
+                )}
               >
                 <Image
                   src={`/placeholders/${img}.jpg`}
                   alt=""
                   fill
-                  sizes="(max-width: 768px) 33vw, 220px"
+                  sizes="(max-width: 768px) 100vw, 320px"
                   className="object-cover"
                 />
               </div>

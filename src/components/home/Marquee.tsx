@@ -10,14 +10,14 @@ export function Marquee() {
   const t = useTranslations("home.marquee");
   const text = t("text");
   return (
-    <div className="relative overflow-hidden bg-brand-black py-8">
+    <div className="relative overflow-hidden py-8">
       <div className="ml-[-5%] w-[110%] -rotate-2 bg-brand-violet py-3">
         <div className="flex w-max whitespace-nowrap">
           {Array.from({ length: 4 }).map((_, i) => (
             <span
               key={i}
               aria-hidden={i > 0}
-              className="px-4 font-display text-card font-bold text-brand-black"
+              className="px-4 font-display text-card font-bold text-brand-white"
             >
               {text}
               <span className="px-4">|</span>

@@ -10,7 +10,7 @@ export default async function PanelLayout({
 }) {
   await requireAdminPb(); // redirige a /admin/login si no hay sesión válida
   return (
-    <div className="flex min-h-screen bg-brand-black">
+    <div className="flex min-h-screen bg-brand-gray-bg">
       <Sidebar />
       <div className="min-w-0 flex-1">{children}</div>
     </div>

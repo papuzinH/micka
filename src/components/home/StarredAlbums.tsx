@@ -16,30 +16,32 @@ export function StarredAlbums({ albums }: { albums: StarredAlbumItem[] }) {
   const t = useTranslations("home.starred");
   const offset = ["", "md:mt-10", "md:mt-20"];
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0,transparent_9px,rgba(255,255,255,0.04)_9px,rgba(255,255,255,0.04)_10px)]"
-      />
-      <div className="relative mx-auto max-w-360 px-5 py-16 md:px-10">
-        <h2 className="mb-12 text-center font-display text-h2 text-brand-white">
-          {t("title")}
-        </h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {albums.map((a, i) => (
-            <ImageDescription
-              key={a.href + i}
-              src={a.src}
-              alt={a.alt}
-              title={a.title}
-              href={a.href}
-              sizes="(max-width: 768px) 100vw, 440px"
-              className={offset[i % offset.length]}
-            />
-          ))}
-        </div>
-        <div className="mt-12 flex justify-center">
-          <Button href="/portfolio">{t("cta")}</Button>
+    <section>
+      <h2 className="mx-auto max-w-360 px-5 pb-12 pt-16 text-center font-display text-h2 text-brand-white md:px-10">
+        {t("title")}
+      </h2>
+      <div className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent_0,transparent_9px,rgba(255,255,255,0.04)_9px,rgba(255,255,255,0.04)_10px)]"
+        />
+        <div className="relative mx-auto max-w-360 px-5 py-16 md:px-10">
+          <div className="grid gap-6 md:grid-cols-3">
+            {albums.map((a, i) => (
+              <ImageDescription
+                key={a.href + i}
+                src={a.src}
+                alt={a.alt}
+                title={a.title}
+                href={a.href}
+                sizes="(max-width: 768px) 100vw, 440px"
+                className={offset[i % offset.length]}
+              />
+            ))}
+          </div>
+          <div className="mt-12 flex justify-center">
+            <Button href="/portfolio">{t("cta")}</Button>
+          </div>
         </div>
       </div>
     </section>

@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   return (
     <html lang={locale} className={`${syne.variable} ${inter.variable}`}>
-      <body className="bg-brand-black text-brand-white font-body">
+      <body className="bg-brand-gray-bg text-brand-white font-body">
         <NextIntlClientProvider>
           <Navbar />
           <div className="pt-15">{children}</div>

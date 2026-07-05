@@ -36,6 +36,11 @@ páginas + panel admin custom para que Micka gestione el contenido sin programad
 - TDD bite-sized, commits frecuentes (uno por task mínimo). Prefijar comandos con `rtk` (ver CLAUDE.md global).
 - Respetar `prefers-reduced-motion` en toda animación GSAP.
 - El middleware de Next vive en `src/proxy.ts` (Next.js 16 renombró la convención `middleware`→`proxy`).
+- **Prohibido que el agente corra tests visuales** (Chrome/`chrome-devtools` MCP, Playwright e2e en
+  navegador, capturas, etc.) — pedido explícito del cliente (2026-07-05): la validación visual la hace
+  él. El agente se limita a verificación no visual: `tsc --noEmit`, ESLint, unit tests (Vitest) y
+  `next build`. No ejecutar `npx playwright test` ni herramientas de browser automation salvo pedido
+  explícito puntual del cliente en esa conversación.
 
 ## Design tokens (Figma)
 
@@ -104,7 +109,12 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   - **Contacto:** `submitContact` (Zod + honeypot → persiste en `contact_messages` + email Resend best-effort tras env vars; fallback a solo-persistir). `ContactForm` usa la action vía `useActionState`.
   - Límite de archivo subido a 15MB (autorizado por el cliente). Email tras `RESEND_API_KEY`/`CONTACT_TO_EMAIL`/`CONTACT_FROM_EMAIL` (opcionales).
 - **Pendiente menor (mejora futura, no bloquea):** gestión de `photos` es de a una (sin upload múltiple ni drag-reorder; el orden es por campo numérico). El campo `description`/`value` (editor) se edita como textarea (sin WYSIWYG). a11y de botones del admin OK (todos con texto).
-- **Próximo:** Stage 3 (Motion Engineering con GSAP) — pendiente de planificar. Antes: **pasada final de pulido del Home** (feedback del cliente, ver abajo) y aprobación del cliente para cerrar Stage 2 formalmente.
+- **✅ Pasada final de pulido del Home COMPLETA** (2026-07-05, 10 fixes de fidelidad vs. Figma —
+  ver changelog). Verde: `tsc`/ESLint limpios, **45/45 unit**, `next build` OK. **Pendiente:
+  validación visual EN/FR desktop+mobile la hace el cliente directamente** (pidió que el agente no
+  corra tests visuales/e2e en navegador — ver Convenciones).
+- **Próximo:** aprobación del cliente para cerrar Stage 2 formalmente → luego Stage 3 (Motion
+  Engineering con GSAP, pendiente de planificar).
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -113,10 +123,37 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 - ✅ a11y `aria-label` en botones del admin → resuelto: el admin de Fase 2c usa botones con texto (Save/Delete/+New/Log out).
 - `pb_schema.json` es **input del seeder**, no un export fiel de PocketBase (no re-importable por el panel). Documentado.
 - ✅ Agregar `micka.lhstudio.com.ar` a `images.remotePatterns` → resuelto en Fase 2b.
-- ⏳ **Pequeños fixes de fidelidad del Home pendientes** (feedback del cliente, aún sin detallar) → se harán en una **pasada final de pulido antes de cerrar Stage 2**.
+- ✅ **Pequeños fixes de fidelidad del Home** → resueltos en la pasada de pulido del 2026-07-05
+  (`docs/superpowers/plans/2026-07-05-home-fidelity-polish.md`, 10 tasks).
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-05** — **Pasada final de fidelidad del Home (feedback del cliente)** —
+  `docs/superpowers/plans/2026-07-05-home-fidelity-polish.md`, 10 tasks. **ToggleLanguage**:
+  reconstruido como switch real (`role="switch"` + `aria-checked`, `Navbar.tsx`/test/e2e
+  actualizados) — 3 iteraciones según feedback directo del cliente: (1) mostraba ambos estados a
+  la vez → se pasó a un solo thumb violeta con texto+bandera adentro; (2) ese thumb quedaba con el
+  texto apretado → se agrandó a medidas fijas; (3) diseño final (con referencia visual del
+  cliente): el thumb **es directamente el círculo de la bandera** (sin fondo violeta ni texto
+  adentro) y se desliza del todo a la izquierda (EN, bandera UK) o a la derecha (FR, bandera
+  francesa); el código "EN"/"FR" se lee aparte, del lado opuesto de la pista (track `rounded-full
+  w-24 h-9`, thumb `size-7` circular, `translate-x-15`). **Navbar**: logo reescrito a lockup de 2 líneas
+  bicolor ("Don Micka" violeta / "de la Vega" blanco, Syne ExtraBold) según nodo Figma `128:293`
+  (antes: una sola línea blanca, no coincidía con el diseño); links + toggle agrupados en un mismo
+  contenedor flex con gap uniforme a la derecha del logo. **Footer**: wordmark a 2 líneas bicolor
+  sin tagline (clave `footer.tagline` removida de en/fr). **Bordes**: `BioBlock` (borde violeta 2px
+  reemplaza blanco tenue) y `ContactCta` (nueva regla horizontal violeta 2px). **BioBlock**: tira de
+  fotos con proporciones y offsets propios por foto (grow `307/210/212`, `mt-[61px]`/`mt-2`) en vez
+  de `aspect-[3/4]` uniforme, replicando el Figma (`2413:248`) casi exacto. **CraftBlock**:
+  tipografía a Syne Bold + acento `brand-violet-dark` en línea propia. **EditorialIntro**: título
+  "Core Focus" a blanco (no violeta) + acentos en bloque de línea propia. **StarredAlbums**: título
+  sacado del panel con fondo de líneas diagonales (antes quedaba tapado por el `absolute inset-0`).
+  **Marquee**: texto a blanco (antes negro, invisible sobre el violeta). **Hero**: subtítulo a
+  `brand-violet-dark` con marco doble (ring + padding, replicando el efecto de doble rectángulo del
+  Figma); botones sin flecha (`iconRight={null}`). **Nueva convención**: el agente tiene prohibido
+  correr tests visuales (chrome-devtools MCP, Playwright e2e en navegador) en este proyecto — el
+  cliente valida visualmente por su cuenta; verificación del agente limitada a `tsc`/ESLint/Vitest/
+  `next build` (ver Convenciones). Verde: `tsc`/ESLint limpios, **45/45 unit**, `next build` OK.
 - **2026-06-30** — **Fase 2c de Stage 2 COMPLETA → Stage 2 cerrado** (rama `stage-2-site`). Admin CRUD custom + contacto. **Decisiones tomadas con el cliente:** (1) límite de archivo de PocketBase a **15MB** (ejecutado `set-file-limits.mjs`; el front sirve thumbs, el original pesado no afecta performance); (2) **Server Actions nativas + Zod** (sin react-hook-form). **Admin:** `requireAdminPb()` centraliza el guard de Stage 1; route group `(panel)` con sidebar + guard, login fuera. **CRUD config-driven** desde `collections.ts` (config declarativa de las 7 colecciones con tipos de campo) → genera sidebar, listas y forms con rutas dinámicas `[collection]/{,new,[id]}`. Validación Zod construida desde la config + extracción de FormData (localizados `_en`/`_fr`, bools, files); `saveRecord`/`deleteRecord` genéricas con upload + `revalidatePath("/", "layout")`. Componentes `admin/{Sidebar,FormField,FileInput,RecordForm,CollectionList,DeleteButton,MessageView}`. `contact_messages` = bandeja read-only (sin create/edit). **Contacto:** `submitContact` (Zod + honeypot → persiste en `contact_messages` + email Resend best-effort tras `RESEND_API_KEY`/`CONTACT_TO_EMAIL`/`CONTACT_FROM_EMAIL`; si faltan, solo persiste). `ContactForm` migrado a `useActionState` con la action real. **Nota de tooling:** `rtk next build` no persiste el `BUILD_ID` en este entorno → usar `npx next build` directo para builds reales (el resumen de rtk sí sirve para ver errores). Verde: `tsc` limpio, 44/44 unit, 15/15 e2e (incl. login admin + contacto end-to-end con cleanup), build OK. **Mejoras futuras (no bloquean):** upload múltiple + drag-reorder de fotos; WYSIWYG para campos `editor` (hoy textarea).
 - **2026-06-30** — **Fase 2b de Stage 2 COMPLETA** (rama `stage-2-site`). Sitio público conectado al CMS real. **Data layer:** `fileUrl()` (URLs canónicas de PocketBase + `?thumb=`), `images.remotePatterns`, **queries tipadas resilientes** (try/catch → vacío para no romper SSG; las `listRule` ya filtran `published`) + `localized(record, field, locale)`. **Seed** `seed-content.mjs` (3 categorías, 5 álbumes/3 starred, 12 fotos, 3 reviews, 3 collabs, 3 site_content; ciclismo femenino EN/FR) ejecutado contra el PocketBase real. **Home** conectado (Starred albums + faves desde el CMS, con fallback a placeholders; ISR `revalidate=300`). **5 subpáginas** derivadas del design system: Portfolio (galería por categoría) + `/portfolio/[slug]` (`generateStaticParams` + metadata localizada + grid de fotos con caption-on-hover), About (`site_content`), Reviews (cards con avatar), Collabs (wordmarks + links), Contact (UI con estados; Server Action diferida a 2c). Componentes `src/components/site/{PageHeader,AlbumCard,PhotoGrid,ContactForm}`; 404/error localizados. **2 fixes clave:** (1) `createPocketBase()` desactiva `autoCancellation` — en SSG, `/en` y `/fr` renderizan en paralelo y las requests idénticas del SDK colisionaban y se cancelaban → fallback silencioso; (2) el `[]` de un build fallido quedaba en el **Data Cache** de Next → un `rm -rf .next` lo limpia (en Vercel cada deploy es build limpio, no se repite). **Imágenes:** 4 placeholders del Figma pesaban 8-11MB > límite default de 5MB de PocketBase; se optimizaron a <2MB (System.Drawing). Queda `set-file-limits.mjs` para subir el límite a 15MB en producción (requiere OK explícito del cliente — bloqueado por el clasificador por mutar el esquema). Verde: `tsc` limpio, 44/44 unit, 12/12 e2e, build OK; Home + 6 subpáginas validadas visualmente en EN.
 - **2026-06-30** — **Pasada de fidelidad al Figma #2** (revisión de secciones del Home). **EditorialIntro**: las cajas de texto ahora llevan fondo gris + **borde izquierdo violeta** (la "Line 1" del Figma) y las imágenes van sin fondo (antes el gris cubría toda la sección). **Texto de acento violeta** en EditorialIntro (`introAccent`/`focusAccent`) y CraftBlock (`lightAccent`/`standardAccent`) — los strings i18n se separaron en parte normal + acento. **Marquee** inclinado ~-2° (barra violeta sobre negro, `w-[110%]` para cubrir bordes). **StarredAlbums** con fondo de líneas diagonales (`repeating-linear-gradient`) y labels de las cards alineados a la derecha (`ImageDescription` con caja `right-0` + `text-right`). Verde: tsc/ESLint, 25/25 unit, 9/9 e2e, build OK; validado vs nodos 2409:217/218/219 y 128:180.

@@ -6,7 +6,7 @@ import { loginAdmin } from "../actions";
 export default function AdminLoginPage() {
   const [state, action, pending] = useActionState(loginAdmin, { error: "" } as { error?: string });
   return (
-    <main className="min-h-screen flex items-center justify-center bg-brand-black text-brand-white">
+    <main className="min-h-screen flex items-center justify-center bg-brand-gray-bg text-brand-white">
       <form action={action} className="w-80 space-y-4">
         <h1 className="font-display text-2xl">Admin</h1>
         <input name="email" type="email" placeholder="Email" required

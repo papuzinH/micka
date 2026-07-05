@@ -16,7 +16,7 @@ test("el Home renderiza las secciones clave en EN", async ({ page }) => {
 
 test("el toggle de idioma cambia el contenido a francés", async ({ page }) => {
   await page.goto("/en");
-  await page.getByRole("button", { name: /Switch language to FR/i }).click();
+  await page.getByRole("switch", { name: /Switch language to FR/i }).click();
   await expect(page).toHaveURL(/\/fr$/);
   await expect(
     page.getByRole("heading", { name: /Cyclisme féminin/i })

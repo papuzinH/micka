@@ -4,16 +4,17 @@ import { NAV_LINKS } from "./nav-links";
 
 export function Footer() {
   const t = useTranslations("nav");
-  const tf = useTranslations("footer");
 
   return (
     <footer className="border-t border-white/10 bg-brand-black px-5 py-12 md:px-10">
       <div className="mx-auto flex max-w-360 flex-col gap-8 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="font-display text-card font-bold uppercase text-brand-white">
-            Micka&apos;s Photos
+          <p className="font-display text-h2 uppercase leading-[30px] text-brand-violet [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
+            Micka&apos;s
           </p>
-          <p className="mt-2 text-body text-brand-white/60">{tf("tagline")}</p>
+          <p className="font-display text-h2 uppercase leading-[30px] text-brand-white [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
+            Photos
+          </p>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2">
           {NAV_LINKS.map((l) => (

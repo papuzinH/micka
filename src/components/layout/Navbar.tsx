@@ -55,27 +55,27 @@ export function Navbar() {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="font-display text-sm font-bold uppercase tracking-tight text-brand-white whitespace-nowrap md:text-base"
+            className="shrink-0 font-display text-sm font-extrabold uppercase leading-[1.1] text-brand-white [text-shadow:0_4px_4.5px_rgba(0,0,0,0.3)] md:text-[20px] md:leading-[20px]"
           >
-            Don Micka de la Vega
+            <span className="block text-brand-violet">Don Micka</span>
+            <span className="block">de la Vega</span>
           </Link>
 
-          <div className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map((l) => {
-              const Icon = NAV_ICONS[l.key];
-              return (
-                <MenuItem
-                  key={l.key}
-                  href={l.href}
-                  label={t(l.key)}
-                  active={isActive(l.href)}
-                  icon={<Icon className="size-5" aria-hidden="true" />}
-                />
-              );
-            })}
-          </div>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 md:gap-6">
+            <div className="hidden items-center gap-3 md:flex md:gap-6">
+              {NAV_LINKS.map((l) => {
+                const Icon = NAV_ICONS[l.key];
+                return (
+                  <MenuItem
+                    key={l.key}
+                    href={l.href}
+                    label={t(l.key)}
+                    active={isActive(l.href)}
+                    icon={<Icon className="size-5" aria-hidden="true" />}
+                  />
+                );
+              })}
+            </div>
             {/* En mobile, el toggle de la barra se oculta cuando el overlay abre. */}
             <span className={open ? "hidden md:block" : "block"}>
               <ToggleLanguage locale={locale} />
