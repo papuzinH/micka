@@ -8,7 +8,7 @@ const { pushMock, pathnameState } = vi.hoisted(() => {
   return { pushMock, pathnameState };
 });
 
-vi.mock("@/lib/i18n/routing", () => ({
+vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: pushMock }),
   usePathname: () => pathnameState.current,
 }));
@@ -151,6 +151,24 @@ describe("TransitionProvider", () => {
     event.preventDefault();
     anchor.dispatchEvent(event);
     expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it("no bloquea el bubbling: un onClick de React en un ancestro del link sigue disparando", () => {
+    // Regresión real: el Navbar cierra el menú mobile con un onClick en el
+    // div contenedor del overlay, que depende de que el click en un
+    // MenuItem interno burbujee hasta ahí. Si el interceptor llamara
+    // stopPropagation(), este handler nunca se enteraría del click.
+    mockMatchMedia(false);
+    const onAncestorClick = vi.fn();
+    render(
+      <TransitionProvider>
+        <div onClick={onAncestorClick}>
+          <a href="/en/about">About</a>
+        </div>
+      </TransitionProvider>
+    );
+    clickAnchor(screen.getByText("About") as HTMLAnchorElement);
+    expect(onAncestorClick).toHaveBeenCalledTimes(1);
   });
 
   it("al cambiar de ruta, resetea el scroll de Lenis (immediate)", () => {

@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
-import { useRouter, usePathname } from "@/lib/i18n/routing";
+// Router/pathname *nativos* de Next (no los de next-intl): los hrefs que
+// interceptamos vienen del atributo `href` del DOM, que next-intl's `Link`
+// ya resolvió con el prefijo de locale incluido (ej. "/en/portfolio"). El
+// router de next-intl asume que le pasás una ruta *sin* locale y se lo
+// vuelve a anteponer — pasarle un href ya prefijado duplicaba el locale
+// (quedaba "/en/en/portfolio").
+import { useRouter, usePathname } from "next/navigation";
 import { gsap, registerGsap } from "./register";
 import { useReducedMotion } from "./useReducedMotion";
 import { useMotionSettings } from "./MotionProvider";
@@ -126,11 +132,16 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       const href = resolveInternalHref(anchor);
       if (!href) return;
 
-      // Captura ANTES de que el propio onClick de next/link (adjunto en fase
-      // de burbuja) alcance a hacer su propia navegación — si no, ya habría
-      // prevenido el default por su cuenta y esta cortina nunca dispararía.
+      // preventDefault (sin stopPropagation): next/link chequea
+      // `e.defaultPrevented` antes de hacer su propia navegación (confirmado
+      // en node_modules/next/dist/client/link.js) y aborta si ya está en
+      // true — por eso alcanza con esto para que no navegue por su cuenta.
+      // stopPropagation() rompería cualquier otro onClick de React en el
+      // link o sus ancestros (ej. el overlay del menú mobile del Navbar, que
+      // cierra el menú al bubblear un click desde un link interno) porque
+      // React delega los eventos y no vuelve a dispararlos si la propagación
+      // nativa se corta antes de llegar a su listener raíz.
       event.preventDefault();
-      event.stopPropagation();
       navigate(href);
     };
 
