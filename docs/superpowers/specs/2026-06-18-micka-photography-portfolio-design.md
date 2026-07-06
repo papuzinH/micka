@@ -102,8 +102,15 @@ Todos los campos de texto visibles tienen variante `_en` y `_fr`.
 
 ## Motion, performance, SEO y errores
 
-- **Motion:** capa de wrappers GSAP/ScrollTrigger; animaciones de entrada y transiciones
-  scroll-based según Figma; respeta `prefers-reduced-motion`.
+- **Motion (Stage 3, implementado):** capa de primitivas GSAP/ScrollTrigger en `lib/motion/`
+  (`Reveal`, `StaggerGroup`, `Parallax`, `SplitReveal`, `Marquee`, `GrowLine`) que envuelven el
+  markup existente sin convertir las secciones a Client Components. **Smooth scroll con Lenis**
+  (`MotionProvider`, montado en el layout `(site)`) sincronizado con ScrollTrigger. **Transiciones
+  de página elaboradas:** cortina full-screen violeta con el wordmark "Micka's / Photos"
+  (`TransitionProvider`, interceptor de clicks en links internos) entre rutas del sitio público.
+  El Figma no definía motion (`get_motion_context` = vacío) → diseñado por el agente, validado
+  visualmente por el cliente. Respeta `prefers-reduced-motion` en todos los casos: sin Lenis, sin
+  reveals ocultos y sin cortina (navegación instantánea) bajo esa preferencia.
 - **Performance:** SSG/ISR con revalidación (el contenido cambia poco), `next/image` con
   loader de R2, lazy-loading de fotos, compresión adaptativa.
 - **SEO:** metadata por página/idioma, `hreflang` EN/FR, `sitemap.xml`, `robots.txt`,
@@ -136,10 +143,14 @@ aprobación expresa del cliente antes de avanzar al siguiente.
 - Panel admin custom con CRUD de contenido.
 - Formulario de contacto (email + persistencia).
 
-### Stage 3 — Motion Engineering con GSAP (Semana 3)
-- Animaciones de entrada y transiciones suaves entre secciones.
-- Efectos scroll-based (ScrollTrigger) acordes a la identidad de fotografía deportiva.
-- Respeto de `prefers-reduced-motion`.
+### Stage 3 — Motion Engineering con GSAP (Semana 3) ✅ completo
+- Animaciones de entrada y transiciones suaves entre secciones (Home a fondo + subpáginas livianas).
+- Efectos scroll-based (ScrollTrigger) acordes a la identidad de fotografía deportiva, incl. smooth
+  scroll con **Lenis**.
+- **Transiciones de página elaboradas**: cortina/overlay custom con GSAP (no View Transitions API —
+  descartada en el spike por no poder validarse sin browser testing real).
+- Respeto de `prefers-reduced-motion` en toda la capa (auditado en el cierre del stage).
+- Detalle completo: `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md`.
 
 ### Stage 4 — Optimización, testing y lanzamiento (Semana 4)
 - Optimización de carga y compresión adaptativa de imágenes (lazy-loading).
