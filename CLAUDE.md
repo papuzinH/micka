@@ -79,7 +79,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 |---|---|---|---|
 | 1 | 1 | Arquitectura y estructura del CMS | `docs/superpowers/plans/2026-06-18-stage-1-cms-architecture.md` |
 | 2 | 2 | Layout Home + 5 subpáginas + admin CRUD + contacto | `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md` (Fase 2a detallada; 2b/2c esbozadas) |
-| 3 | 3 | Motion Engineering (GSAP) | _pendiente de planificar_ |
+| 3 | 3 | Motion Engineering (GSAP) | `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md` (Fase 3a detallada; 3b esbozada; 3c/3d/3e just-in-time) |
 | 4 | 4 | Optimización, testing, SEO, deploy | _pendiente de planificar_ |
 
 ## Estado actual
@@ -113,8 +113,28 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   ver changelog). Verde: `tsc`/ESLint limpios, **45/45 unit**, `next build` OK. **Pendiente:
   validación visual EN/FR desktop+mobile la hace el cliente directamente** (pidió que el agente no
   corra tests visuales/e2e en navegador — ver Convenciones).
-- **Próximo:** aprobación del cliente para cerrar Stage 2 formalmente → luego Stage 3 (Motion
-  Engineering con GSAP, pendiente de planificar).
+- **✅ STAGE 3 PLANIFICADO** (2026-07-06) — `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md`.
+  Brainstorming + plan escritos (mismo formato que Stage 2). **Decisiones del cliente:** (1) alcance =
+  **Home a fondo + subpáginas livianas**; (2) **smooth scroll con Lenis** (off bajo reduced-motion);
+  (3) **transiciones de página elaboradas** (cortina/overlay — pieza de mayor riesgo, fase propia con
+  spike + fallback); (4) carácter **cinematográfico pero sobrio**. El Figma **no** define motion
+  (`get_motion_context` del Home = `{"nodes":[]}`) → el agente lo diseña, el cliente valida
+  visualmente. Stack: `gsap` + `@gsap/react` + `lenis`. Fases: 3a fundación (provider Lenis+
+  ScrollTrigger + primitivas) · 3b Home a fondo · 3c subpáginas livianas · 3d transiciones de página ·
+  3e cierre. Toda animación respeta `prefers-reduced-motion` (baseline CSS + guardas JS); el motion
+  vive aislado en `src/lib/motion/`.
+- **✅ STAGE 3 — Fase 3a COMPLETA** (rama `stage-3-motion`). Fundación de motion lista y probada; el
+  sitio se ve igual que al cerrar Stage 2 pero con Lenis activo y las primitivas disponibles para 3b.
+  Verde: `tsc`/ESLint limpios, **64/64 unit** (+13 nuevos), `next build` OK.
+  - Task 1: `gsap`+`@gsap/react`+`lenis` instalados; baseline CSS `prefers-reduced-motion` en `globals.css`.
+  - Task 2: `MotionProvider` (`src/lib/motion/`) inicializa Lenis+ScrollTrigger una vez, montado en el
+    layout `(site)` (el admin no lo lleva). `useReducedMotion()` con lazy initializer (valor correcto
+    ya en el primer render del cliente, sin flash) y degrada a `true` si `matchMedia` no existe.
+  - Task 3-4: primitivas `Reveal`/`StaggerGroup`/`Parallax`/`SplitReveal`/`Marquee` — todas `"use
+    client"`, envuelven `children`, llaman `registerGsap()` (idempotente) internamente para ser
+    testeables standalone sin `MotionProvider`, y respetan reduced-motion (no ocultan/animan nada).
+  - **Próximo:** Fase 3b — aplicar las primitivas al Home sección por sección (validación visual del
+    cliente).
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -128,6 +148,48 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **Fase 3a de Stage 3 COMPLETA** (rama `stage-3-motion`). Fundación de motion: 4
+  tasks, TDD estricto. **Deps:** `gsap`@3.15 (ScrollTrigger+SplitText gratis desde 2025) +
+  `@gsap/react`@2.1 (`useGSAP`) + `lenis`@1.3. **`MotionProvider`** (`src/lib/motion/MotionProvider.tsx`)
+  monta Lenis+ScrollTrigger una sola vez en el layout `(site)`; bajo reduced-motion no instancia Lenis
+  (scroll nativo). **Bug real encontrado y corregido:** `useReducedMotion` originalmente calculaba el
+  valor en un `useEffect` (default `false` en el primer render) — eso dejaba una ventana de un tick en
+  la que `MotionProvider` alcanzaba a instanciar Lenis incluso con `prefers-reduced-motion` activo,
+  antes de que el efecto corrigiera el estado (un flash real, no solo cosmético). Se cambió a un lazy
+  initializer de `useState` que calcula el valor de forma síncrona en el primer render del cliente
+  (SSR-safe: `false` en el server, no afecta el markup). **Primitivas** (`Reveal`, `StaggerGroup`,
+  `Parallax`, `SplitReveal`, `Marquee`): cada una llama `registerGsap()` (idempotente, guardado por un
+  flag) dentro de su propio `useGSAP`, en vez de depender de que `MotionProvider` ya haya registrado
+  los plugins — así son testeables de forma aislada (sin envolver en `MotionProvider` en cada test) y
+  siguen funcionando si se usan fuera del árbol del provider. El estado inicial oculto siempre se
+  aplica con `gsap.set` dentro de `useGSAP` (nunca CSS/markup) y se salta por completo bajo
+  reduced-motion. `SplitReveal` revierte `SplitText` siempre en el cleanup (accesibilidad). `Parallax`
+  usa `gsap.matchMedia("(min-width: 768px)")` para no correr en mobile. `useReducedMotion` degrada a
+  `true` (no animar) si `matchMedia` no existe en el navegador. **Nota de testing:** jsdom no
+  implementa `matchMedia` (mock global agregado a `vitest.setup.ts`, default `matches:false`,
+  sobreescribible por test) ni afecta a `ScrollTrigger` (no usa `ResizeObserver`/`IntersectionObserver`,
+  no hizo falta poliyfillearlos). Se encontró y corrigió un bug de testing (no de producción): usar
+  `vi.restoreAllMocks()` en un `afterEach` borraba el `mockImplementation` de un mock de constructor
+  (`Lenis`) después del primer test al no ser un spy real — cambiado a `mockClear()`. Verde:
+  `tsc`/ESLint limpios, **64/64 unit**, `next build` OK.
+- **2026-07-06** — **Stage 3 planificado** (brainstorming + plan en
+  `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md`). Hallazgo clave: el Figma **no
+  tiene prototipo/motion** (`get_motion_context` sobre el Home `128:154` recursivo = `{"nodes":[]}`)
+  → como con las subpáginas de Stage 2, **el agente diseña el motion** y el cliente valida
+  visualmente. **4 decisiones tomadas con el cliente:** (1) alcance **Home a fondo + subpáginas
+  livianas** (no "todo por igual"); (2) **smooth scroll con Lenis** (se desactiva bajo
+  `prefers-reduced-motion`); (3) **transiciones de página elaboradas** (cortina/overlay — la pieza más
+  frágil en App Router → fase 3d propia con spike + fallback instantáneo); (4) carácter
+  **cinematográfico pero sobrio**. **Stack:** `gsap` (gratis desde 2025, incl. ScrollTrigger/SplitText)
+  + `@gsap/react` (`useGSAP`) + `lenis`. **Arquitectura:** todo el motion aislado en `src/lib/motion/`
+  (un `MotionProvider` cliente en el layout `(site)` inicializa Lenis+ScrollTrigger una vez; las
+  secciones — hoy Server Components — se animan **envolviendo** su markup con primitivas cliente
+  `Reveal`/`StaggerGroup`/`Parallax`/`SplitReveal`/`Marquee` que reciben `children`, sin reescribir ni
+  romper el data-fetching). **Constraint firme:** toda animación respeta `prefers-reduced-motion`
+  (baseline CSS global + guardas JS por primitiva; el estado inicial oculto se setea desde JS, nunca
+  CSS → nada queda invisible si el JS falla). **Verificación del agente sin tests visuales** (`tsc`/
+  ESLint/Vitest de primitivas+provider/`next build`); el feel lo valida el cliente. **Fases:** 3a
+  fundación · 3b Home a fondo · 3c subpáginas livianas · 3d transiciones de página · 3e cierre.
 - **2026-07-05** — **Pasada final de fidelidad del Home (feedback del cliente)** —
   `docs/superpowers/plans/2026-07-05-home-fidelity-polish.md`, 10 tasks. **ToggleLanguage**:
   reconstruido como switch real (`role="switch"` + `aria-checked`, `Navbar.tsx`/test/e2e
