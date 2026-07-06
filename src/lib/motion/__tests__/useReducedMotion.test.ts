@@ -32,10 +32,10 @@ describe("useReducedMotion", () => {
     expect(result.current).toBe(true);
   });
 
-  it("no rompe si matchMedia no está disponible (degrada a false)", () => {
+  it("sin matchMedia disponible degrada a reduced-motion (no anima de más)", () => {
     // @ts-expect-error simula un entorno sin matchMedia
     window.matchMedia = undefined;
     const { result } = renderHook(() => useReducedMotion());
-    expect(result.current).toBe(false);
+    expect(result.current).toBe(true);
   });
 });

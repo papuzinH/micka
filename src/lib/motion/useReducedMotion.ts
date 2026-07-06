@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 const QUERY = "(prefers-reduced-motion: reduce)";
 
 function getInitialReducedMotion(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
+  // Server: sin `window`, no afecta el markup (el valor solo gobierna
+  // efectos imperativos) → default `false` es inofensivo.
+  if (typeof window === "undefined") return false;
+  // Cliente sin `matchMedia` (navegador muy viejo / entorno degradado): no
+  // hay forma de confirmar la preferencia del usuario → tratamos como
+  // reduced-motion para no animar de más ("degradan a visible").
+  if (!window.matchMedia) return true;
   return window.matchMedia(QUERY).matches;
 }
 
