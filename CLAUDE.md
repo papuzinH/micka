@@ -161,7 +161,27 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
     y reutilizables en 3c): `GrowLine` (línea que se dibuja, sobre `Reveal`); `Reveal`/`SplitReveal`/
     `StaggerGroup` ganaron props `delay`/`ease`/`scale`/`scaleX`/`scaleY` para poder secuenciar y
     variar los efectos entre secciones sin nuevas primitivas.
-  - **Próximo:** Fase 3c — subpáginas livianas (entrance sutil de `PageHeader`/grillas).
+- **✅ STAGE 3 — Fase 3c COMPLETA** (rama `stage-3-motion`). Entrance liviano y consistente en las 5
+  subpáginas — deliberadamente más liviano que el Home (solo `Reveal`/`SplitReveal`/`StaggerGroup`,
+  sin `Parallax` ni pin). Verde: `tsc`/ESLint limpios, **67/67 unit** (sin nuevos tests — reutiliza
+  primitivas ya cubiertas), `next build` OK.
+  - `PageHeader` (compartido por Portfolio/About/Reviews/Collabs/Contact): `SplitReveal` del H1 +
+    `GrowLine` en la barrita + `Reveal` del subtítulo.
+  - `PhotoGrid` (detalle de álbum) y las grillas de `AlbumCard` en Portfolio: `StaggerGroup` con
+    `stagger=0.06` (más ajustado que el Home, pensado para catálogos con más ítems). Se evaluó y
+    **descartó** `ScrollTrigger.batch()` (revelar cada item al cruzar su propio punto de entrada): las
+    galerías reales son de escala modesta, el trigger único de `StaggerGroup` alcanza sin sumar otro
+    mecanismo. Detalle de álbum también suma `SplitReveal`/`Reveal` al título/meta/descripción.
+  - Reviews/Collabs: `StaggerGroup` de las cards. About: `Reveal`/`SplitReveal` de retrato/rol/intro/
+    body/CTA. Contact: `Reveal` envolviendo `ContactForm` **desde el call site** (no dentro del
+    componente) — como el wrapper no se remonta cuando el form pasa de idle→success/error, el
+    `once:true` no vuelve a dispararse y la entrada queda desacoplada de los estados de validación
+    sin código extra.
+  - Hover states: se mantienen las transiciones **CSS** existentes (`group-hover:scale-105`, etc.) en
+    vez de reimplementarlas en GSAP — ya son "motion sobrio" con menos costo, y no compiten con las
+    props que anima `StaggerGroup` (`opacity`/`y`, nunca `scale` en estos casos).
+  - **Próximo:** Fase 3d — transiciones entre páginas (cortina/overlay), la fase de mayor riesgo
+    técnico del stage → arranca con un spike + fallback instantáneo.
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -175,6 +195,20 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **Fase 3c de Stage 3 COMPLETA** (rama `stage-3-motion`, 5 tasks). Entrance liviano
+  en las 5 subpáginas (Portfolio+detalle, About, Reviews, Collabs, Contact), reutilizando las
+  primitivas de 3a **sin** sumar ninguna nueva y **sin** replicar `Parallax`/pin del Home (páginas de
+  catálogo/lectura, no la pieza de storytelling). `PageHeader` (compartido por las 5) centraliza la
+  entrada del título (`SplitReveal`) + barrita (`GrowLine`) + subtítulo (`Reveal`). Grillas
+  (`PhotoGrid`, `AlbumCard` en Portfolio, Reviews, Collabs) con `StaggerGroup`. **Decisión:** se
+  evaluó `ScrollTrigger.batch()` para grillas largas (revelar cada item al cruzar su propio punto de
+  entrada en vez de un trigger único) y se descartó — las galerías reales son de escala modesta,
+  no se justifica la complejidad extra. **Contact:** el `Reveal` envuelve `ContactForm` desde el
+  `page.tsx` (no adentro del componente) — el wrapper no se remonta cuando el form cambia de
+  idle→success/error, así que la entrada y los estados de validación quedan desacoplados sin código
+  extra. **Hover states:** se mantienen las transiciones CSS existentes (ya son "motion sobrio",
+  menos costosas que reimplementarlas en GSAP, y no compiten por las mismas props que anima
+  `StaggerGroup`). Verde: `tsc`/ESLint limpios, **67/67 unit**, `next build` OK.
 - **2026-07-06** — **Fase 3b de Stage 3 COMPLETA** (rama `stage-3-motion`, 5 tasks: 5-9). Home a
   fondo animado, sección por sección, envolviendo el markup existente (ninguna sección se convirtió a
   Client Component). **Hero:** timeline de carga (ya está en viewport al montar, así que el `start:

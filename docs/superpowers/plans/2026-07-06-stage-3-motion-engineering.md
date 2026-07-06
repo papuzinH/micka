@@ -158,18 +158,15 @@ Confirmadas con el cliente antes de planificar:
 
 ---
 
-# FASE 3c — Subpáginas livianas *(se detalla al llegar)*
+# FASE 3c — Subpáginas livianas ✅ COMPLETA
 
-**Salida prevista:** entrance sutil y consistente en las 5 subpáginas, con un set reutilizable — **no** el despliegue completo del Home.
+**Salida:** entrance sutil y consistente en las 5 subpáginas, con un set reutilizable — **no** el despliegue completo del Home (sin `Parallax` ni pin).
 
-**Tasks previstas (referencia):**
-1. Envolver `site/PageHeader.tsx` con un `Reveal`/`SplitReveal` estándar → entrada consistente del título en Portfolio/About/Reviews/Collabs/Contact.
-2. `site/PhotoGrid.tsx` y `site/AlbumCard.tsx`: `StaggerGroup` de items al entrar (galería Portfolio + detalle de álbum). Lazy/`batch` de ScrollTrigger para grillas largas.
-3. Reviews/Collabs: `StaggerGroup` de las cards. About: `Reveal` de los bloques de texto/imagen.
-4. `site/ContactForm.tsx`: entrance sutil (sin animar estados de validación que ya existen).
-5. Hover states "con motion" donde sume (sobrio). Verificación + update `CLAUDE.md`.
-
-**A resolver al inicio de 3c:** confirmar que el set liviano es realmente liviano (no replicar parallax/pin del Home) para no sobrecargar páginas de catálogo/lectura.
+- [x] **Task 1:** `site/PageHeader.tsx` envuelto con `SplitReveal` (H1) + `GrowLine` (barrita violeta) + `Reveal` (subtítulo) → entrada consistente en Portfolio/About/Reviews/Collabs/Contact (todas usan `PageHeader`).
+- [x] **Task 2:** `site/PhotoGrid.tsx` (detalle de álbum) y las grillas de `AlbumCard` en `portfolio/page.tsx` (por categoría + sin categoría) envueltas en `StaggerGroup`, con `stagger=0.06` (más ajustado que el Home) para que grillas de catálogo con más ítems no tarden en revelarse por completo. **Se evaluó `ScrollTrigger.batch()`** (revelar cada item al cruzar su propio punto de entrada, en vez de todos disparados por el trigger único del contenedor) pero se descartó: las galerías reales de este sitio son de escala modesta (decenas de fotos, no cientos), y el `StaggerGroup` de trigger único ya cubre el caso sin la complejidad/superficie de otro mecanismo. Detalle de álbum también suma `SplitReveal` al título + `Reveal` al meta/descripción (no estaba explícito en el plan, pero es el "page header" de facto de esa ruta).
+- [x] **Task 3:** Reviews/Collabs con `StaggerGroup` de las cards. About con `Reveal` (retrato, rol, body, CTA) + `SplitReveal` (intro).
+- [x] **Task 4:** `site/ContactForm.tsx` — entrance vía un `Reveal` que lo envuelve en `contact/page.tsx` (no dentro del propio componente): como el wrapper no se remonta cuando el form cambia de estado (idle→success/error), el `once:true` de `Reveal` no vuelve a dispararse — la animación de entrada y los estados de validación quedan completamente desacoplados sin código extra.
+- [x] **Task 5:** hover states — **se mantienen las transiciones CSS existentes** (`transition-transform duration-500 group-hover:scale-105` en `AlbumCard`/`PhotoGrid`, transiciones de color en links) en vez de reimplementarlas en GSAP: ya son "motion sobrio" con menos costo (CSS transitions vs. listeners JS) y no chocan con las props que anima `StaggerGroup` (`opacity`/`y`, nunca `scale` en estos casos). Verificación: `tsc`/ESLint limpios, **67/67 unit**, `next build` OK. Auditoría de reduced-motion (grep de clases que oculten contenido por CSS) sin hallazgos. `CLAUDE.md` actualizado.
 
 ---
 
