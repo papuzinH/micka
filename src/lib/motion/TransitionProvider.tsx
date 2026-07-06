@@ -12,7 +12,11 @@ import { gsap, registerGsap } from "./register";
 import { useReducedMotion } from "./useReducedMotion";
 import { useMotionSettings } from "./MotionProvider";
 
-const CURTAIN_DURATION = 0.5;
+const COVER_DURATION = 0.55;
+const REVEAL_DURATION = 0.55;
+// Tiempo que la cortina queda totalmente cubriendo la pantalla antes de
+// descubrir la página nueva — suficiente para que el wordmark se lea.
+const HOLD_DURATION = 0.45;
 
 function isModifiedOrNonPrimaryClick(event: MouseEvent): boolean {
   return (
@@ -70,6 +74,10 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   const curtainRef = useRef<HTMLDivElement | null>(null);
   const pendingHref = useRef<string | null>(null);
   const previousPathname = useRef(pathname);
+  // La cortina está cubriendo la pantalla (cover completo). Solo entonces la
+  // fase de descubrir (reveal) debe correr — así una navegación que no pasó por
+  // navigate() (back/forward del navegador) no dispara un flash de cortina.
+  const isCoveringRef = useRef(false);
 
   const navigate = useCallback(
     (href: string) => {
@@ -79,12 +87,17 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       }
       registerGsap();
       pendingHref.current = href;
+      gsap.killTweensOf(curtainRef.current);
       gsap.set(curtainRef.current, { pointerEvents: "auto" });
+      // Fase 1 (cover): la cortina sube desde abajo hasta cubrir toda la
+      // pantalla. Recién cuando terminó de cubrir (y no antes) navegamos, así la
+      // página nueva se monta *detrás* de la cortina y nunca se ve sin cubrir.
       gsap.to(curtainRef.current, {
         yPercent: 0,
-        duration: CURTAIN_DURATION,
-        ease: "power2.inOut",
+        duration: COVER_DURATION,
+        ease: "power3.inOut",
         onComplete: () => {
+          isCoveringRef.current = true;
           if (pendingHref.current) router.push(pendingHref.current);
         },
       });
@@ -92,8 +105,8 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     [reducedMotion, router]
   );
 
-  // Sincroniza el estado inicial de GSAP con la posición "fuera de pantalla"
-  // que ya viene por CSS (`translate-y-full`) — si no, GSAP asume yPercent:0
+  // Sincroniza el estado interno de GSAP con la posición "fuera de pantalla"
+  // que ya viene por el `transform` inline — si no, GSAP asumiría yPercent:0
   // como punto de partida y el primer `.to({yPercent:0})` sería un no-op.
   useEffect(() => {
     if (reducedMotion || !curtainRef.current) return;
@@ -108,12 +121,23 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     lenisRef.current?.scrollTo(0, { immediate: true });
 
     if (reducedMotion || !curtainRef.current) return;
+    // Solo descubrimos si veníamos de un cover (click interceptado). Un
+    // back/forward del navegador cambia el pathname sin haber cubierto: en ese
+    // caso no hay nada que descubrir y forzar la cortina sería un flash.
+    if (!isCoveringRef.current) return;
+    isCoveringRef.current = false;
+
     registerGsap();
+    gsap.killTweensOf(curtainRef.current);
+    // Fase 2 (reveal): garantiza cobertura total (la página nueva ya montó
+    // detrás), esperá HOLD para que el wordmark se lea, y recién ahí la cortina
+    // sale por arriba dejando ver la página.
+    gsap.set(curtainRef.current, { yPercent: 0, pointerEvents: "auto" });
     gsap.to(curtainRef.current, {
       yPercent: -100,
-      duration: CURTAIN_DURATION,
-      delay: 0.05,
-      ease: "power2.inOut",
+      duration: REVEAL_DURATION,
+      delay: HOLD_DURATION,
+      ease: "power3.inOut",
       onComplete: () => {
         gsap.set(curtainRef.current, { yPercent: 100, pointerEvents: "none" });
       },
@@ -151,10 +175,21 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {/*
+        Estado oculto inicial vía `transform` inline (NO la clase Tailwind
+        `translate-y-full`): en Tailwind v4 las utilidades translate usan la
+        propiedad CSS `translate`, independiente de `transform`. GSAP anima
+        `transform` (yPercent), así que ambas se *componían* y la cortina
+        quedaba corrida 100% de más — el "cover" no se veía y el "reveal"
+        terminaba tapando la pantalla (el flash que aparecía). Con `transform`
+        inline GSAP lo sobrescribe limpio; y si el JS no corre (o bajo
+        reduced-motion) la cortina queda fuera de pantalla igual.
+      */}
       <div
         ref={curtainRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-100 flex translate-y-full items-center justify-center bg-brand-violet"
+        style={{ transform: "translateY(100%)" }}
+        className="pointer-events-none fixed inset-0 z-100 flex items-center justify-center bg-brand-violet"
       >
         <span className="font-display text-h2 uppercase tracking-widest text-brand-white">
           Micka&apos;s / Photos
