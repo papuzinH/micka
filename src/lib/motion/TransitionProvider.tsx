@@ -13,10 +13,10 @@ import { useReducedMotion } from "./useReducedMotion";
 import { useMotionSettings } from "./MotionProvider";
 
 const COVER_DURATION = 0.55;
-const REVEAL_DURATION = 0.55;
+const REVEAL_DURATION = 0.6;
 // Tiempo que la cortina queda totalmente cubriendo la pantalla antes de
 // descubrir la página nueva — suficiente para que el wordmark se lea.
-const HOLD_DURATION = 0.45;
+const HOLD_DURATION = 0.5;
 
 function isModifiedOrNonPrimaryClick(event: MouseEvent): boolean {
   return (
@@ -90,17 +90,23 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       gsap.killTweensOf(curtainRef.current);
       gsap.set(curtainRef.current, { pointerEvents: "auto" });
       // Fase 1 (cover): la cortina sube desde abajo hasta cubrir toda la
-      // pantalla. Recién cuando terminó de cubrir (y no antes) navegamos, así la
-      // página nueva se monta *detrás* de la cortina y nunca se ve sin cubrir.
-      gsap.to(curtainRef.current, {
-        yPercent: 0,
-        duration: COVER_DURATION,
-        ease: "power3.inOut",
-        onComplete: () => {
-          isCoveringRef.current = true;
-          if (pendingHref.current) router.push(pendingHref.current);
-        },
-      });
+      // pantalla. `fromTo` fuerza el arranque en yPercent:100 (fuera de
+      // pantalla, abajo) sin depender del estado previo — así el cover siempre
+      // es visible. Recién cuando terminó de cubrir (y no antes) navegamos, así
+      // la página nueva se monta *detrás* de la cortina y nunca se ve sin cubrir.
+      gsap.fromTo(
+        curtainRef.current,
+        { yPercent: 100 },
+        {
+          yPercent: 0,
+          duration: COVER_DURATION,
+          ease: "power3.inOut",
+          onComplete: () => {
+            isCoveringRef.current = true;
+            if (pendingHref.current) router.push(pendingHref.current);
+          },
+        }
+      );
     },
     [reducedMotion, router]
   );
