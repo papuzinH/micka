@@ -88,7 +88,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       registerGsap();
       pendingHref.current = href;
       gsap.killTweensOf(curtainRef.current);
-      gsap.set(curtainRef.current, { pointerEvents: "auto" });
+      gsap.set(curtainRef.current, { pointerEvents: "auto", autoAlpha: 1 });
       // Fase 1 (cover): la cortina sube desde abajo hasta cubrir toda la
       // pantalla. `fromTo` fuerza el arranque en yPercent:100 (fuera de
       // pantalla, abajo) sin depender del estado previo — así el cover siempre
@@ -117,7 +117,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (reducedMotion || !curtainRef.current) return;
     registerGsap();
-    gsap.set(curtainRef.current, { yPercent: 100 });
+    // GSAP toma control total del transform desde cero (el markup NO trae
+    // ningún transform pre-aplicado — ver nota en el JSX). yPercent:100 la
+    // manda fuera de pantalla (abajo); autoAlpha:1 la hace opaca (el base es
+    // opacity-0 para el fallback sin-JS / reduced-motion).
+    gsap.set(curtainRef.current, { yPercent: 100, autoAlpha: 1 });
   }, [reducedMotion]);
 
   useEffect(() => {
@@ -182,24 +186,29 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   return (
     <>
       {/*
-        Estado oculto inicial vía `transform` inline (NO la clase Tailwind
-        `translate-y-full`): en Tailwind v4 las utilidades translate usan la
-        propiedad CSS `translate`, independiente de `transform`. GSAP anima
-        `transform` (yPercent), así que ambas se *componían* y la cortina
-        quedaba corrida 100% de más — el "cover" no se veía y el "reveal"
-        terminaba tapando la pantalla (el flash que aparecía). Con `transform`
-        inline GSAP lo sobrescribe limpio; y si el JS no corre (o bajo
-        reduced-motion) la cortina queda fuera de pantalla igual.
+        La cortina NO lleva ningún `transform` ni utilidad translate en el
+        markup: GSAP maneja el transform (yPercent) desde cero. Si el elemento
+        trajera un translateY previo (inline o la clase `translate-y-full` de
+        Tailwind v4), GSAP lo parsea como `y` en px y le SUMA el yPercent
+        encima → quedaba el doble (200% al arrancar, 100% al "cubrir"), así que
+        el cover nunca cubría y solo el reveal barría un instante. El estado
+        oculto de fallback (sin JS / bajo reduced-motion, donde GSAP no corre)
+        se hace con `opacity-0`, independiente del transform que anima GSAP.
       */}
       <div
         ref={curtainRef}
         aria-hidden="true"
-        style={{ transform: "translateY(100%)" }}
-        className="pointer-events-none fixed inset-0 z-100 flex items-center justify-center bg-brand-violet"
+        className="pointer-events-none fixed inset-0 z-100 flex items-center justify-center bg-brand-violet opacity-0"
       >
-        <span className="font-display text-h2 uppercase tracking-widest text-brand-white">
-          Micka&apos;s / Photos
-        </span>
+        {/*
+          Wordmark del navbar (lockup de 2 líneas, Syne ExtraBold uppercase).
+          En el navbar "Don Micka" va en violeta, pero acá el fondo ES violeta
+          → ambas líneas en blanco para que sea legible sobre la cortina.
+        */}
+        <div className="text-center font-display text-h2 font-extrabold uppercase leading-[1.05] text-brand-white">
+          <span className="block">Don Micka</span>
+          <span className="block">de la Vega</span>
+        </div>
       </div>
       {children}
     </>
