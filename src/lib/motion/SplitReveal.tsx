@@ -14,6 +14,7 @@ type SplitRevealProps = {
   type?: SplitUnit;
   stagger?: number;
   duration?: number;
+  delay?: number;
   once?: boolean;
 };
 
@@ -31,6 +32,7 @@ export function SplitReveal({
   type = "lines",
   stagger = 0.08,
   duration = 0.7,
+  delay = 0,
   once = true,
 }: SplitRevealProps) {
   const ref = useRef<HTMLElement | null>(null);
@@ -55,6 +57,7 @@ export function SplitReveal({
             yPercent: 0,
             opacity: 1,
             duration,
+            delay,
             stagger,
             ease: "power3.out",
           }),
