@@ -14,6 +14,7 @@ type StaggerGroupProps = {
   stagger?: number;
   from?: RevealFrom;
   duration?: number;
+  delay?: number;
   once?: boolean;
 };
 
@@ -29,6 +30,7 @@ export function StaggerGroup({
   stagger = 0.12,
   from = DEFAULT_REVEAL_FROM,
   duration = 0.7,
+  delay = 0,
   once = true,
 }: StaggerGroupProps) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -49,6 +51,7 @@ export function StaggerGroup({
           gsap.to(targets, {
             ...restingVarsFor(from),
             duration,
+            delay,
             stagger,
             ease: "power3.out",
           }),
