@@ -133,8 +133,35 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   - Task 3-4: primitivas `Reveal`/`StaggerGroup`/`Parallax`/`SplitReveal`/`Marquee` — todas `"use
     client"`, envuelven `children`, llaman `registerGsap()` (idempotente) internamente para ser
     testeables standalone sin `MotionProvider`, y respetan reduced-motion (no ocultan/animan nada).
-  - **Próximo:** Fase 3b — aplicar las primitivas al Home sección por sección (validación visual del
-    cliente).
+- **✅ STAGE 3 — Fase 3b COMPLETA** (rama `stage-3-motion`). El Home entero (Hero → BioBlock →
+  Marquee → EditorialIntro → StarredAlbums → CraftBlock → FavesGallery → NothingBar → ContactCta)
+  tiene el storytelling scroll-based aplicado, envolviendo cada sección (Server Components intactos)
+  con las primitivas de 3a. Verde: `tsc`/ESLint limpios, **67/67 unit** (+3 nuevos), `next build` OK.
+  **Pendiente: validación visual EN/FR desktop+mobile la hace el cliente** (ver Convenciones).
+  - Task 5: Hero — `SplitReveal` por línea en el H1, `Reveal` fade+scale en el pill, `StaggerGroup`
+    secuenciado en los botones, `Parallax` leve en la imagen de fondo.
+  - Task 6: BioBlock (`Reveal` retrato, `SplitReveal` heading, `Parallax` con profundidades
+    distintas en la tira de 3 fotos, divisor "dibujado"), Marquee (loop infinito real vía el
+    primitive animado), EditorialIntro (`Reveal` de cajas/imágenes + acentos en cascada).
+  - Task 7: StarredAlbums (`SplitReveal` título, `StaggerGroup` de las 3 cards + `Parallax`
+    anidado por card), CraftBlock (`Reveal`/`SplitReveal`), FavesGallery (mismo patrón de dos capas
+    que StarredAlbums). **Se omitió el pin del título de StarredAlbums** (explícitamente opcional en
+    el plan): agrega riesgo/complejidad de ScrollTrigger sin aporte claro dado "cinematográfico pero
+    sobrio".
+  - Task 8: NothingBar (`SplitReveal`), ContactCta (`GrowLine` + `Reveal` secuenciado + "pop" con
+    `ease="back.out"` en el botón). Ritmo global: cada primitiva dispara sobre su propia posición de
+    scroll ("top 85%"), lo que ya da un reveal-as-you-scroll coherente sin timeline maestro.
+  - Task 9 (auditoría de cierre): **bug real encontrado y corregido** — `Hero` y `FavesGallery`
+    pasaban un className `scale-110` **estático** al wrapper de `Parallax` (buffer para que el
+    `translateY` no expusiera bordes vacíos en el fondo enmascarado). Bajo reduced-motion la
+    animación no corre, pero la clase CSS sí quedaba aplicada — dejaba un zoom del 10% permanente
+    que Stage 2 no tenía. Se movió ese `scale` a `gsap.set` dentro de la misma rama que activa el
+    scrub (nuevo prop `oversize` en `Parallax`), so reduced-motion vuelve a verse exactamente como
+    Stage 2 estático. Nuevas primitivas menores creadas durante 3b (documentadas en `src/lib/motion/`
+    y reutilizables en 3c): `GrowLine` (línea que se dibuja, sobre `Reveal`); `Reveal`/`SplitReveal`/
+    `StaggerGroup` ganaron props `delay`/`ease`/`scale`/`scaleX`/`scaleY` para poder secuenciar y
+    variar los efectos entre secciones sin nuevas primitivas.
+  - **Próximo:** Fase 3c — subpáginas livianas (entrance sutil de `PageHeader`/grillas).
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -148,6 +175,32 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **Fase 3b de Stage 3 COMPLETA** (rama `stage-3-motion`, 5 tasks: 5-9). Home a
+  fondo animado, sección por sección, envolviendo el markup existente (ninguna sección se convirtió a
+  Client Component). **Hero:** timeline de carga (ya está en viewport al montar, así que el `start:
+  "top 85%"` de ScrollTrigger dispara de inmediato — mismo mecanismo que el resto, sin necesitar un
+  timeline separado) con `SplitReveal` en el H1, `Reveal` fade+scale en el pill (delay 0.5s),
+  `StaggerGroup` en los botones (delay 0.8s) y `Parallax` leve (`speed=0.08`) en la imagen de fondo.
+  **BioBlock/EditorialIntro/ContactCta** introducen el patrón "divisor que se dibuja": nuevo primitive
+  `GrowLine` (`scaleX`/`scaleY` desde 0 sobre `Reveal`) reemplaza los bordes CSS estáticos.
+  **StarredAlbums/FavesGallery** combinan `StaggerGroup` (entrada) + `Parallax` (scroll continuo)
+  **sobre nodos DOM distintos a propósito** — animar `y` desde dos tweens de GSAP sobre el mismo
+  elemento genera competencia/overwrite y jitter visible; el wrapper de entrada y el wrapper de
+  parallax están anidados, no fusionados. **Se descartó el pin puntual** del título de StarredAlbums
+  (marcado "opcional" en el plan): el riesgo/complejidad de ScrollTrigger `pin` no se justificaba
+  dado el criterio "cinematográfico pero sobrio". **Bug real encontrado en la auditoría de
+  reduced-motion de cierre:** `Parallax` recibía un className `scale-110` **estático** en Hero/
+  FavesGallery (buffer para que el `translateY` no expusiera bordes vacíos en fondos enmascarados) —
+  bajo reduced-motion la animación no corre pero la clase CSS sí, dejando un zoom del 10% permanente
+  que Stage 2 no tenía. Fix: nuevo prop `oversize` en `Parallax` aplica ese `scale` vía `gsap.set`
+  **dentro** de la rama que activa el scrub (solo cuando el parallax realmente corre), no como clase
+  estática — reduced-motion vuelve a verse exactamente como Stage 2. **Primitivas extendidas** (no
+  nuevas, mismos 5 de 3a + `GrowLine`): `Reveal`/`SplitReveal`/`StaggerGroup` ganaron `delay`
+  configurable (secuenciar sub-elementos que cruzan el trigger casi simultáneamente) y `Reveal` ganó
+  `ease` (usado para un "pop" con `back.out(1.7)` en el botón de `ContactCta`); `RevealFrom` ganó
+  `scale`/`scaleX`/`scaleY`. Verde: `tsc`/ESLint limpios, **67/67 unit** (+3 sobre el cierre de 3a),
+  `next build` OK. **Pendiente: validación visual EN/FR desktop+mobile la hace el cliente** (no el
+  agente — ver Convenciones).
 - **2026-07-06** — **Fase 3a de Stage 3 COMPLETA** (rama `stage-3-motion`). Fundación de motion: 4
   tasks, TDD estricto. **Deps:** `gsap`@3.15 (ScrollTrigger+SplitText gratis desde 2025) +
   `@gsap/react`@2.1 (`useGSAP`) + `lenis`@1.3. **`MotionProvider`** (`src/lib/motion/MotionProvider.tsx`)

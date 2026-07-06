@@ -150,11 +150,11 @@ Confirmadas con el cliente antes de planificar:
 
 **Tasks (agrupadas por bloque del Home; commit por task):**
 
-- [ ] **Task 5 — Hero entrance + parallax.** Timeline de carga + parallax de la imagen. Cuidar que el LCP (imagen/H1 del hero) no quede oculto esperando JS: la entrada parte de un estado visible-degradable. Commit: `feat(motion): animate Home hero (entrance timeline + parallax)`.
-- [ ] **Task 6 — Bio + Marquee animado + EditorialIntro.** Reveals/parallax de bio, cinta animada, cajas editoriales. Commit: `feat(motion): animate bio block, marquee and editorial intro`.
-- [ ] **Task 7 — Starred albums + Craft + Faves.** Stagger/parallax de cards y galería; pin puntual del título Starred (con `matchMedia` para desactivar en mobile). Commit: `feat(motion): animate starred albums, craft block and faves gallery`.
-- [ ] **Task 8 — Nothing bar + Contact CTA + pasada de ritmo.** Reveals finales + ajuste de timing/orden global del Home (que no se solapen mal, que el scrub sea coherente). Verificación: `tsc`/ESLint/unit/`next build`. Commit: `feat(motion): animate closing sections + tune Home scroll rhythm`.
-- [ ] **Task 9 — Cierre 3b:** auditoría reduced-motion del Home completo (con reduced-motion todo debe verse como el Stage 2 estático) + update `CLAUDE.md`. Commit incluido en el update de docs.
+- [x] **Task 5 — Hero entrance + parallax.** Timeline de carga + parallax de la imagen. Cuidar que el LCP (imagen/H1 del hero) no quede oculto esperando JS: la entrada parte de un estado visible-degradable. Commit: `feat(motion): animate Home hero (entrance timeline + parallax)`.
+- [x] **Task 6 — Bio + Marquee animado + EditorialIntro.** Reveals/parallax de bio, cinta animada, cajas editoriales. Commit: `feat(motion): animate bio block, marquee and editorial intro`.
+- [x] **Task 7 — Starred albums + Craft + Faves.** Stagger/parallax de cards y galería; pin puntual del título Starred (con `matchMedia` para desactivar en mobile). Commit: `feat(motion): animate starred albums, craft block and faves gallery`.
+- [x] **Task 8 — Nothing bar + Contact CTA + pasada de ritmo.** Reveals finales + ajuste de timing/orden global del Home (que no se solapen mal, que el scrub sea coherente). Verificación: `tsc`/ESLint/unit/`next build`. Commit: `feat(motion): animate closing sections + tune Home scroll rhythm`.
+- [x] **Task 9 — Cierre 3b:** auditoría reduced-motion del Home completo (con reduced-motion todo debe verse como el Stage 2 estático) + update `CLAUDE.md`. Commit incluido en el update de docs.
 
 ---
 
