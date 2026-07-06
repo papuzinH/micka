@@ -204,6 +204,25 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   build` OK. Spec actualizado (Lenis + cortina documentadas como decisiones de UI ya implementadas).
   **Único pendiente: validación visual del cliente** (Home + 5 subpáginas + transiciones, EN/FR,
   desktop+mobile — el agente no corre tests visuales/browser, ver Convenciones).
+  - **Fix post-cierre (2026-07-06, reportado por el cliente):** el routing del Navbar andaba mal —
+    URLs con locale duplicado (`/en/en/portfolio`) y el menú mobile quedaba abierto tras navegar.
+    Dos bugs reales en `TransitionProvider`: (1) `navigate()` usaba el `router`/`usePathname` de
+    **next-intl**, pero el href interceptado ya viene con el locale puesto (lo resolvió el propio
+    `<Link>` de next-intl al renderizar el `<a>`) — el router de next-intl vuelve a anteponer el
+    locale a lo que le pasás, duplicándolo. Se cambió a los de **`next/navigation`** (nativos), ya
+    que el href interceptado es una ruta ya resuelta. (2) el interceptor de clicks llamaba
+    `event.stopPropagation()` además de `preventDefault()` — como React delega los eventos por un
+    único listener nativo, cortar la propagación antes de que ese listener los vea apaga TODOS los
+    `onClick` de React en el camino, no solo el de `next/link` — incluido el del Navbar que cierra
+    el overlay mobile al bubblear un click desde un `MenuItem`. Se confirmó
+    (`node_modules/next/dist/client/link.js`) que `next/link` ya chequea `e.defaultPrevented` antes
+    de navegar, así que alcanza con `preventDefault()` solo. Se agregó un test de regresión
+    (un `onClick` en un ancestro del link debe seguir disparando). De paso se encontró y corrigió una
+    flakiness real de la suite: `ScrollTrigger` arranca un `setInterval` interno sin API pública para
+    cancelarlo, que a veces sobrevivía entre archivos de test y hacía fallar `vitest run` con exit
+    code no-cero — mitigado capturando y limpiando todos los intervals por archivo en
+    `vitest.setup.ts` (verificado estable en 4 corridas consecutivas). Verde: `tsc`/ESLint limpios,
+    **76/76 unit**, `next build` OK.
   - **Próximo:** aprobación del cliente tras la validación visual → Stage 4 (optimización, testing,
     SEO, deploy), pendiente de planificar.
 
@@ -219,6 +238,18 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **fix routing del Navbar post-cierre de Stage 3** (reportado por el cliente:
+  URLs con locale duplicado `/en/en/portfolio` + menú mobile que no cerraba al navegar). Dos bugs en
+  `TransitionProvider`: (1) usaba el router/pathname de next-intl sobre un href que ya venía
+  locale-prefijado desde el DOM → doble prefijo; cambiado a los nativos de `next/navigation`. (2)
+  `event.stopPropagation()` en el interceptor de clicks apagaba todos los `onClick` de React
+  aguas arriba (React delega eventos por un único listener) — incluido el que cierra el overlay
+  mobile del Navbar; alcanza con `preventDefault()` solo, ya que `next/link` chequea
+  `defaultPrevented` antes de navegar (confirmado en su código fuente). Test de regresión agregado.
+  De paso, mitigada una flakiness real de la suite (`ScrollTrigger` deja un `setInterval` interno sin
+  forma pública de cancelarlo, que a veces sobrevivía entre archivos y hacía fallar `vitest run` con
+  exit code no-cero) capturando y limpiando los intervals por archivo. Verde: `tsc`/ESLint limpios,
+  **76/76 unit**, `next build` OK.
 - **2026-07-06** — **STAGE 3 COMPLETO** (rama `stage-3-motion`, fases 3a-3e). Cierre: auditoría
   integral de `prefers-reduced-motion` (grep de `opacity-0`/`scale-0`/`invisible`/`translate-*-full`
   en todo `src/`, sin hallazgos nuevos — el único caso encontrado, `Parallax` con `scale` estático en
