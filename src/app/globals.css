@@ -50,4 +50,18 @@
   --shadow-button: 0 4px 4px 0 #00000040;
 }
 
+/* Red de seguridad para prefers-reduced-motion: las primitivas de
+   src/lib/motion/ son la defensa primaria (no animan si el usuario lo pide),
+   esto solo cubre cualquier animation/transition que se escape de esas
+   guardas JS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
