@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
+import { StaggerGroup } from "@/lib/motion/StaggerGroup";
 import { getCollabs, localized } from "@/lib/pocketbase/queries";
 import { fileUrl } from "@/lib/pocketbase/files";
 
@@ -34,7 +35,10 @@ export default async function CollabsPage({
         {collabs.length === 0 ? (
           <p className="font-body text-brand-white/60">{t("empty")}</p>
         ) : (
-          <div className="grid gap-px bg-brand-light-gray sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerGroup
+            className="grid gap-px bg-brand-light-gray sm:grid-cols-2 lg:grid-cols-3"
+            from={{ opacity: 0, y: 24 }}
+          >
             {collabs.map((c) => {
               const logo = fileUrl(
                 { collectionName: "collabs", id: c.id },
@@ -77,7 +81,7 @@ export default async function CollabsPage({
                 </article>
               );
             })}
-          </div>
+          </StaggerGroup>
         )}
       </div>
     </main>

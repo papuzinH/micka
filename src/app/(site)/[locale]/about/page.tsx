@@ -3,6 +3,8 @@ import Image from "next/image";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/Button";
+import { Reveal } from "@/lib/motion/Reveal";
+import { SplitReveal } from "@/lib/motion/SplitReveal";
 import { getSiteContent, localized } from "@/lib/pocketbase/queries";
 
 export const revalidate = 300;
@@ -39,7 +41,10 @@ export default async function AboutPage({
       <PageHeader title={t("title")} />
       <div className="mx-auto max-w-360 px-5 md:px-10">
         <div className="grid gap-10 md:grid-cols-[2fr_3fr] md:gap-16">
-          <div className="relative aspect-[3/4] w-full overflow-hidden bg-brand-gray">
+          <Reveal
+            from={{ opacity: 0, scale: 0.96 }}
+            className="relative aspect-[3/4] w-full overflow-hidden bg-brand-gray"
+          >
             <Image
               src="/placeholders/cyclist-portrait.jpg"
               alt={t("role")}
@@ -47,24 +52,33 @@ export default async function AboutPage({
               sizes="(max-width: 768px) 100vw, 480px"
               className="object-cover"
             />
-          </div>
+          </Reveal>
           <div className="flex flex-col">
-            <p className="font-display text-h3 uppercase text-brand-violet">
+            <Reveal as="p" className="font-display text-h3 uppercase text-brand-violet">
               {t("role")}
-            </p>
+            </Reveal>
             {intro && (
-              <p className="mt-4 font-display text-h2 leading-tight text-brand-white">
+              <SplitReveal
+                as="p"
+                type="lines"
+                delay={0.1}
+                className="mt-4 font-display text-h2 leading-tight text-brand-white"
+              >
                 {intro}
-              </p>
+              </SplitReveal>
             )}
             {body && (
-              <p className="mt-6 font-body leading-relaxed text-brand-white/70">
+              <Reveal
+                as="p"
+                delay={0.2}
+                className="mt-6 font-body leading-relaxed text-brand-white/70"
+              >
                 {body}
-              </p>
+              </Reveal>
             )}
-            <div className="mt-10">
+            <Reveal delay={0.3} className="mt-10">
               <Button href="/contact">{t("cta")}</Button>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>

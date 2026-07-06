@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { StaggerGroup } from "@/lib/motion/StaggerGroup";
 
 export type PhotoGridItem = {
   src: string;
@@ -7,10 +8,15 @@ export type PhotoGridItem = {
 };
 
 /** Grid uniforme de fotos del detalle de álbum. Caption opcional como overlay
- *  al hover. Sin lightbox/animaciones (motion → Stage 3). */
+ *  al hover. Entrada liviana (fade+y en cascada); sin parallax/pin — set
+ *  reutilizable de subpáginas, no el despliegue completo del Home. */
 export function PhotoGrid({ photos }: { photos: PhotoGridItem[] }) {
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+    <StaggerGroup
+      className="grid grid-cols-2 gap-3 md:grid-cols-3"
+      from={{ opacity: 0, y: 20 }}
+      stagger={0.06}
+    >
       {photos.map((p, i) => (
         <figure
           key={i}
@@ -31,6 +37,6 @@ export function PhotoGrid({ photos }: { photos: PhotoGridItem[] }) {
           )}
         </figure>
       ))}
-    </div>
+    </StaggerGroup>
   );
 }

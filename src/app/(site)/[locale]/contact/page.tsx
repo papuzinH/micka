@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ContactForm } from "@/components/site/ContactForm";
+import { Reveal } from "@/lib/motion/Reveal";
 import { getSiteContent, localized } from "@/lib/pocketbase/queries";
 
 export const revalidate = 300;
@@ -34,7 +35,9 @@ export default async function ContactPage({
     <main className="pb-20">
       <PageHeader title={t("title")} subtitle={intro} />
       <div className="mx-auto max-w-2xl px-5 md:px-10">
-        <ContactForm />
+        <Reveal>
+          <ContactForm />
+        </Reveal>
       </div>
     </main>
   );

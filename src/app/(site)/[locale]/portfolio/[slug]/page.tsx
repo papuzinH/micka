@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link, routing } from "@/lib/i18n/routing";
 import { PhotoGrid } from "@/components/site/PhotoGrid";
+import { SplitReveal } from "@/lib/motion/SplitReveal";
+import { Reveal } from "@/lib/motion/Reveal";
 import {
   getAlbums,
   getAlbumBySlug,
@@ -83,24 +85,34 @@ export default async function AlbumDetailPage({
           <span aria-hidden="true">←</span> {t("back")}
         </Link>
 
-        <h1 className="mt-6 font-display text-h1 uppercase leading-none text-brand-white">
+        <SplitReveal
+          as="h1"
+          type="lines"
+          className="mt-6 font-display text-h1 uppercase leading-none text-brand-white"
+        >
           {localized(album, "title", locale)}
-        </h1>
+        </SplitReveal>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 font-body text-sm text-brand-white/50">
+        <Reveal
+          as="div"
+          delay={0.15}
+          className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 font-body text-sm text-brand-white/50"
+        >
           {category && (
             <span className="text-brand-violet">
               {localized(category, "name", locale)}
             </span>
           )}
           {album.date && <span>{formatDate(album.date, locale)}</span>}
-        </div>
+        </Reveal>
 
         {description && (
-          <div
+          <Reveal
+            delay={0.2}
             className="mt-6 max-w-2xl font-body leading-relaxed text-brand-white/70"
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
+          >
+            <div dangerouslySetInnerHTML={{ __html: description }} />
+          </Reveal>
         )}
 
         <div className="mt-10">

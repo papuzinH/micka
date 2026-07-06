@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
 import { AlbumCard } from "@/components/site/AlbumCard";
+import { StaggerGroup } from "@/lib/motion/StaggerGroup";
 import { getCategories, getAlbums, localized } from "@/lib/pocketbase/queries";
 import { fileUrl } from "@/lib/pocketbase/files";
 
@@ -64,17 +65,25 @@ export default async function PortfolioPage({
             <h2 className="mb-6 font-display text-h2 text-brand-white">
               {localized(category, "name", locale)}
             </h2>
-            <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
+            <StaggerGroup
+              className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4"
+              from={{ opacity: 0, y: 20 }}
+              stagger={0.06}
+            >
               {items.map(toCard)}
-            </div>
+            </StaggerGroup>
           </section>
         ))}
 
         {uncategorized.length > 0 && (
           <section className="mt-14">
-            <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
+            <StaggerGroup
+              className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4"
+              from={{ opacity: 0, y: 20 }}
+              stagger={0.06}
+            >
               {uncategorized.map(toCard)}
-            </div>
+            </StaggerGroup>
           </section>
         )}
       </div>

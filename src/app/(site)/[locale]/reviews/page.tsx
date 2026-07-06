@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
+import { StaggerGroup } from "@/lib/motion/StaggerGroup";
 import { getReviews, localized } from "@/lib/pocketbase/queries";
 import { fileUrl } from "@/lib/pocketbase/files";
 
@@ -34,7 +35,10 @@ export default async function ReviewsPage({
         {reviews.length === 0 ? (
           <p className="font-body text-brand-white/60">{t("empty")}</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
+          <StaggerGroup
+            className="grid gap-6 md:grid-cols-2"
+            from={{ opacity: 0, y: 24 }}
+          >
             {reviews.map((r) => {
               const avatar = fileUrl(
                 { collectionName: "reviews", id: r.id },
@@ -73,7 +77,7 @@ export default async function ReviewsPage({
                 </article>
               );
             })}
-          </div>
+          </StaggerGroup>
         )}
       </div>
     </main>
