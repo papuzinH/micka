@@ -198,15 +198,15 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       <div
         ref={curtainRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-100 flex items-center justify-center bg-brand-violet opacity-0"
+        className="pointer-events-none fixed inset-0 z-100 flex items-center justify-center bg-brand-black opacity-0"
       >
         {/*
-          Wordmark del navbar (lockup de 2 líneas, Syne ExtraBold uppercase).
-          En el navbar "Don Micka" va en violeta, pero acá el fondo ES violeta
-          → ambas líneas en blanco para que sea legible sobre la cortina.
+          Wordmark del navbar (lockup de 2 líneas, Syne ExtraBold uppercase) con
+          su misma composición de color: "Don Micka" violeta / "de la Vega"
+          blanco, sobre el fondo negro de la cortina.
         */}
         <div className="text-center font-display text-h2 font-extrabold uppercase leading-[1.05] text-brand-white">
-          <span className="block">Don Micka</span>
+          <span className="block text-brand-violet">Don Micka</span>
           <span className="block">de la Vega</span>
         </div>
       </div>
