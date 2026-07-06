@@ -2,22 +2,35 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
+import { Reveal } from "@/lib/motion/Reveal";
+import { SplitReveal } from "@/lib/motion/SplitReveal";
+import { Parallax } from "@/lib/motion/Parallax";
+import { GrowLine } from "@/lib/motion/GrowLine";
 
 // Proporciones y offsets replican el Figma (Group 13, 2413:248): la foto 1 es
 // la más grande (~4:3), 2 y 3 más chicas (~5:4) y escalonadas verticalmente.
+// `depth` da profundidades de parallax distintas por foto (efecto de tira).
 const SIDE_PHOTOS = [
-  { img: "cyclist-duo", ratio: "aspect-[4/3]", grow: "md:flex-[307]", offset: "" },
+  {
+    img: "cyclist-duo",
+    ratio: "aspect-[4/3]",
+    grow: "md:flex-[307]",
+    offset: "",
+    depth: 0.04,
+  },
   {
     img: "cyclist-road",
     ratio: "aspect-[5/4]",
     grow: "md:flex-[210]",
     offset: "md:mt-[61px]",
+    depth: 0.08,
   },
   {
     img: "cyclist-bw-race",
     ratio: "aspect-[5/4]",
     grow: "md:flex-[212]",
     offset: "md:mt-2",
+    depth: 0.12,
   },
 ] as const;
 
@@ -28,7 +41,11 @@ export function BioBlock() {
       <div className="flex flex-col gap-12 md:flex-row md:gap-16">
         {/* Retrato + identidad */}
         <div className="flex items-start gap-5">
-          <div className="relative h-[267px] w-[160px] shrink-0 overflow-hidden">
+          <Reveal
+            from={{ opacity: 0, scale: 0.94 }}
+            duration={0.9}
+            className="relative h-[267px] w-[160px] shrink-0 overflow-hidden"
+          >
             <Image
               src="/placeholders/cyclist-portrait.jpg"
               alt={t("portraitAlt")}
@@ -36,7 +53,7 @@ export function BioBlock() {
               sizes="160px"
               className="object-cover"
             />
-          </div>
+          </Reveal>
           <div className="flex flex-col gap-4">
             <div>
               <h2 className="font-display text-card text-brand-violet">
@@ -51,20 +68,22 @@ export function BioBlock() {
         </div>
 
         {/* Heading editorial + tira de fotos */}
-        <div className="flex flex-1 flex-col gap-6 text-left md:border-l-2 md:border-brand-violet md:pl-16">
-          <h2 className="font-display text-h2 text-brand-white">
+        <div className="relative flex flex-1 flex-col gap-6 text-left md:pl-16">
+          {/* Divisor violeta: "se dibuja" de arriba a abajo. */}
+          <GrowLine className="absolute inset-y-0 left-0 hidden w-0.5 origin-top bg-brand-violet md:block" />
+          <SplitReveal
+            as="h2"
+            type="lines"
+            className="font-display text-h2 text-brand-white"
+          >
             {t("heading")}
-          </h2>
+          </SplitReveal>
           <div className="flex flex-col gap-3 md:flex-row md:items-start">
-            {SIDE_PHOTOS.map(({ img, ratio, grow, offset }) => (
-              <div
+            {SIDE_PHOTOS.map(({ img, ratio, grow, offset, depth }) => (
+              <Parallax
                 key={img}
-                className={cn(
-                  "relative overflow-hidden",
-                  ratio,
-                  grow,
-                  offset
-                )}
+                speed={depth}
+                className={cn("relative overflow-hidden", ratio, grow, offset)}
               >
                 <Image
                   src={`/placeholders/${img}.jpg`}
@@ -73,7 +92,7 @@ export function BioBlock() {
                   sizes="(max-width: 768px) 100vw, 320px"
                   className="object-cover"
                 />
-              </div>
+              </Parallax>
             ))}
           </div>
         </div>
