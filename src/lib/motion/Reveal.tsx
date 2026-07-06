@@ -14,6 +14,8 @@ type RevealProps = {
   from?: RevealFrom;
   delay?: number;
   duration?: number;
+  /** Curva de easing de GSAP (ej. `"back.out(1.7)"` para un efecto "pop"). */
+  ease?: string;
   once?: boolean;
   className?: string;
 };
@@ -30,6 +32,7 @@ export function Reveal({
   from = DEFAULT_REVEAL_FROM,
   delay = 0,
   duration = 0.8,
+  ease = "power3.out",
   once = true,
   className,
 }: RevealProps) {
@@ -51,7 +54,7 @@ export function Reveal({
             ...restingVarsFor(from),
             duration,
             delay,
-            ease: "power3.out",
+            ease,
           }),
       });
     },

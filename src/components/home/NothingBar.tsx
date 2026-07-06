@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { SplitReveal } from "@/lib/motion/SplitReveal";
 
 /** Franja con textura de puntos violeta y el lema "Nothing is left to chance". */
 export function NothingBar() {
@@ -9,9 +10,13 @@ export function NothingBar() {
         aria-hidden="true"
         className="absolute inset-0 opacity-40 bg-[radial-gradient(circle,#a020f0_1.5px,transparent_1.5px)] bg-size-[16px_16px]"
       />
-      <p className="relative mx-auto max-w-[12ch] text-center font-display text-h2 leading-tight text-brand-white md:max-w-none">
+      <SplitReveal
+        as="p"
+        type="lines"
+        className="relative mx-auto max-w-[12ch] text-center font-display text-h2 leading-tight text-brand-white md:max-w-none"
+      >
         {t("text")}
-      </p>
+      </SplitReveal>
     </div>
   );
 }
