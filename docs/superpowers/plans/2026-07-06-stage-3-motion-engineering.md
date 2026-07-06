@@ -3,7 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Fecha:** 2026-07-06
-**Estado:** Planificado · arranca por Fase 3a (just-in-time: 3c/3d/3e se detallan al llegar)
+**Estado:** ✅ Completo (3a-3e implementadas; pendiente solo la validación visual del cliente)
 **Rama sugerida:** `stage-3-motion` (desde `master`, con Stage 2 ya mergeado)
 **Stage previo:** `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md` (✅ completo, en `master`) + pulido `2026-07-05-home-fidelity-polish.md`
 **Spec / diseño:** `docs/superpowers/specs/2026-06-18-micka-photography-portfolio-design.md`
@@ -189,14 +189,33 @@ Verificación: `tsc`/ESLint limpios, **75/75 unit** (+8 nuevos), `next build` OK
 
 ---
 
-# FASE 3e — Cierre de Stage 3 *(se detalla al llegar)*
+# FASE 3e — Cierre de Stage 3 ✅ COMPLETA
 
-**Tasks previstas:**
-1. **Auditoría `prefers-reduced-motion` integral:** con reduced-motion ON, el sitio entero (Home + subpáginas + navegación) debe comportarse como el estático de Stage 2 — sin Lenis, sin reveals ocultos, sin cortina. Revisar que ninguna primitiva deje contenido invisible si el JS falla.
-2. **Pasada de performance:** `will-change` acotado, matar ScrollTriggers/Lenis al desmontar, `matchMedia` para efectos pesados en mobile, sin layout shift introducido por el motion. (La optimización fina de imágenes/CWV es Stage 4; acá solo "no regresar".)
-3. **Verificación integral (agente):** `npx tsc --noEmit` limpio · ESLint limpio · `rtk vitest run` (todos PASS, incl. primitivas + provider) · `npx next build` OK.
-4. **Validación visual (cliente):** Home + subpáginas + transiciones en EN/FR, desktop + mobile.
-5. **Docs:** actualizar `CLAUDE.md` (estado + changelog "Stage 3 completo") y el **spec** (documentar como decisiones de UI: Lenis smooth scroll + transiciones de página elaboradas; el módulo `lib/motion` deja de estar "pendiente"). Marcar tasks `- [x]` en este plan.
+- [x] **Auditoría `prefers-reduced-motion` integral:** grep de clases estáticas que ocultarían
+  contenido (`opacity-0`, `scale-0`, `invisible`, `translate-*-full`) en todo `src/` — sin hallazgos
+  fuera de la cortina de `TransitionProvider` (que arranca "fuera de pantalla" por CSS a propósito:
+  es un overlay decorativo, no contenido real, y ese es precisamente el estado correcto si el JS no
+  corre — nunca se muestra, nunca bloquea la navegación nativa). Cada primitiva (`Reveal`,
+  `StaggerGroup`, `Parallax`, `SplitReveal`, `Marquee`, `GrowLine`) ya garantiza por diseño (y por
+  test) que el estado oculto se aplica solo con `gsap.set` dentro de `useGSAP`, nunca por
+  CSS/markup — bajo reduced-motion ninguna se ejecuta. Bug real encontrado y corregido durante 3b
+  (no en 3e): `Parallax` con `oversize` estático (ver changelog de esa fase).
+- [x] **Pasada de performance:** `will-change` no se gestiona a mano — GSAP ya lo activa/desactiva
+  automáticamente durante cada tween (comportamiento default de su CSSPlugin), así que agregarlo
+  manualmente sería redundante. ScrollTriggers se matan al desmontar vía el revert automático de
+  `useGSAP` (por componente) + una red de seguridad global en `vitest.setup.ts` para los tests;
+  Lenis se destruye en el cleanup del efecto de `MotionProvider`. `Parallax` ya corre acotado a
+  `md:` (`gsap.matchMedia`) para no sumar carga en mobile. Sin layout shift: las primitivas envuelven
+  el markup existente con un wrapper transparente que hereda el mismo `className` (mismo tamaño/caja
+  que antes), nunca agregan dimensiones nuevas.
+- [x] **Verificación integral (agente):** `npx tsc --noEmit` limpio · ESLint limpio · `vitest run`
+  **75/75 PASS** (incl. las 6 primitivas + `MotionProvider` + `TransitionProvider`) · `npx next
+  build` OK (Home + 5 subpáginas siguen SSG).
+- [ ] **Validación visual (cliente):** Home + subpáginas + transiciones en EN/FR, desktop + mobile —
+  pendiente del cliente (el agente no corre tests visuales/browser, ver Convenciones).
+- [x] **Docs:** `CLAUDE.md` (estado + changelog "Stage 3 completo") y el **spec** actualizados
+  (Lenis smooth scroll + transiciones de página elaboradas documentadas como decisiones de UI ya
+  implementadas). Tasks marcadas `- [x]` en este plan.
 
 ---
 

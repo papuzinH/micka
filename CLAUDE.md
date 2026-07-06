@@ -79,7 +79,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 |---|---|---|---|
 | 1 | 1 | Arquitectura y estructura del CMS | `docs/superpowers/plans/2026-06-18-stage-1-cms-architecture.md` |
 | 2 | 2 | Layout Home + 5 subpáginas + admin CRUD + contacto | `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md` (Fase 2a detallada; 2b/2c esbozadas) |
-| 3 | 3 | Motion Engineering (GSAP) | `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md` (Fase 3a detallada; 3b esbozada; 3c/3d/3e just-in-time) |
+| 3 | 3 | Motion Engineering (GSAP) | `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md` (✅ completo, 3a-3e) |
 | 4 | 4 | Optimización, testing, SEO, deploy | _pendiente de planificar_ |
 
 ## Estado actual
@@ -196,8 +196,16 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   - `MotionProvider` expone Lenis por un `lenisRef` (no `useState`) para que `TransitionProvider`
     resetee el scroll (`lenisRef.current?.scrollTo(0, {immediate:true})`) al cambiar de ruta sin
     forzar un re-render extra en los consumidores.
-  - **Próximo:** Fase 3e — cierre de Stage 3 (auditoría integral, performance, verificación final,
-    docs + spec).
+- **✅ STAGE 3 COMPLETO** (rama `stage-3-motion`, fases 3a-3e). Auditoría integral de
+  `prefers-reduced-motion` sin hallazgos nuevos (grep de clases estáticas de ocultamiento en todo
+  `src/`); `will-change` gestionado automáticamente por GSAP (no manual); ScrollTriggers/Lenis se
+  matan al desmontar (revert de `useGSAP` por componente + cleanup de `MotionProvider`); `Parallax`
+  acotado a `md:` para no sumar carga en mobile. Verde: `tsc`/ESLint limpios, **75/75 unit**, `next
+  build` OK. Spec actualizado (Lenis + cortina documentadas como decisiones de UI ya implementadas).
+  **Único pendiente: validación visual del cliente** (Home + 5 subpáginas + transiciones, EN/FR,
+  desktop+mobile — el agente no corre tests visuales/browser, ver Convenciones).
+  - **Próximo:** aprobación del cliente tras la validación visual → Stage 4 (optimización, testing,
+    SEO, deploy), pendiente de planificar.
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -211,6 +219,17 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **STAGE 3 COMPLETO** (rama `stage-3-motion`, fases 3a-3e). Cierre: auditoría
+  integral de `prefers-reduced-motion` (grep de `opacity-0`/`scale-0`/`invisible`/`translate-*-full`
+  en todo `src/`, sin hallazgos nuevos — el único caso encontrado, `Parallax` con `scale` estático en
+  Hero/FavesGallery, ya se había corregido en el cierre de 3b); pasada de performance (`will-change`
+  lo gestiona GSAP automáticamente, no hace falta manual; cleanup de ScrollTrigger/Lenis ya cubierto
+  por `useGSAP`/`MotionProvider`; `Parallax` ya acotado a `md:`; sin layout shift porque las
+  primitivas envuelven con el mismo `className`/tamaño que tenía el markup original). Spec
+  actualizado documentando Lenis + la cortina de transición como decisiones de UI ya implementadas
+  (dejan de estar "por definir"). Verde: `tsc`/ESLint limpios, **75/75 unit**, `next build` OK.
+  **Pendiente único:** validación visual del cliente (Home + subpáginas + transiciones, EN/FR,
+  desktop+mobile) — el agente no corre tests visuales/browser en este proyecto (ver Convenciones).
 - **2026-07-06** — **Fase 3d de Stage 3 COMPLETA** (rama `stage-3-motion`) — transiciones entre
   páginas, la fase de mayor riesgo del stage. **Spike:** se descartó la View Transitions API nativa
   de Next 16 (experimental, no verificable sin browser testing real, prohibido para el agente en
