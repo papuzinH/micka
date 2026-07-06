@@ -180,8 +180,24 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   - Hover states: se mantienen las transiciones **CSS** existentes (`group-hover:scale-105`, etc.) en
     vez de reimplementarlas en GSAP — ya son "motion sobrio" con menos costo, y no compiten con las
     props que anima `StaggerGroup` (`opacity`/`y`, nunca `scale` en estos casos).
-  - **Próximo:** Fase 3d — transiciones entre páginas (cortina/overlay), la fase de mayor riesgo
-    técnico del stage → arranca con un spike + fallback instantáneo.
+- **✅ STAGE 3 — Fase 3d COMPLETA** (rama `stage-3-motion`) — la fase de mayor riesgo técnico del
+  stage. Verde: `tsc`/ESLint limpios, **75/75 unit** (+8 nuevos), `next build` OK.
+  - **Spike → decisión:** cortina custom con GSAP (`TransitionProvider`), **no** View Transitions
+    API — su integración con Next 16 es experimental y no se puede validar sin browser testing real
+    (prohibido para el agente acá).
+  - **Interceptor de clicks por delegación** (no un `TransitionLink` por componente): un listener en
+    **fase de captura** sobre `document` — clave, porque en fase de burbuja el propio `onClick` de
+    `next/link` ya habría hecho `preventDefault` primero y la cortina nunca dispararía. Cubre
+    Navbar/Footer/`Button`/`AlbumCard`/etc. automáticamente, sin tocar esos componentes.
+  - **Cortina:** overlay full-screen violeta + wordmark "Micka's / Photos", `yPercent` (no `scale`)
+    para un barrido continuo bottom→top→off-top. Reduced-motion → `router.push` directo, la cortina
+    nunca se muestra. `playwright.config.ts` suma `reducedMotion: "reduce"` para que la suite e2e
+    navegue instantánea y determinística.
+  - `MotionProvider` expone Lenis por un `lenisRef` (no `useState`) para que `TransitionProvider`
+    resetee el scroll (`lenisRef.current?.scrollTo(0, {immediate:true})`) al cambiar de ruta sin
+    forzar un re-render extra en los consumidores.
+  - **Próximo:** Fase 3e — cierre de Stage 3 (auditoría integral, performance, verificación final,
+    docs + spec).
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -195,6 +211,34 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-06** — **Fase 3d de Stage 3 COMPLETA** (rama `stage-3-motion`) — transiciones entre
+  páginas, la fase de mayor riesgo del stage. **Spike:** se descartó la View Transitions API nativa
+  de Next 16 (experimental, no verificable sin browser testing real, prohibido para el agente en
+  este proyecto) a favor de una **cortina custom con GSAP** (`src/lib/motion/TransitionProvider.tsx`),
+  como ya proponía el plan por default. **Arquitectura:** un único listener de click en **fase de
+  captura** sobre `document` — no un `TransitionLink` que envolver en cada componente — intercepta
+  clicks en `<a>` internos (mismo origin, sin `target="_blank"`, sin modificadores, sin ir al mismo
+  lugar) y dispara la transición; cubre Navbar/Footer/`Button`/`AlbumCard`/etc. automáticamente sin
+  tocar ninguno. **Detalle no obvio:** tuvo que ser fase de *captura*, no burbuja — el propio
+  `onClick` de `next/link` (que renderiza el `<a>` real) también hace `preventDefault` para su propia
+  navegación client-side, y en fase de burbuja ya habría ganado la carrera antes de que nuestro
+  handler viera el evento; en captura, `document` se procesa primero. **Cortina:** overlay full-screen
+  violeta + wordmark "Micka's / Photos", animada con `yPercent` (no `scale`) para un barrido continuo
+  bottom→top al cubrir y top→off-screen al descubrir — la reaparición se dispara detectando el cambio
+  de `pathname` (el layout `(site)` no se remonta entre rutas, así que el mismo `TransitionProvider`
+  sigue montado de una página a la otra). **Fallback firme:** bajo `prefers-reduced-motion`,
+  `navigate()` llama `router.push` directo sin tocar la cortina — nunca se muestra. Se agregó
+  `reducedMotion: "reduce"` a `playwright.config.ts` (tal como preveía el plan) para que la suite e2e
+  existente y futura navegue instantánea y determinística cuando el cliente/CI la corra.
+  **Coordinación con Lenis:** `MotionProvider` pasó de exponer Lenis por `useState` a exponerlo por un
+  `lenisRef` (`useRef`) — evita un lint real (`react-hooks/set-state-in-effect`, calling setState
+  sincrónicamente en un efecto) y de paso no fuerza un re-render a los consumidores cuando Lenis se
+  crea; `TransitionProvider` llama `lenisRef.current?.scrollTo(0, {immediate:true})` al detectar el
+  cambio de ruta. **Higiene de tests:** se agregó un `afterEach` global en `vitest.setup.ts` que mata
+  cualquier `ScrollTrigger` sobreviviente (red de seguridad — mitigó un timer interno de ScrollTrigger
+  que ocasionalmente disparaba un "Unhandled Error" después del teardown de jsdom en corridas previas;
+  verificado estable en 3 corridas consecutivas tras el fix). Verde: `tsc`/ESLint limpios, **75/75
+  unit** (+8 nuevos), `next build` OK.
 - **2026-07-06** — **Fase 3c de Stage 3 COMPLETA** (rama `stage-3-motion`, 5 tasks). Entrance liviano
   en las 5 subpáginas (Portfolio+detalle, About, Reviews, Collabs, Contact), reutilizando las
   primitivas de 3a **sin** sumar ninguna nueva y **sin** replicar `Parallax`/pin del Home (páginas de

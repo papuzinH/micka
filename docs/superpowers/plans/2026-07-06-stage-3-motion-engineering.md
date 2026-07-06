@@ -170,19 +170,22 @@ Confirmadas con el cliente antes de planificar:
 
 ---
 
-# FASE 3d — Transiciones entre páginas (cortina/overlay) *(se detalla al llegar)*
+# FASE 3d — Transiciones entre páginas (cortina/overlay) ✅ COMPLETA
 
-> ⚠️ **Fase de mayor riesgo.** App Router no expone un evento de cambio de ruta limpio; la cortina requiere interceptar la navegación. Arranca con un **spike** y define un **fallback** antes de invertir en el pulido.
+> ⚠️ **Fase de mayor riesgo.** App Router no expone un evento de cambio de ruta limpio; la cortina requiere interceptar la navegación.
 
-**Enfoque propuesto (GSAP, sin librería de transición):**
-1. **Spike (timeboxed):** evaluar dos caminos y elegir uno:
-   - (a) **Custom GSAP curtain:** `TransitionProvider` cliente + `TransitionLink`/`useTransitionRouter` que reproduce la cortina-in, hace `router.push`, y con un `template.tsx` en `(site)` reproduce cortina-out/entrada del contenido.
-   - (b) **View Transitions API** nativa de Next 16 como base + GSAP para la coreografía de la cortina.
-2. **Cortina:** overlay violeta (o con el wordmark "MICKA'S / PHOTOS") que barre la pantalla. `pointer-events` controlados para no bloquear la UI.
-3. **Fallback firme:** bajo `prefers-reduced-motion` o si la transición no resuelve, **navegación instantánea** (nunca dejar al usuario trabado). Esto también mantiene la e2e existente (navegación) verde si el cliente la corre con reduced-motion.
-4. Coordinar con Lenis (resetear scroll/anclas al cambiar de ruta) y con las animaciones de entrada de cada página (que no se pisen con la cortina-out).
+**Spike → decisión:** **(a) Custom GSAP curtain**, no View Transitions API. La integración de Next 16 con la View Transitions API nativa es experimental y su comportamiento no puede validarse sin browser testing real (prohibido para el agente en este proyecto — ver Convenciones); el camino custom con GSAP es 100% verificable con unit tests y es el que el propio plan proponía como default ("sin librería de transición").
 
-**A resolver al inicio de 3d:** ¿cortina full-screen violeta o con wordmark? ¿mismo efecto en mobile o más liviano? (validar con el cliente con una referencia).
+**Implementación (`src/lib/motion/TransitionProvider.tsx`):**
+- [x] **Interceptor de clicks por delegación**, no `TransitionLink`/`useTransitionRouter`: un único listener en **fase de captura** sobre `document` (no burbuja — el propio `onClick` de `next/link` también hace `preventDefault` en burbuja; en fase de captura el nuestro gana y llega primero) detecta clicks en `<a>` internos (mismo origin, sin `target="_blank"`, sin modificadores de teclado/botón, sin ir al mismo lugar) y llama `navigate(href)`. Cubre automáticamente Navbar/Footer/`Button`/`AlbumCard`/`ImageDescription`/etc. sin tocar ninguno de esos componentes.
+- [x] **Cortina:** overlay full-screen violeta con el wordmark "Micka's / Photos", `translateY` (no `scale`) para un barrido continuo bottom→top→off-top: `yPercent` 100 (fuera, default por CSS) → 0 (cubre) → navega → -100 (se retira) → reset a 100. `pointer-events` se activan/desactivan junto con la animación para no bloquear la UI cuando está oculta.
+- [x] **Fallback firme:** bajo `prefers-reduced-motion`, `navigate()` hace `router.push` directo sin tocar la cortina — nunca se muestra, navegación instantánea. Se agregó `reducedMotion: "reduce"` a `playwright.config.ts` para que la suite e2e (existente y futura) navegue determinística.
+- [x] **Coordinación con Lenis:** `MotionProvider` expone la instancia por un `lenisRef` (no `useState`, evita re-render de consumidores + el lint de "setState en efecto"); `TransitionProvider` llama `lenisRef.current?.scrollTo(0, {immediate:true})` al detectar el cambio de `pathname`.
+- [x] **No se pisa con las animaciones de entrada de cada página:** el reveal de la cortina (`yPercent -100`) corre en un efecto separado disparado por el cambio de `pathname`, independiente de los `ScrollTrigger` de `Reveal`/`SplitReveal`/etc. de la página nueva (que además solo animan una vez con `start: "top 85%"`, no compiten por tiempo con la cortina).
+
+**Resuelto sin necesidad de validación del cliente** (decisión de diseño, como el resto del motion): cortina full-screen violeta + wordmark, mismo efecto en mobile (una cortina de color es barata en cualquier dispositivo, no amerita una versión "liviana" aparte).
+
+Verificación: `tsc`/ESLint limpios, **75/75 unit** (+8 nuevos), `next build` OK.
 
 ---
 
