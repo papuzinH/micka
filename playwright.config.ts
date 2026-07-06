@@ -36,6 +36,11 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    // Stage 3 (motion): fuerza prefers-reduced-motion para que la cortina de
+    // transición entre páginas (TransitionProvider) y el resto del motion
+    // GSAP degraden a su fallback instantáneo — la navegación en los tests
+    // existentes se mantiene determinística en vez de esperar la animación.
+    reducedMotion: "reduce",
   },
 
   /* Configure projects for major browsers */

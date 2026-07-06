@@ -1,15 +1,29 @@
 "use client";
 
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger, registerGsap } from "./register";
 import { useReducedMotion } from "./useReducedMotion";
 
-type MotionSettings = { reducedMotion: boolean };
+type MotionSettings = {
+  reducedMotion: boolean;
+  /** Ref (no state): leer `.current` no necesita re-renderizar a los consumidores. */
+  lenisRef: RefObject<Lenis | null>;
+};
 
-const MotionContext = createContext<MotionSettings>({ reducedMotion: false });
+const MotionContext = createContext<MotionSettings>({
+  reducedMotion: false,
+  lenisRef: { current: null },
+});
 
-/** Lee el estado global de motion (hoy solo `reducedMotion`) sin volver a suscribirse a `matchMedia`. */
+/** Lee el estado global de motion (`reducedMotion` + la instancia de Lenis) sin volver a suscribirse a `matchMedia`. */
 export function useMotionSettings(): MotionSettings {
   return useContext(MotionContext);
 }
@@ -17,11 +31,12 @@ export function useMotionSettings(): MotionSettings {
 /**
  * Inicializa GSAP/ScrollTrigger + smooth scroll (Lenis) una sola vez para
  * todo el sitio público. Bajo `prefers-reduced-motion` no crea Lenis (queda
- * scroll nativo) y expone `reducedMotion` por contexto para el resto de la
- * capa de motion.
+ * scroll nativo) y expone `reducedMotion` + la instancia de Lenis por
+ * contexto para el resto de la capa de motion.
  */
 export function MotionProvider({ children }: { children: ReactNode }) {
   const reducedMotion = useReducedMotion();
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
     registerGsap();
@@ -30,23 +45,25 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (reducedMotion) return;
 
-    const lenis = new Lenis();
+    const instance = new Lenis();
+    lenisRef.current = instance;
     const onScroll = () => ScrollTrigger.update();
-    lenis.on("scroll", onScroll);
+    instance.on("scroll", onScroll);
 
-    const tick = (time: number) => lenis.raf(time * 1000);
+    const tick = (time: number) => instance.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       gsap.ticker.remove(tick);
-      lenis.off("scroll", onScroll);
-      lenis.destroy();
+      instance.off("scroll", onScroll);
+      instance.destroy();
+      lenisRef.current = null;
     };
   }, [reducedMotion]);
 
   return (
-    <MotionContext.Provider value={{ reducedMotion }}>
+    <MotionContext.Provider value={{ reducedMotion, lenisRef }}>
       {children}
     </MotionContext.Provider>
   );

@@ -6,6 +6,7 @@ import { routing } from "@/lib/i18n/routing";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MotionProvider } from "@/lib/motion/MotionProvider";
+import { TransitionProvider } from "@/lib/motion/TransitionProvider";
 import "../../globals.css";
 
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne", weight: ["700", "800"] });
@@ -30,9 +31,11 @@ export default async function LocaleLayout({
       <body className="bg-brand-gray-bg text-brand-white font-body">
         <NextIntlClientProvider>
           <MotionProvider>
-            <Navbar />
-            <div className="pt-15">{children}</div>
-            <Footer />
+            <TransitionProvider>
+              <Navbar />
+              <div className="pt-15">{children}</div>
+              <Footer />
+            </TransitionProvider>
           </MotionProvider>
         </NextIntlClientProvider>
       </body>
