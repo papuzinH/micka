@@ -41,4 +41,18 @@ describe("Parallax", () => {
     const el = screen.getByText("foto").parentElement as HTMLElement;
     expect(el.style.transform).toBe("");
   });
+
+  it("con oversize, bajo reduced-motion tampoco deja un scale estático", () => {
+    // Regresión: `oversize` solo debe aplicar scale(1.1) cuando el parallax
+    // realmente corre (desktop + sin reduced-motion) — nunca como zoom
+    // permanente vía reduced-motion.
+    mockMatchMedia(true);
+    render(
+      <Parallax oversize>
+        <p>foto</p>
+      </Parallax>
+    );
+    const el = screen.getByText("foto").parentElement as HTMLElement;
+    expect(el.style.transform).toBe("");
+  });
 });

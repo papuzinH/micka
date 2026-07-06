@@ -33,7 +33,7 @@ export function FavesGallery({ photos }: { photos: FaveItem[] }) {
       >
         {photos.map((p, i) => (
           <div key={i} className="relative aspect-[3/4] overflow-hidden">
-            <Parallax speed={DEPTHS[i % DEPTHS.length]} className="absolute inset-0 scale-110">
+            <Parallax speed={DEPTHS[i % DEPTHS.length]} oversize className="absolute inset-0">
               <Image
                 src={p.src}
                 alt={p.alt}

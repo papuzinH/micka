@@ -10,7 +10,7 @@ export function Hero() {
   const t = useTranslations("home.hero");
   return (
     <section className="relative flex min-h-128 items-center overflow-hidden">
-      <Parallax speed={0.08} className="absolute inset-0 scale-110">
+      <Parallax speed={0.08} oversize className="absolute inset-0">
         <Image
           src="/placeholders/cyclist-road.jpg"
           alt=""
