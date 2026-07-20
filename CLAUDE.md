@@ -225,6 +225,14 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
     **76/76 unit**, `next build` OK.
   - **Próximo:** aprobación del cliente tras la validación visual → Stage 4 (optimización, testing,
     SEO, deploy), pendiente de planificar.
+- **✅ FEEDBACK DEL CLIENTE RECIBIDO (2026-07-11)** — muy positivo ("perfectly executed"). 3 pedidos:
+  (1) branding "Don Micka de la Vega" consistente (el footer decía "Micka's / Photos") — **resuelto
+  2026-07-19** (Footer + `siteName` en en/fr.json); (2) acceso admin — las credenciales ya se le
+  habían enviado el 7-jul (no las vio); **pendiente rotar la contraseña** del superuser (viajó en
+  texto plano por mail); (3) quiere reescribir textos FR — puede editar él `site_content`
+  (about_intro/about_body/contact_intro) desde el panel; el resto (Home, subtítulos, form) vive en
+  `src/messages/fr.json` estático y lo aplica el dev cuando mande las correcciones. `stage-3-motion`
+  mergeado a `master` (fast-forward) el 2026-07-19.
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -238,6 +246,13 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-19** — **Feedback del cliente (2026-07-11) incorporado + merge de Stage 3 a `master`.**
+  Branding unificado a "Don Micka de la Vega": `Footer.tsx` (wordmark 2 líneas bicolor, igual al
+  Navbar/cortina) + `common.siteName` en `en.json`/`fr.json` (clave sin consumidores en código,
+  actualizada por consistencia). Pendientes del feedback: rotar contraseña del superuser de
+  PocketBase (las credenciales viajaron en texto plano; script preparado) y reescritura de textos FR
+  del cliente (él edita `site_content` desde el panel; lo estático de `fr.json` lo aplica el dev).
+  Verde: `tsc`/ESLint limpios, **76/76 unit**, `next build` OK.
 - **2026-07-06** — **fix routing del Navbar post-cierre de Stage 3** (reportado por el cliente:
   URLs con locale duplicado `/en/en/portfolio` + menú mobile que no cerraba al navegar). Dos bugs en
   `TransitionProvider`: (1) usaba el router/pathname de next-intl sobre un href que ya venía

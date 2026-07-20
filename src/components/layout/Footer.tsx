@@ -10,10 +10,10 @@ export function Footer() {
       <div className="mx-auto flex max-w-360 flex-col gap-8 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="font-display text-h2 uppercase leading-[30px] text-brand-violet [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
-            Micka&apos;s
+            Don Micka
           </p>
           <p className="font-display text-h2 uppercase leading-[30px] text-brand-white [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
-            Photos
+            de la Vega
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2">
