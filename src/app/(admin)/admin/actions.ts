@@ -27,7 +27,7 @@ export async function loginAdmin(_prev: unknown, formData: FormData) {
 
 export async function logoutAdmin() {
   const store = await cookies();
-  store.delete(ADMIN_COOKIE);
+  store.delete({ name: ADMIN_COOKIE, path: "/admin" });
   redirect("/admin/login");
 }
 
@@ -69,6 +69,6 @@ export async function changePassword(
   }
 
   const store = await cookies();
-  store.delete(ADMIN_COOKIE);
+  store.delete({ name: ADMIN_COOKIE, path: "/admin" });
   redirect("/admin/login");
 }

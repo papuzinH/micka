@@ -18,15 +18,15 @@ export default function AccountPage() {
       <form action={action} className="space-y-4">
         <label className="block">
           <span className={labelCls}>Current password</span>
-          <input name="oldPassword" type="password" required className={inputCls} />
+          <input name="oldPassword" type="password" autoComplete="current-password" required className={inputCls} />
         </label>
         <label className="block">
           <span className={labelCls}>New password</span>
-          <input name="newPassword" type="password" required className={inputCls} />
+          <input name="newPassword" type="password" autoComplete="new-password" required className={inputCls} />
         </label>
         <label className="block">
           <span className={labelCls}>Confirm new password</span>
-          <input name="confirmPassword" type="password" required className={inputCls} />
+          <input name="confirmPassword" type="password" autoComplete="new-password" required className={inputCls} />
         </label>
         {state?.error ? (
           <p role="alert" className="text-sm text-brand-violet">
