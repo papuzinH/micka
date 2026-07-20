@@ -434,3 +434,10 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 - Planes: `docs/superpowers/plans/`
 - Propuesta original: `Project Proposal Web Development - Micka.pdf`
 - Provisión de PocketBase: `pocketbase/README.md` (se crea en Stage 1, Task 3)
+
+## Panchito Kit
+- nivel: lite
+- status: 40-PROYECTOS/Micka/Micka - Status & Roadmap.md
+- fuente_producto: vault
+- verificacion: npx tsc --noEmit && npm run lint && npm run test && npx next build
+- branch_base: master
