@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
         {state?.error ? <p className="text-brand-violet text-sm">{state.error}</p> : null}
         <button type="submit" disabled={pending}
           className="w-full bg-brand-violet shadow-button rounded p-2 disabled:opacity-50">
-          {pending ? "..." : "Entrar"}
+          {pending ? "..." : "Log in"}
         </button>
       </form>
     </main>

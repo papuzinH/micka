@@ -10,7 +10,7 @@ test("muestra error con credenciales inválidas", async ({ page }) => {
   await page.fill('input[name="email"]', "wrong@test.com");
   await page.fill('input[name="password"]', "wrongpass");
   await page.click('button[type="submit"]');
-  await expect(page.locator("text=Credenciales inválidas")).toBeVisible();
+  await expect(page.locator("text=Invalid email or password")).toBeVisible();
 });
 
 test("login exitoso lleva al dashboard y permanece en /admin", async ({ page }) => {

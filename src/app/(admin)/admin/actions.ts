@@ -14,7 +14,7 @@ export async function loginAdmin(_prev: unknown, formData: FormData) {
   try {
     await pb.collection("_superusers").authWithPassword(email, password);
   } catch {
-    return { error: "Credenciales inválidas" };
+    return { error: "Invalid email or password" };
   }
   const store = await cookies();
   store.set(
