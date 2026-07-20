@@ -8,14 +8,10 @@ export function Footer() {
   return (
     <footer className="border-t border-white/10 bg-brand-black px-5 py-12 md:px-10">
       <div className="mx-auto flex max-w-360 flex-col gap-8 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="font-display text-h2 uppercase leading-[30px] text-brand-violet [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
-            Don Micka
-          </p>
-          <p className="font-display text-h2 uppercase leading-[30px] text-brand-white [text-shadow:0_4px_4px_rgba(0,0,0,0.25)]">
-            de la Vega
-          </p>
-        </div>
+        <p className="font-display text-sm font-extrabold uppercase leading-[1.1] text-brand-white [text-shadow:0_4px_4.5px_rgba(0,0,0,0.3)] md:text-[20px] md:leading-[20px]">
+          <span className="block text-brand-violet">Don Micka</span>
+          <span className="block">de la Vega</span>
+        </p>
         <nav className="flex flex-wrap gap-x-6 gap-y-2">
           {NAV_LINKS.map((l) => (
             <Link
