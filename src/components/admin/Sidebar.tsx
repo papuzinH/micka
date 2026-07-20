@@ -38,6 +38,13 @@ export function Sidebar() {
             {c.label}
           </Link>
         ))}
+        <div className="my-2 h-px bg-brand-light-gray" />
+        <Link
+          href="/admin/account"
+          className={linkCls(pathname === "/admin/account")}
+        >
+          Account
+        </Link>
       </nav>
       <form action={logoutAdmin} className="mt-4">
         <button
