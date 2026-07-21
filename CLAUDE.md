@@ -234,6 +234,18 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   `src/messages/fr.json` estático y lo aplica el dev cuando mande las correcciones. `stage-3-motion`
   mergeado a `master` (fast-forward) el 2026-07-19.
 
+- **✅ CUENTAS ADMIN SEPARADAS + CAMBIO DE CONTRASEÑA (2026-07-20)** - mergeado a `master` (ff) y
+  deployado (Vercel READY, `b40fc62`). `admin@micka.com` queda como cuenta de servicio/dev de Lauti
+  (clave **rotada** a una fuerte en `.env.local`; la vieja `adminmicka123` filtrada quedó muerta);
+  Micka tiene su propia cuenta superuser (`donmickadelavega@gmail.com`). Nueva ruta `/admin/account`
+  (Server Action `changePassword` sobre `_superusers` que borra la cookie y fuerza re-login, porque
+  PB invalida el token al cambiar la clave) + link "Account" en el sidebar; validación pura
+  `validatePasswordChange` (TDD). Scripts `pocketbase/{rotate-admin-password,create-client-superuser}.mjs`
+  (nunca imprimen claves: rotación reescribe `.env.local` in-place; la temporal va a
+  `pocketbase/.tmp-micka-credentials.txt`, gitignoreado). Strings del login del admin pasados a inglés
+  ("Log in"/"Invalid email or password"). Verde: tsc/ESLint, **81/81 unit**, build OK. **Pendiente
+  manual:** Lauti manda el mail a Micka (borrador listo: cuenta personal + one-time secret, CC Micaela).
+
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
 - ✅ `(site)/[locale]/page.tsx` con `setRequestLocale` propio → resuelto en Fase 2a (el Home ahora es SSG).
@@ -246,6 +258,24 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-20** — **Cuentas admin separadas + página de cambio de contraseña.** Se abandonó la idea
+  del 2026-07-19 de "no rotar": ahora `admin@micka.com` es la cuenta de servicio/dev (clave rotada a
+  una fuerte, en `.env.local`, usada por los seeds + e2e; la runtime no la usa) y el cliente tiene su
+  propia cuenta superuser (`donmickadelavega@gmail.com`). Nueva página `(admin)/(panel)/account`
+  (Server Action `changePassword` -> `pb.collection("_superusers").update(id, {oldPassword, password,
+  passwordConfirm})`; borra `ADMIN_COOKIE` y redirige a `/admin/login` porque PB invalida el token al
+  cambiar la clave) + link "Account" en el sidebar. La ruta estática `account` tiene prioridad sobre
+  `[collection]` (sin colisión; "account" no es slug de ninguna colección). Validación pura en
+  `src/lib/admin/password.ts` (TDD, 5 tests). Dos scripts de ops
+  `pocketbase/{rotate-admin-password,create-client-superuser}.mjs` que nunca escriben claves a stdout
+  (rotación in-place de `.env.local`; temporal a archivo gitignoreado `/pocketbase/.tmp-*`). Colateral:
+  los strings del login del admin estaban en español ("Entrar"/"Credenciales inválidas") -> inglés (+
+  el e2e que los verificaba, actualizado). Método: superpowers brainstorm -> plan -> subagent-driven
+  (implementer + reviewer por task, review final de rama en verde). Verde: tsc/ESLint, **81/81 unit**,
+  `next build` OK (`/admin/account` como ruta propia). Mergeado ff a `master` + push -> deploy Vercel
+  READY. Rollout corrido contra el PB real (rotación de la clave de servicio + creación del superuser
+  del cliente); pendiente el envío manual del mail (borrador listo con la cuenta personal + one-time
+  secret).
 - **2026-07-19** — **Feedback del cliente (2026-07-11) incorporado + merge de Stage 3 a `master`.**
   Branding unificado a "Don Micka de la Vega": `Footer.tsx` (wordmark 2 líneas bicolor, igual al
   Navbar/cortina) + `common.siteName` en `en.json`/`fr.json` (clave sin consumidores en código,
