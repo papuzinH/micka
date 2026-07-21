@@ -44,7 +44,7 @@ export function BioBlock() {
           <Reveal
             from={{ opacity: 0, scale: 0.94 }}
             duration={0.9}
-            className="relative h-[267px] w-[160px] shrink-0 overflow-hidden"
+            className="relative h-[220px] w-[132px] shrink-0 overflow-hidden sm:h-[267px] sm:w-[160px]"
           >
             <Image
               src="/placeholders/cyclist-portrait.jpg"

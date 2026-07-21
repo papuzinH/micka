@@ -66,7 +66,7 @@ export default async function PortfolioPage({
               {localized(category, "name", locale)}
             </h2>
             <StaggerGroup
-              className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4"
+              className="grid grid-cols-2 gap-x-5 gap-y-12 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4"
               from={{ opacity: 0, y: 20 }}
               stagger={0.06}
             >
@@ -78,7 +78,7 @@ export default async function PortfolioPage({
         {uncategorized.length > 0 && (
           <section className="mt-14">
             <StaggerGroup
-              className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4"
+              className="grid grid-cols-2 gap-x-5 gap-y-12 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4"
               from={{ opacity: 0, y: 20 }}
               stagger={0.06}
             >

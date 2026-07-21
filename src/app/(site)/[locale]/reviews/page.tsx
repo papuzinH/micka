@@ -36,7 +36,7 @@ export default async function ReviewsPage({
           <p className="font-body text-brand-white/60">{t("empty")}</p>
         ) : (
           <StaggerGroup
-            className="grid gap-6 md:grid-cols-2"
+            className="grid gap-10 md:grid-cols-2 md:gap-6"
             from={{ opacity: 0, y: 24 }}
           >
             {reviews.map((r) => {
