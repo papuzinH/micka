@@ -600,3 +600,4 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 - fuente_producto: vault
 - verificacion: npx tsc --noEmit && npm run lint && npm run test && npx next build
 - branch_base: master
+- dev_url: http://localhost:3000
