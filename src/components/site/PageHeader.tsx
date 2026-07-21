@@ -17,7 +17,8 @@ export function PageHeader({
       <SplitReveal
         as="h1"
         type="lines"
-        className="font-display text-4xl font-extrabold uppercase leading-[1.3] text-brand-white md:text-[45px]"
+        mask={false}
+        className="font-display text-4xl font-extrabold uppercase leading-[1.1] text-brand-white md:text-[45px]"
       >
         {title}
       </SplitReveal>

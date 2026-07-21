@@ -16,6 +16,14 @@ type SplitRevealProps = {
   duration?: number;
   delay?: number;
   once?: boolean;
+  /**
+   * Envolver cada unidad en una máscara `overflow:hidden` (emerge de detrás de
+   * una línea invisible). `true` por default. Ponelo en `false` para textos que
+   * ocupan casi todo el ancho disponible: la máscara mide su ancho al partir el
+   * texto, y si eso ocurre antes de que la webfont aplique su métrica real,
+   * recorta el sobrante horizontal (ej. un título de una palabra larga).
+   */
+  mask?: boolean;
 };
 
 /**
@@ -34,6 +42,7 @@ export function SplitReveal({
   duration = 0.7,
   delay = 0,
   once = true,
+  mask = true,
 }: SplitRevealProps) {
   const ref = useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion();
@@ -43,7 +52,10 @@ export function SplitReveal({
       if (reducedMotion || !ref.current) return;
       registerGsap();
 
-      const split = new SplitText(ref.current, { type, mask: type });
+      const split = new SplitText(
+        ref.current,
+        mask ? { type, mask: type } : { type },
+      );
       const targets = split[type];
       if (!targets?.length) return;
 
