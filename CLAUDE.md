@@ -246,6 +246,27 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   ("Log in"/"Invalid email or password"). Verde: tsc/ESLint, **81/81 unit**, build OK. **Pendiente
   manual:** Lauti manda el mail a Micka (borrador listo: cuenta personal + one-time secret, CC Micaela).
 
+- **✅ PULIDO MOBILE (2026-07-21)** - mergeado a `master` (ff, `5d14fde`) y deployado a producción.
+  6 arreglos de cómo se veía el sitio en mobile (reportados por el cliente desde su Pixel 9), cada uno
+  validado por él contra un preview de Vercel de la rama `fix/mobile-polish` antes del merge:
+  (1) **menú mobile animado** (`Navbar.tsx`): el overlay aparecía/desaparecía de golpe (única parte del
+  sitio sin motion); ahora fade del fondo + slide con stagger de los items (GSAP, respeta
+  `prefers-reduced-motion`). Se maneja con estado `mounted` + un layout-effect isomórfico (nuevo helper
+  `src/lib/motion/useIsomorphicLayoutEffect.ts`) para enter/exit sin flash, y con el montaje/desmontaje
+  en event handlers (no en effects) para no violar la regla ESLint `react-hooks/set-state-in-effect`.
+  (2) **toggle de idioma único**: estaba en la barra y en el menú a la vez; en mobile ahora vive solo
+  dentro del menú (la barra queda logo + burger), en desktop sigue en la barra. (3) **título de
+  subpáginas ya no se recorta** (`PageHeader.tsx` + `SplitReveal.tsx`): el recorte era horizontal
+  ("PORTFOLIO" se leía "PORTFO") y lo causaba la máscara `overflow:hidden` de `SplitText`, cuyo ancho
+  se mide al partir el texto antes de que la webfont Syne aplique su métrica real (más ancha); se
+  agregó un prop opt-out `mask` a `SplitReveal` (default `true`, resto del sitio intacto) y el título
+  del header usa `mask={false}` + tamaño responsive `text-4xl md:text-[45px]`. (4) **cards de
+  Portfolio** con más aire vertical. (5) **Reviews** con más gap vertical en mobile (1 columna).
+  (6) **BioBlock del Home**: el retrato de ancho fijo (160px) aplastaba el nombre al lado en angosto;
+  se achica a 132px en mobile. Verde: tsc/ESLint, **81/81 unit**, `next build` OK. Flujo: rama de fix
+  -> preview de Vercel por push para la validación visual del cliente (el agente no corre tests
+  visuales en este proyecto) -> merge ff a `master`.
+
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
 - ✅ `(site)/[locale]/page.tsx` con `setRequestLocale` propio → resuelto en Fase 2a (el Home ahora es SSG).
@@ -258,6 +279,22 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-21** - **Pulido de mobile (feedback visual del cliente).** 6 arreglos sobre cómo se veía el
+  sitio en teléfono, cada uno validado por el cliente contra un preview de Vercel de la rama antes de
+  mergear (ff `5d14fde` a `master`, deploy a producción). (1) Menú mobile animado: fade del fondo +
+  slide con stagger de los items (antes aparecía de golpe, única parte sin motion); `Navbar` con estado
+  `mounted` + nuevo helper `useIsomorphicLayoutEffect` para enter/exit sin flash, montaje/desmontaje en
+  event handlers para no violar `react-hooks/set-state-in-effect`. (2) Toggle de idioma solo dentro del
+  menú en mobile (antes duplicado barra + menú; desktop sin cambios). (3) Título de subpáginas que se
+  recortaba en horizontal ("PORTFOLIO" -> "PORTFO"): la causa era la máscara `overflow:hidden` de
+  `SplitText`, cuyo ancho se mide al partir el texto antes de que Syne aplique su métrica real más
+  ancha, así que el sobrante se clippeaba a la derecha. Fix: prop opt-out `mask` en `SplitReveal`
+  (default `true`, resto del sitio intacto) + `mask={false}` en el `PageHeader` + título responsive
+  `text-4xl md:text-[45px]`. (Primer intento fallido: subir el line-height, apuntaba a un recorte
+  vertical que no era el problema.) (4-6) Más spacing mobile: cards de Portfolio (aire vertical),
+  Reviews (gap en 1 columna) y retrato del BioBlock (achicado para que el nombre respire en angosto).
+  Flujo: rama `fix/mobile-polish` -> preview de Vercel por cada push (el cliente valida en su Pixel 9,
+  el agente no corre tests visuales) -> merge ff. Verde: tsc/ESLint, **81/81 unit**, `next build` OK.
 - **2026-07-20** — **Cuentas admin separadas + página de cambio de contraseña.** Se abandonó la idea
   del 2026-07-19 de "no rotar": ahora `admin@micka.com` es la cuenta de servicio/dev (clave rotada a
   una fuerte, en `.env.local`, usada por los seeds + e2e; la runtime no la usa) y el cliente tiene su
