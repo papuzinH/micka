@@ -71,7 +71,7 @@ export default async function AlbumDetailPage({
 
   const items = photos.map((p) => ({
     src: fileUrl({ collectionName: "photos", id: p.id }, p.image, {
-      thumb: "600x0",
+      thumb: "800x0",
     }),
     alt: localized(p, "alt", locale),
     caption: localized(p, "caption", locale) || undefined,
