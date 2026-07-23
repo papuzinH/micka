@@ -158,6 +158,9 @@ aprobación expresa del cliente antes de avanzar al siguiente.
 - Tests automatizados (Playwright/Vitest) de flujos clave.
 - SEO técnico final (sitemap, hreflang, JSON-LD, metadata).
 - Delegación de DNS, configuración segura y publicación en producción.
+- **Diseño detallado del stage** (2026-07-23, con alcance ampliado: CI en GitHub Actions,
+  Vercel Analytics, guía de admin `/admin/help` + PDF, dominio como variable pendiente):
+  `docs/superpowers/specs/2026-07-23-stage-4-launch-design.md`.
 
 ## Fuera de alcance (según propuesta)
 
