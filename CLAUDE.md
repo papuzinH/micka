@@ -80,7 +80,7 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 | 1 | 1 | Arquitectura y estructura del CMS | `docs/superpowers/plans/2026-06-18-stage-1-cms-architecture.md` |
 | 2 | 2 | Layout Home + 5 subpáginas + admin CRUD + contacto | `docs/superpowers/plans/2026-06-30-stage-2-site-and-admin.md` (Fase 2a detallada; 2b/2c esbozadas) |
 | 3 | 3 | Motion Engineering (GSAP) | `docs/superpowers/plans/2026-07-06-stage-3-motion-engineering.md` (✅ completo, 3a-3e) |
-| 4 | 4 | Optimización, testing, SEO, deploy | _pendiente de planificar_ |
+| 4 | 4 | Optimización, testing, SEO, deploy | `docs/superpowers/plans/2026-07-23-stage-4-launch.md` (✅ completo, 4a-4d) |
 
 ## Estado actual
 
@@ -266,6 +266,29 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   se achica a 132px en mobile. Verde: tsc/ESLint, **81/81 unit**, `next build` OK. Flujo: rama de fix
   -> preview de Vercel por push para la validación visual del cliente (el agente no corre tests
   visuales en este proyecto) -> merge ff a `master`.
+- **✅ STAGE 4 — SEO técnico + cierre del proyecto** (rama `stage-4-launch`, Tasks 0-14 completas y
+  revisadas; **Task 15 en curso** — Steps 1-3 de este cierre de docs). **Fase 4a (SEO técnico):**
+  `getSiteUrl()` (`src/lib/seo/site.ts`) parametriza toda URL pública por `NEXT_PUBLIC_SITE_URL` con
+  fallback a `https://micka-plum.vercel.app` — activar el dominio del cliente es cambiar una env var
+  en Vercel, cero código; `pageAlternates()` agrega canonical + hreflang en/fr + x-default a las 7
+  vistas; `metadataBase` + title template ("%s — Don Micka de la Vega") + OG/twitter defaults en el
+  layout `(site)` (namespace `meta` nuevo en en/fr.json); og-image 1200×630 con `next/og`
+  (fondo + wordmark bicolor + subtítulo localizado); `sitemap.xml` (helper puro
+  `buildSitemapEntries`, resiliente vía `getAlbums()`) + `robots.txt` (Disallow `/admin`) + noindex
+  explícito en el layout admin; JSON-LD Person+WebSite en el Home; favicon/apple-icon generados
+  (monograma "M." violeta), assets default del scaffold borrados. **Fase 4b:** auditoría de
+  `next/image` — único cambio real, thumb del grid de álbum 600x0→800x0 (el resto ya estaba
+  correcto desde Stages 2-3). **Fase 4c:** `tests/e2e/seo.spec.ts` (sitemap/robots/canonical-
+  hreflang/JSON-LD, los corre CI o Lauti, nunca el agente); GitHub Actions (`checks` siempre en
+  push/PR; `e2e` gateado por secrets de PocketBase, nunca falla si faltan — solo avisa y saltea).
+  **Fase 4d:** Vercel Analytics solo en el layout `(site)` (el admin no se mide); `/admin/help`
+  imprimible (Ctrl+P → PDF, única fuente de verdad, sin doc separado que desactualizar); runbook de
+  activación de dominio (`docs/domain-launch-runbook.md`) con 3 candidatos para proponerle a Micka.
+  Verde: `tsc`/ESLint limpios, **93/93 unit**, `next build` OK. **Pendientes manuales de Lauti**
+  (Steps 4-5 de Task 15, no bloquean el cierre de docs): validación visual del preview de Vercel
+  (og-card, favicon, `/admin/help`, sitemap/robots) y merge ff a `master`; post-merge, verificar
+  Analytics en el dashboard, cargar los secrets `POCKETBASE_ADMIN_*` en GitHub si no se hizo antes, y
+  mandar a Micka los candidatos de dominio. El dominio propio sigue pendiente de compra del cliente.
 
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
@@ -279,6 +302,32 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-23** - **Stage 4 (SEO + cierre): Tasks 0-14 completas, cierre de docs (Task 15) en
+  curso.** Rama `stage-4-launch` desde `master`. **Decisiones no obvias:** (1) **patrón `getSiteUrl()`**
+  — toda URL pública (canonical, hreflang, og-image, sitemap, robots) pasa por un único helper con
+  fallback `https://micka-plum.vercel.app`; el día que el cliente compre su dominio, activar
+  `NEXT_PUBLIC_SITE_URL` en Vercel es el único cambio, sin tocar código (queda como Paso 1 del runbook
+  de dominio). (2) **og-image con `next/og` y TTF estático de Syne** — `ImageResponse`/satori no
+  soporta variable fonts, así que el TTF ExtraBold (no el variable que ya usa el sitio vía
+  `next/font`) se descargó aparte y se commiteó en `src/assets/fonts/` (licencia SIL OFL, reusado
+  también por `icon.tsx`/`apple-icon.tsx`). (3) **gate de secrets en CI como step, no como
+  `job.if`** — los `secrets.*` de GitHub Actions no son legibles en `jobs.<id>.if` (siempre evalúan
+  vacío ahí), así que el job `e2e` corre un step previo que expone un `output` (`run=true/false`) del
+  que dependen los steps siguientes; sin los secrets `POCKETBASE_ADMIN_*` configurados, el job no
+  falla — samplea con `::notice::` y saltea. El job `checks` (tsc+lint+unit+build) corre siempre, sin
+  gate. (4) **`/admin/help` imprimible como única fuente del PDF de cortesía** — en vez de mantener un
+  PDF estático que se desactualiza, la guía vive como página del panel (`HelpContent` server-safe +
+  `PrintButton` client con `window.print()` + variantes `print:` en Tailwind que ocultan sidebar/
+  botón); Lauti genera el PDF con Ctrl+P cuando lo necesita, siempre al día con el código. **Fase 4b:**
+  auditoría de `next/image` cerró con un solo cambio real (thumb del grid de álbum detalle
+  600x0→800x0 — a 33vw en 1440px el thumb de 600 se serviría upscaleado a @2x); el resto (Hero
+  priority, AlbumCard/StarredAlbums/FavesGallery/BioBlock/EditorialIntro/CraftBlock, avatares/logos)
+  ya estaba correcto desde Stages 2-3. Verificación final de Task 15: `tsc --noEmit` limpio, ESLint
+  limpio, **93/93 unit tests**, `next build` OK (rutas nuevas confirmadas en el output:
+  `opengraph-image`, `/icon`, `/apple-icon`, `/robots.txt`, `/sitemap.xml`, `/admin/help`).
+  **Pendiente:** Steps 4-5 de Task 15 son manuales de Lauti (validación visual del preview + merge ff
+  a `master`; post-merge, secrets de CI + Analytics + candidatos de dominio a Micka) — no bloquean
+  este commit de docs.
 - **2026-07-21** - **Pulido de mobile (feedback visual del cliente).** 6 arreglos sobre cómo se veía el
   sitio en teléfono, cada uno validado por el cliente contra un preview de Vercel de la rama antes de
   mergear (ff `5d14fde` a `master`, deploy a producción). (1) Menú mobile animado: fade del fondo +

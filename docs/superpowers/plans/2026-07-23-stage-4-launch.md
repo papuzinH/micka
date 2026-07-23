@@ -26,7 +26,7 @@
 
 **Files:** ninguno (solo git).
 
-- [ ] **Step 1: Crear la rama desde master actualizado**
+- [x] **Step 1: Crear la rama desde master actualizado**
 
 ```bash
 git checkout master
@@ -50,7 +50,7 @@ Expected: rama `stage-4-launch` creada sobre el último `master`.
 **Interfaces:**
 - Produces: `getSiteUrl(): string` — URL pública absoluta sin trailing slash. La consumen Tasks 2, 4, 5, 6.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/seo/__tests__/site.test.ts
@@ -77,12 +77,12 @@ describe("getSiteUrl", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo/__tests__/site.test.ts`
 Expected: FAIL — module `../site` not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/seo/site.ts
@@ -97,12 +97,12 @@ export function getSiteUrl(): string {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/lib/seo/__tests__/site.test.ts`
 Expected: 3/3 PASS.
 
-- [ ] **Step 5: Documentar la env var**
+- [x] **Step 5: Documentar la env var**
 
 En `.env.local.example`, agregar al final:
 
@@ -112,7 +112,7 @@ En `.env.local.example`, agregar al final:
 NEXT_PUBLIC_SITE_URL=
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/seo .env.local.example
@@ -131,7 +131,7 @@ git commit -m "feat(seo): getSiteUrl helper with NEXT_PUBLIC_SITE_URL and Vercel
 - Consumes: `getSiteUrl()` de Task 1.
 - Produces: `pageAlternates(path: string, locale: string): Metadata["alternates"]` — `path` es la ruta SIN locale (`""` para Home, `"/portfolio"`, `"/portfolio/mi-slug"`). La consumen Task 3 (páginas) y nadie más.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/seo/__tests__/alternates.test.ts
@@ -167,12 +167,12 @@ describe("pageAlternates", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo/__tests__/alternates.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/seo/alternates.ts
@@ -196,12 +196,12 @@ export function pageAlternates(path: string, locale: string): Metadata["alternat
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/lib/seo/__tests__/alternates.test.ts`
 Expected: 2/2 PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/seo
@@ -222,7 +222,7 @@ git commit -m "feat(seo): pageAlternates helper (canonical + hreflang en/fr + x-
 - Consumes: `getSiteUrl()` (Task 1), `pageAlternates(path, locale)` (Task 2).
 - Produces: nada consumido por tasks posteriores (el layout hereda `metadataBase`/OG a todo `(site)`).
 
-- [ ] **Step 1: Agregar el namespace `meta` a los mensajes**
+- [x] **Step 1: Agregar el namespace `meta` a los mensajes**
 
 En `src/messages/en.json` (nivel raíz):
 
@@ -244,7 +244,7 @@ En `src/messages/fr.json`:
 
 (Los textos FR son razonables pero el cliente los está revisando en general — si los reescribe, se actualizan como el resto de `fr.json`.)
 
-- [ ] **Step 2: `generateMetadata` en el layout `(site)`**
+- [x] **Step 2: `generateMetadata` en el layout `(site)`**
 
 En `src/app/(site)/[locale]/layout.tsx`, agregar (imports: `type { Metadata }` de `next`, `getTranslations` de `next-intl/server`, `getSiteUrl` de `@/lib/seo/site`):
 
@@ -270,7 +270,7 @@ export async function generateMetadata({
 }
 ```
 
-- [ ] **Step 3: `generateMetadata` del Home**
+- [x] **Step 3: `generateMetadata` del Home**
 
 En `src/app/(site)/[locale]/page.tsx`, agregar (el Home hoy no tiene metadata propio):
 
@@ -288,7 +288,7 @@ export async function generateMetadata({
 }
 ```
 
-- [ ] **Step 4: `alternates` en las 5 subpáginas y el detalle de álbum**
+- [x] **Step 4: `alternates` en las 5 subpáginas y el detalle de álbum**
 
 En cada `generateMetadata` existente, agregar la key `alternates` al objeto retornado:
 
@@ -301,12 +301,12 @@ En cada `generateMetadata` existente, agregar la key `alternates` al objeto reto
 
 Import en cada archivo: `import { pageAlternates } from "@/lib/seo/alternates";`
 
-- [ ] **Step 5: Verificación**
+- [x] **Step 5: Verificación**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: todo verde; el build muestra las rutas sin errores de metadata.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/app src/messages src/lib/seo
@@ -325,7 +325,7 @@ git commit -m "feat(seo): metadataBase, title template, OG defaults and hreflang
 - Consumes: nada de otras tasks (el asset de fuente lo reusa Task 7).
 - Produces: `src/assets/fonts/Syne-ExtraBold.ttf` (lo reusa Task 7 para los icons). Next inyecta `og:image`/`twitter:image` automáticamente en todo el árbol `(site)/[locale]`.
 
-- [ ] **Step 1: Descargar el TTF estático de Syne ExtraBold**
+- [x] **Step 1: Descargar el TTF estático de Syne ExtraBold**
 
 Google Fonts sirve TTF estáticos (no variables — satori no los soporta) cuando el user-agent no soporta woff2:
 
@@ -339,7 +339,7 @@ curl -s -o src/assets/fonts/Syne-ExtraBold.ttf "<URL_EXTRAIDA>"
 
 Verificar: el archivo pesa >50KB y `file src/assets/fonts/Syne-ExtraBold.ttf` (o abrirlo) confirma TrueType. Si el CSS devolviera woff2 en vez de ttf, probar user-agent vacío (`-A ""`). Licencia SIL OFL — commitearlo está OK.
 
-- [ ] **Step 2: Crear la og-image**
+- [x] **Step 2: Crear la og-image**
 
 ```tsx
 // src/app/(site)/[locale]/opengraph-image.tsx
@@ -415,12 +415,12 @@ export default async function OpengraphImage({
 }
 ```
 
-- [ ] **Step 3: Verificación**
+- [x] **Step 3: Verificación**
 
 Run: `npx tsc --noEmit && npx next build`
 Expected: build OK; en el output aparece `opengraph-image` bajo `[locale]`. (El PNG resultante lo valida Lauti/el cliente en el preview — ver Task 14.)
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/assets src/app
@@ -440,7 +440,7 @@ git commit -m "feat(seo): branded og-image via next/og (Syne, wordmark, localize
 - Consumes: `getSiteUrl()` (Task 1), `getAlbums()` de `src/lib/pocketbase/queries` (existente — devuelve `Album[]`, `[]` si PocketBase falla; `Album` tiene `slug: string` y `updated: string`).
 - Produces: `buildSitemapEntries(albums: Array<{ slug: string; updated?: string }>, siteUrl: string): MetadataRoute.Sitemap`. La ruta `/sitemap.xml` queda viva (la consume el e2e de Task 9 y `robots.ts` de Task 6 la referencia).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/seo/__tests__/sitemap-entries.test.ts
@@ -478,12 +478,12 @@ describe("buildSitemapEntries", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo/__tests__/sitemap-entries.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/seo/sitemap-entries.ts
@@ -520,12 +520,12 @@ export function buildSitemapEntries(
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/lib/seo/__tests__/sitemap-entries.test.ts`
 Expected: 2/2 PASS.
 
-- [ ] **Step 5: Crear la ruta `sitemap.ts`**
+- [x] **Step 5: Crear la ruta `sitemap.ts`**
 
 ```ts
 // src/app/sitemap.ts
@@ -542,12 +542,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 }
 ```
 
-- [ ] **Step 6: Verificación**
+- [x] **Step 6: Verificación**
 
 Run: `npx tsc --noEmit && npm run test && npx next build`
 Expected: verde; `/sitemap.xml` listado en el build output.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/lib/seo src/app/sitemap.ts
@@ -567,7 +567,7 @@ git commit -m "feat(seo): sitemap with static+album routes per locale and hrefla
 - Consumes: `getSiteUrl()` (Task 1).
 - Produces: ruta `/robots.txt` (la consume el e2e de Task 9).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/seo/__tests__/robots.test.ts
@@ -587,12 +587,12 @@ describe("robots", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo/__tests__/robots.test.ts`
 Expected: FAIL — `@/app/robots` not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/app/robots.ts
@@ -607,12 +607,12 @@ export default function robots(): MetadataRoute.Robots {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/lib/seo/__tests__/robots.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: noindex explícito en el layout del admin**
+- [x] **Step 5: noindex explícito en el layout del admin**
 
 En `src/app/(admin)/admin/layout.tsx`, agregar arriba del componente:
 
@@ -625,7 +625,7 @@ export const metadata: Metadata = {
 };
 ```
 
-- [ ] **Step 6: Verificación y commit**
+- [x] **Step 6: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run test && npx next build`
 Expected: verde; `/robots.txt` en el build output.
@@ -648,7 +648,7 @@ git commit -m "feat(seo): robots.txt (disallow /admin) + explicit noindex on adm
 - Consumes: `getSiteUrl()` (Task 1).
 - Produces: `personJsonLd(siteUrl: string): object`, `websiteJsonLd(siteUrl: string): object`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/lib/seo/__tests__/jsonld.test.ts
@@ -677,12 +677,12 @@ describe("jsonld", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/lib/seo/__tests__/jsonld.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```ts
 // src/lib/seo/jsonld.ts
@@ -709,12 +709,12 @@ export function websiteJsonLd(siteUrl: string) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/lib/seo/__tests__/jsonld.test.ts`
 Expected: 2/2 PASS.
 
-- [ ] **Step 5: Inyectarlo en el Home**
+- [x] **Step 5: Inyectarlo en el Home**
 
 En `src/app/(site)/[locale]/page.tsx`, imports:
 
@@ -734,7 +734,7 @@ Dentro del JSX retornado, como primer hijo de `<main>`:
 />
 ```
 
-- [ ] **Step 6: Verificación y commit**
+- [x] **Step 6: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: verde.
@@ -755,7 +755,7 @@ git commit -m "feat(seo): Person + WebSite JSON-LD on home"
 **Interfaces:**
 - Consumes: `src/assets/fonts/Syne-ExtraBold.ttf` (creado en Task 4).
 
-- [ ] **Step 1: Crear `icon.tsx` (monograma "M." violeta sobre gris)**
+- [x] **Step 1: Crear `icon.tsx` (monograma "M." violeta sobre gris)**
 
 ```tsx
 // src/app/icon.tsx
@@ -791,7 +791,7 @@ export default async function Icon() {
 }
 ```
 
-- [ ] **Step 2: Crear `apple-icon.tsx`**
+- [x] **Step 2: Crear `apple-icon.tsx`**
 
 Mismo contenido que `icon.tsx` pero con `size = { width: 180, height: 180 }` y `fontSize: 110`:
 
@@ -829,7 +829,7 @@ export default async function AppleIcon() {
 }
 ```
 
-- [ ] **Step 3: Borrar los defaults del scaffold**
+- [x] **Step 3: Borrar los defaults del scaffold**
 
 ```bash
 git rm src/app/favicon.ico public/next.svg public/vercel.svg public/file.svg public/globe.svg public/window.svg
@@ -837,7 +837,7 @@ git rm src/app/favicon.ico public/next.svg public/vercel.svg public/file.svg pub
 
 (Antes de borrar, verificar con grep que ningún componente referencia esos SVGs: `grep -r "next.svg\|vercel.svg\|file.svg\|globe.svg\|window.svg" src/` debe devolver vacío.)
 
-- [ ] **Step 4: Verificación y commit**
+- [x] **Step 4: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run lint && npx next build`
 Expected: verde; `/icon` y `/apple-icon` en el build output.
@@ -861,7 +861,7 @@ git commit -m "feat(branding): generated favicon/app icons, drop scaffold defaul
 
 **Estado ya verificado (2026-07-23, no tocar):** `Hero.tsx` ya tiene `priority` + `sizes="100vw"`; `AlbumCard`, `StarredAlbums` (1200x0 para 440px), `FavesGallery` (600x0 para 220px), `BioBlock`, `EditorialIntro`, `CraftBlock`, `ToggleLanguage`, avatares de Reviews y logos de Collabs ya tienen `sizes`/dimensiones correctos.
 
-- [ ] **Step 1: Auditar los 3 puntos abiertos y aplicar solo lo que corresponda**
+- [x] **Step 1: Auditar los 3 puntos abiertos y aplicar solo lo que corresponda**
 
 1. **`PhotoGrid.tsx` (grid del detalle de álbum, 3 columnas desktop):** hoy pide thumb `600x0` (desde `portfolio/[slug]/page.tsx`) con `sizes="(max-width: 768px) 50vw, 33vw"`. En un viewport de 1440px, 33vw ≈ 475px CSS → @2x pide ~950px: el thumb de 600 se sirve upscaleado. Subir el thumb del call site a `800x0`:
 
@@ -874,7 +874,7 @@ src: fileUrl({ collectionName: "photos", id: p.id }, p.image, { thumb: "800x0" }
 
 3. **`about/page.tsx`:** retrato con `sizes="(max-width: 768px) 100vw, 480px"` y `fill` — verificar contra el contenedor real del JSX (si el contenedor desktop es ~480px está OK, no tocar).
 
-- [ ] **Step 2: Verificación y commit**
+- [x] **Step 2: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: verde.
@@ -900,7 +900,7 @@ git commit -m "perf(images): bump album grid thumb to 800x0 (audit: rest already
 
 **Nota de cobertura:** el "smoke de navegación completa en ambos locales" que pide el spec ya está cubierto por los e2e existentes (`tests/e2e/navigation.spec.ts`, `subpages.spec.ts`, `locale.spec.ts`) — no se duplica acá; este spec agrega solo lo nuevo de SEO.
 
-- [ ] **Step 1: Escribir el spec**
+- [x] **Step 1: Escribir el spec**
 
 ```ts
 // tests/e2e/seo.spec.ts
@@ -957,12 +957,12 @@ test.describe("SEO técnico", () => {
 });
 ```
 
-- [ ] **Step 2: Verificación estática (el agente NO corre Playwright)**
+- [x] **Step 2: Verificación estática (el agente NO corre Playwright)**
 
 Run: `npx tsc --noEmit`
 Expected: limpio (el spec compila). La ejecución real queda para el CI de Task 11 o para Lauti local.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/e2e/seo.spec.ts
@@ -979,7 +979,7 @@ git commit -m "test(e2e): SEO spec (sitemap, robots, hreflang, json-ld) - runs o
 **Interfaces:**
 - Consumes: scripts de `package.json` (`lint`, `test`), configs existentes (`playwright.config.ts` ya fuerza `reducedMotion` y `workers:1` en CI).
 
-- [ ] **Step 1: Escribir el workflow**
+- [x] **Step 1: Escribir el workflow**
 
 ```yaml
 # .github/workflows/ci.yml
@@ -1048,18 +1048,18 @@ jobs:
 
 Notas de diseño: los `secrets` no están disponibles en `jobs.<id>.if`, por eso el gate es un step que expone un output. El job e2e nunca falla por secrets ausentes (skip con notice) — requisito del spec.
 
-- [ ] **Step 2: Verificación local del YAML**
+- [x] **Step 2: Verificación local del YAML**
 
 Run: `npx tsc --noEmit` (no aplica al YAML) + revisar indentación a ojo o con `node -e "require('js-yaml')"` si está disponible; alcanza con la revisión al pushear (el workflow corre en el push de la rama si hay PR, o al mergear).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .github
 git commit -m "ci: GitHub Actions (checks always; e2e gated on PocketBase secrets)"
 ```
 
-- [ ] **Step 4 (MANUAL — Lauti, no bloquea el stage): cargar secrets en GitHub**
+- [x] **Step 4 (MANUAL — Lauti, no bloquea el stage): cargar secrets en GitHub**
 
 En `github.com/papuzinH/<repo-micka>` → Settings → Secrets and variables → Actions → New repository secret:
 - `POCKETBASE_ADMIN_EMAIL` = email de la cuenta de servicio (`admin@micka.com`)
@@ -1076,13 +1076,13 @@ Hasta que estén, el CI corre solo el job `checks` y avisa que salteó e2e.
 **Files:**
 - Modify: `package.json` (dependencia nueva), `src/app/(site)/[locale]/layout.tsx`
 
-- [ ] **Step 1: Instalar**
+- [x] **Step 1: Instalar**
 
 ```bash
 npm install @vercel/analytics
 ```
 
-- [ ] **Step 2: Montarlo solo en el sitio público**
+- [x] **Step 2: Montarlo solo en el sitio público**
 
 En `src/app/(site)/[locale]/layout.tsx`:
 
@@ -1098,7 +1098,7 @@ y como último hijo de `<body>` (después de `</NextIntlClientProvider>`):
 
 El layout del admin NO lo lleva (decisión del spec: el admin no se mide).
 
-- [ ] **Step 3: Verificación y commit**
+- [x] **Step 3: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: verde.
@@ -1125,7 +1125,7 @@ git commit -m "feat(analytics): Vercel Analytics on public site layout"
 - Consumes: guard del route group `(panel)` (existente — el layout ya protege todas sus rutas); patrón de ruta estática sobre `[collection]` ya probado con `account`.
 - Produces: ruta `/admin/help`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/components/admin/__tests__/HelpContent.test.tsx
@@ -1155,12 +1155,12 @@ describe("HelpContent", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run src/components/admin/__tests__/HelpContent.test.tsx`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implementar `HelpContent` (server-safe, sin hooks)**
+- [x] **Step 3: Implementar `HelpContent` (server-safe, sin hooks)**
 
 ```tsx
 // src/components/admin/HelpContent.tsx
@@ -1254,12 +1254,12 @@ export function HelpContent() {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run src/components/admin/__tests__/HelpContent.test.tsx`
 Expected: 2/2 PASS.
 
-- [ ] **Step 5: `PrintButton` (client, se oculta al imprimir)**
+- [x] **Step 5: `PrintButton` (client, se oculta al imprimir)**
 
 ```tsx
 // src/components/admin/PrintButton.tsx
@@ -1278,7 +1278,7 @@ export function PrintButton() {
 }
 ```
 
-- [ ] **Step 6: La página `/admin/help`**
+- [x] **Step 6: La página `/admin/help`**
 
 ```tsx
 // src/app/(admin)/admin/(panel)/help/page.tsx
@@ -1302,7 +1302,7 @@ export default function HelpPage() {
 
 (Nota: la ruta estática `help` tiene prioridad sobre la dinámica `[collection]`, igual que `account` — "help" no es slug de ninguna colección. El guard del layout `(panel)` la protege automáticamente. Verificar que el padding/estructura coincida con cómo el layout `(panel)` envuelve a las demás páginas — ajustar el wrapper si el layout ya provee padding.)
 
-- [ ] **Step 7: Ocultar el sidebar al imprimir + link Help**
+- [x] **Step 7: Ocultar el sidebar al imprimir + link Help**
 
 En `src/components/admin/Sidebar.tsx`:
 1. Al `className` del `<aside>` raíz, agregar `print:hidden`.
@@ -1314,7 +1314,7 @@ En `src/components/admin/Sidebar.tsx`:
 </Link>
 ```
 
-- [ ] **Step 8: Verificación y commit**
+- [x] **Step 8: Verificación y commit**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: verde; `/admin/help` como ruta propia en el build output.
@@ -1333,7 +1333,7 @@ git commit -m "feat(admin): help page with printable admin guide + sidebar link"
 **Files:**
 - Create: `docs/domain-launch-runbook.md`
 
-- [ ] **Step 1: Escribir el runbook**
+- [x] **Step 1: Escribir el runbook**
 
 ```markdown
 # Runbook — Activación del dominio propio (Stage 4)
@@ -1378,7 +1378,7 @@ con SU cuenta — el dominio queda a su nombre, como pide la propuesta.)
 2. Enviar `https://<dominio>/sitemap.xml` en Sitemaps.
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add docs/domain-launch-runbook.md
@@ -1393,17 +1393,17 @@ git commit -m "docs: domain launch runbook + candidate domains for the client"
 - Modify: `CLAUDE.md` (sección "Estado actual" + changelog "Decisiones y cambios")
 - Modify: `docs/superpowers/plans/2026-07-23-stage-4-launch.md` (checkboxes)
 
-- [ ] **Step 1: Verificación integral final**
+- [x] **Step 1: Verificación integral final**
 
 Run: `npx tsc --noEmit && npm run lint && npm run test && npx next build`
 Expected: TODO verde (los unit nuevos de Tasks 1, 2, 5, 6, 7, 13 incluidos). Registrar el conteo final de unit tests para el changelog.
 
-- [ ] **Step 2: Actualizar `CLAUDE.md`**
+- [x] **Step 2: Actualizar `CLAUDE.md`**
 
 - "Estado actual": nueva viñeta "✅ STAGE 4 — ..." con el resumen (SEO técnico completo, auditoría de imágenes, CI, analytics, /admin/help, runbook de dominio; dominio pendiente de compra del cliente).
 - Changelog: entrada `2026-07-XX` con las decisiones (patrón `getSiteUrl`, og-image con next/og, gate de secrets en CI, help imprimible).
 
-- [ ] **Step 3: Commit de docs**
+- [x] **Step 3: Commit de docs**
 
 ```bash
 git add CLAUDE.md docs
