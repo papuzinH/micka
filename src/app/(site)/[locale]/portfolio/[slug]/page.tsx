@@ -5,6 +5,7 @@ import { Link, routing } from "@/lib/i18n/routing";
 import { PhotoGrid } from "@/components/site/PhotoGrid";
 import { SplitReveal } from "@/lib/motion/SplitReveal";
 import { Reveal } from "@/lib/motion/Reveal";
+import { pageAlternates } from "@/lib/seo/alternates";
 import {
   getAlbums,
   getAlbumBySlug,
@@ -45,6 +46,7 @@ export async function generateMetadata({
   return {
     title: localized(album, "title", locale),
     description: stripHtml(localized(album, "description", locale)).slice(0, 160),
+    alternates: pageAlternates(`/portfolio/${slug}`, locale),
   };
 }
 

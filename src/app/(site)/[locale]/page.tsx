@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { pageAlternates } from "@/lib/seo/alternates";
 import { Hero } from "@/components/home/Hero";
 import { BioBlock } from "@/components/home/BioBlock";
 import { Marquee } from "@/components/home/Marquee";
@@ -32,6 +34,15 @@ const FAVES_FALLBACK: FaveItem[] = [
   { src: "/placeholders/cyclist-road.jpg", alt: "" },
   { src: "/placeholders/cyclist-pack.jpg", alt: "" },
 ];
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return { alternates: pageAlternates("", locale) };
+}
 
 export default async function HomePage({
   params,

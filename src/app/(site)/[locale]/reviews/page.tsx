@@ -3,6 +3,7 @@ import Image from "next/image";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
 import { StaggerGroup } from "@/lib/motion/StaggerGroup";
+import { pageAlternates } from "@/lib/seo/alternates";
 import { getReviews, localized } from "@/lib/pocketbase/queries";
 import { fileUrl } from "@/lib/pocketbase/files";
 
@@ -15,7 +16,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "reviews" });
-  return { title: t("title"), description: t("subtitle") };
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    alternates: pageAlternates("/reviews", locale),
+  };
 }
 
 export default async function ReviewsPage({

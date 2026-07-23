@@ -3,6 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ContactForm } from "@/components/site/ContactForm";
 import { Reveal } from "@/lib/motion/Reveal";
+import { pageAlternates } from "@/lib/seo/alternates";
 import { getSiteContent, localized } from "@/lib/pocketbase/queries";
 
 export const revalidate = 300;
@@ -14,7 +15,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contact" });
-  return { title: t("title"), description: t("subtitle") };
+  return {
+    title: t("title"),
+    description: t("subtitle"),
+    alternates: pageAlternates("/contact", locale),
+  };
 }
 
 export default async function ContactPage({

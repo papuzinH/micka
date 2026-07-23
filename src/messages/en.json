@@ -1,5 +1,9 @@
 {
   "common": { "siteName": "Don Micka de la Vega" },
+  "meta": {
+    "title": "Don Micka de la Vega — Sports Photographer",
+    "description": "Sports photography portfolio of Don Micka de la Vega. Women's cycling captured with an editorial, cinematic eye."
+  },
   "nav": {
     "home": "Homepage",
     "portfolio": "Portfolio",

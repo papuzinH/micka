@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/lib/motion/Reveal";
 import { SplitReveal } from "@/lib/motion/SplitReveal";
+import { pageAlternates } from "@/lib/seo/alternates";
 import { getSiteContent, localized } from "@/lib/pocketbase/queries";
 
 export const revalidate = 300;
@@ -16,7 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "about" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: pageAlternates("/about", locale) };
 }
 
 export default async function AboutPage({

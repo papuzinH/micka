@@ -1,5 +1,9 @@
 {
   "common": { "siteName": "Don Micka de la Vega" },
+  "meta": {
+    "title": "Don Micka de la Vega — Photographe sportif",
+    "description": "Portfolio de photographie sportive de Don Micka de la Vega. Le cyclisme féminin capturé avec un regard éditorial et cinématographique."
+  },
   "nav": {
     "home": "Accueil",
     "portfolio": "Portfolio",
