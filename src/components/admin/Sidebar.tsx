@@ -17,7 +17,7 @@ export function Sidebar() {
     );
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-brand-light-gray bg-brand-gray-bg p-4">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-brand-light-gray bg-brand-gray-bg p-4 print:hidden">
       <Link
         href="/admin"
         className="mb-6 block font-display text-lg uppercase text-brand-white"
@@ -44,6 +44,9 @@ export function Sidebar() {
           className={linkCls(pathname === "/admin/account")}
         >
           Account
+        </Link>
+        <Link href="/admin/help" className={linkCls(pathname === "/admin/help")}>
+          Help
         </Link>
       </nav>
       <form action={logoutAdmin} className="mt-4">
