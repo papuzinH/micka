@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { pageAlternates } from "@/lib/seo/alternates";
+import { getSiteUrl } from "@/lib/seo/site";
+import { personJsonLd, websiteJsonLd } from "@/lib/seo/jsonld";
 import { Hero } from "@/components/home/Hero";
 import { BioBlock } from "@/components/home/BioBlock";
 import { Marquee } from "@/components/home/Marquee";
@@ -79,6 +81,12 @@ export default async function HomePage({
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([personJsonLd(getSiteUrl()), websiteJsonLd(getSiteUrl())]),
+        }}
+      />
       <Hero />
       <BioBlock />
       <Marquee />
