@@ -9,8 +9,9 @@ export function HelpContent() {
         Admin guide
       </h1>
       <p className={p}>
-        Everything you need to manage donmickadelavega&apos;s site content. Changes go
-        live within 5 minutes (the site refreshes its content cache automatically).
+        Everything you need to manage the content of Don Micka de la Vega&apos;s site.
+        Changes go live within 5 minutes (the site refreshes its content cache
+        automatically).
       </p>
 
       <h2 className={h2}>Getting started</h2>

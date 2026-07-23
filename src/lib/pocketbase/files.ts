@@ -14,6 +14,9 @@ export interface FileRecordRef {
  * Devuelve "" cuando el campo file está vacío (los `file` opcionales del
  * esquema —cover, avatar, logo— pueden no tener valor). Acepta un `thumb`
  * para servir miniaturas generadas por PocketBase (p. ej. "600x0").
+ *
+ * El valor de `thumb` debe existir en el whitelist `thumbs` del campo en
+ * `pb_schema.json` — si no, PocketBase sirve el original silenciosamente.
  */
 export function fileUrl(
   record: FileRecordRef,

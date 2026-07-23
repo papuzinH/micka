@@ -60,7 +60,7 @@ export default async function HomePage({
   ]);
 
   const starred: StarredAlbumItem[] = starredAlbums.length
-    ? starredAlbums.map((a) => ({
+    ? starredAlbums.slice(0, 3).map((a) => ({
         title: localized(a, "title", locale),
         src: fileUrl({ collectionName: "albums", id: a.id }, a.cover, {
           thumb: "1200x0",
