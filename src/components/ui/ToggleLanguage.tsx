@@ -27,6 +27,27 @@ const THUMB_TOP = (TRACK_H - THUMB) / 2;
 const THUMB_TRAVEL = TRACK_W - PAD * 2 - THUMB;
 
 /**
+ * Timing del toggle, en segundos. Exportado para que un test pueda fijar la
+ * invariante que hace que el switch se sienta inmediato: `navigateAt` cae
+ * ANTES de que la animación termine, así la navegación de Next y el remate
+ * del thumb corren solapados en vez de en serie.
+ */
+export const TOGGLE_TIMING = {
+  pressAt: 0,
+  pressDuration: 0.08,
+  slideAt: 0.04,
+  slideDuration: 0.3,
+  /** Thumb ya cruzó el medio: se cambia bandera/código y se dispara la navegación. */
+  navigateAt: 0.16,
+  releaseAt: 0.2,
+  releaseDuration: 0.14,
+} as const;
+
+/** Momento en que la animación completa termina (el tween más tardío). */
+export const TOGGLE_TOTAL =
+  TOGGLE_TIMING.releaseAt + TOGGLE_TIMING.releaseDuration;
+
+/**
  * Switch EN/FR: el thumb es directamente la bandera del idioma activo y se
  * desliza del todo hacia la izquierda (EN) o hacia la derecha (FR); el
  * código del idioma se lee en el espacio restante de la pista, del lado
@@ -35,11 +56,17 @@ const THUMB_TRAVEL = TRACK_W - PAD * 2 - THUMB;
  * testeable.
  *
  * Al togglear, el thumb se "hunde" (press) y desliza con un pequeño overshoot
- * (spring sobrio); la bandera + el código cambian al idioma destino al cruzar
- * el medio del recorrido y recién al terminar la animación se navega. La
- * animación corre sobre el elemento vivo en el click (no depende de si el
- * componente se remonta al cambiar de ruta) y bajo `prefers-reduced-motion`
- * se saltea: la navegación es instantánea.
+ * (spring sobrio); al cruzar el medio del recorrido la bandera + el código
+ * pasan al idioma destino y se dispara la navegación, mientras el remate de la
+ * animación sigue corriendo en paralelo (ver `TOGGLE_TIMING`). La animación
+ * corre sobre el elemento vivo en el click (no depende de si el componente se
+ * remonta al cambiar de ruta) y bajo `prefers-reduced-motion` se saltea: la
+ * navegación es instantánea.
+ *
+ * Si la navegación llega antes de que el timeline termine, el remate se corta
+ * sin salto visible: el `transform` inline del thumb está atado al locale REAL,
+ * así que en cuanto el locale nuevo llega el thumb ya queda en la posición
+ * final — que es exactamente adonde la animación lo estaba llevando.
  */
 export function ToggleLanguage({
   locale,
@@ -96,22 +123,41 @@ export function ToggleLanguage({
 
     const targetX = other === "fr" ? THUMB_TRAVEL : 0;
     const thumb = thumbRef.current;
+    const t = TOGGLE_TIMING;
     timelineRef.current?.kill();
     timelineRef.current = gsap
       .timeline({
         onComplete: () => {
           animatingRef.current = false;
-          go();
         },
       })
       // Press: el thumb se hunde apenas.
-      .to(thumb, { scale: 0.82, duration: 0.1, ease: "power2.in" }, 0)
+      .to(
+        thumb,
+        { scale: 0.82, duration: t.pressDuration, ease: "power2.in" },
+        t.pressAt
+      )
       // Slide con overshoot (spring sobrio).
-      .to(thumb, { x: targetX, duration: 0.4, ease: "back.out(1.7)" }, 0.05)
-      // Al cruzar el medio del recorrido, bandera + código pasan al destino.
-      .add(() => setPreviewLocale(other), 0.25)
+      .to(
+        thumb,
+        { x: targetX, duration: t.slideDuration, ease: "back.out(1.6)" },
+        t.slideAt
+      )
+      // Al cruzar el medio del recorrido: bandera + código pasan al destino y
+      // se dispara la navegación, SIN esperar a que la animación termine. Antes
+      // se navegaba en `onComplete`, así que el costo de traer la página nueva
+      // se sumaba en serie a la animación entera y el switch se sentía pesado.
+      // El remate (overshoot + soltar el press) corre mientras Next navega.
+      .add(() => {
+        setPreviewLocale(other);
+        go();
+      }, t.navigateAt)
       // Suelta el press.
-      .to(thumb, { scale: 1, duration: 0.18, ease: "power2.out" }, 0.28);
+      .to(
+        thumb,
+        { scale: 1, duration: t.releaseDuration, ease: "power2.out" },
+        t.releaseAt
+      );
   };
 
   return (
