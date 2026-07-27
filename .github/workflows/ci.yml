@@ -25,9 +25,14 @@ jobs:
       - run: npm run test
       - run: npx next build
 
+  # Solo en pull_request: los e2e corren contra el PocketBase de PRODUCCIÓN
+  # (el del cliente) y admin-crud escribe/borra un contact_message real. Correrlos
+  # en cada push a master dejaría basura en la bandeja de Micka si un test falla
+  # a mitad. En PR corren cuando hacen falta: justo antes de mergear.
   e2e:
     runs-on: ubuntu-latest
     needs: checks
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
