@@ -290,6 +290,16 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   Analytics en el dashboard, cargar los secrets `POCKETBASE_ADMIN_*` en GitHub si no se hizo antes, y
   mandar a Micka los candidatos de dominio. El dominio propio sigue pendiente de compra del cliente.
 
+- **🔧 CI ARREGLADO (2026-07-27) — nunca había funcionado.** El CI que Stage 4 dio por completo
+  jamás llegó a correr un test: el **único run en la historia del repo** (`30035690373`, del push del
+  23-jul) falló en **`npm ci` a los 11 segundos**, así que `checks` no ejecutó nada y `e2e` quedó
+  skipped por dependencia. Causa: el workflow pedía **Node 20** y el proyecto se desarrolla y
+  verifica en **Node 24 / npm 11** — un entorno que nadie había ejercitado. Mergeado ff a `master`
+  (`c48c77f`, `325e051`). **Regla que sale de acá: un CI no está hecho hasta que se vio el run en
+  verde** — la verificación local no dice nada sobre si el runner corre.
+- **⏳ Toggle de idioma acelerado (2026-07-27)** — rama `fix/language-toggle-speed` (`888f8bd`),
+  **pendiente de validación visual de Lauti y de merge**. Ver changelog.
+
 ### Minor findings diferidos a Stage 2 (del review final)
 - ✅ `as any` en `tokens.test.ts` y `i18n/request.ts:6` → resueltos en Fase 2a (tipos concretos + `(typeof routing.locales)[number]`).
 - ✅ `(site)/[locale]/page.tsx` con `setRequestLocale` propio → resuelto en Fase 2a (el Home ahora es SSG).
@@ -302,6 +312,39 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-07-27** — **CI arreglado (nunca había funcionado) + toggle de idioma acelerado.**
+  **(A) CI.** El hallazgo salió de una pregunta lateral ("¿para qué sirven los secrets del CI?"):
+  al ir a explicarlo apareció que el único run de Actions de la historia del repo había fallado en
+  `npm ci` a los 11s, y que por lo tanto **el CI de Stage 4 nunca ejecutó un solo test** pese a estar
+  documentado como ✅. Causa: `node-version: 20` en el workflow contra **Node 24 / npm 11** local,
+  donde se corrió toda la verificación de Stage 4 (`npm ci --dry-run` pasa local en 1s, así que el
+  lockfile estaba sano — el problema era exclusivamente el entorno del runner). **Segunda decisión,
+  independiente del fix:** el job `e2e` ahora corre **solo en `pull_request`** (`if:
+  github.event_name == 'pull_request'`). Los e2e apuntan al PocketBase de **producción** y
+  `admin-crud.spec.ts` crea y borra un `contact_message` real; cuando se escribió ese CI el cliente
+  no usaba el panel, ahora sí, y un test que falle entre el submit y el cleanup le deja basura en la
+  bandeja. Se conserva el valor donde importa (antes de mergear) y se elimina el riesgo de fondo. El
+  gate de secrets queda como defensa en profundidad. **Nota:** `github.event_name` sí es legible en
+  `jobs.<id>.if`, a diferencia de `secrets.*` (ver la decisión (3) del 2026-07-23). Verificado en
+  vivo: primer run verde de la historia (checks + Playwright completo contra el backend real) y el
+  push posterior a `master` corriendo **solo** `checks`.
+  **(B) Toggle de idioma** (pendiente arrastrado desde el 21-jul, "acelerar el delay de ~0.45s"). El
+  problema real no era la duración de la animación sino la **serialización**: `router.replace` se
+  disparaba en el `onComplete` del timeline de GSAP, así que el costo de traer el locale nuevo se
+  sumaba *encima* de los 0.46s en vez de solaparse. Ahora la navegación arranca a los **0.16s** —
+  en el mismo beat en que la bandera y el código pasan al idioma destino — y el remate (overshoot +
+  soltar el press) corre en paralelo; el timeline además baja de 0.46s a **0.34s** y el overshoot se
+  afloja (`back.out(1.7)` → `1.6`) porque con el slide más corto quedaba proporcionalmente más
+  marcado. **Riesgo evaluado:** si la navegación llega antes de que termine el timeline, el remate se
+  corta — pero sin salto visible, porque el `transform` inline del thumb está atado al locale **real**
+  y en cuanto el locale nuevo llega el thumb queda exactamente donde la animación lo estaba llevando
+  (vale tanto si React reusa el nodo como si lo remonta). Las constantes de timing se exportan
+  (`TOGGLE_TIMING`/`TOGGLE_TOTAL`) y **3 tests fijan la invariante** (`navigateAt < TOGGLE_TOTAL`,
+  navegación dentro de la ventana del slide, y un presupuesto de 0.35s para el total) para que un
+  refactor futuro no devuelva la navegación al final sin darse cuenta. Verde: `tsc`/ESLint limpios,
+  **96/96 unit**, `next build` OK. **Pendiente: validación visual de Lauti sobre el preview de la
+  rama** (que el thumb no dé un tirón al cortarse, sobre todo en mobile con conexión lenta) — el
+  agente no corre tests visuales en este proyecto (ver Convenciones).
 - **2026-07-23** - **Stage 4 (SEO + cierre): Tasks 0-14 completas, cierre de docs (Task 15) en
   curso.** Rama `stage-4-launch` desde `master`. **Decisiones no obvias:** (1) **patrón `getSiteUrl()`**
   — toda URL pública (canonical, hreflang, og-image, sitemap, robots) pasa por un único helper con
