@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireAdminPb } from "@/lib/pocketbase/admin";
 import { getCollection } from "@/lib/admin/collections";
+import { singletonTarget } from "@/lib/admin/singleton";
 import { CollectionList } from "@/components/admin/CollectionList";
 
 export default async function CollectionListPage({
@@ -16,6 +17,9 @@ export default async function CollectionListPage({
   const records = await pb
     .collection(collection.name)
     .getFullList({ sort: collection.defaultSort });
+
+  const target = singletonTarget(collection, records);
+  if (target) redirect(target);
 
   return <CollectionList collection={collection} records={records} />;
 }
