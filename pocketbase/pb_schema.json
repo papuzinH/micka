@@ -160,5 +160,32 @@
     "createRule": "",
     "updateRule": null,
     "deleteRule": null
+  },
+  {
+    "id": "col_siteimages001",
+    "name": "site_images",
+    "type": "base",
+    "system": false,
+    "fields": [
+      { "type": "text", "name": "id", "system": true, "required": true, "primaryKey": true, "min": 15, "max": 15, "pattern": "^[a-z0-9]+$", "autogeneratePattern": "[a-z0-9]{15}" },
+      { "type": "file", "name": "home_hero", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_portrait", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_strip_1", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_strip_2", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_strip_3", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_editorial_1", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_editorial_2", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_craft_1", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "home_craft_2", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "file", "name": "about_portrait", "required": false, "maxSelect": 1, "maxSize": 15728640, "mimeTypes": ["image/jpeg", "image/png", "image/webp", "image/avif"], "thumbs": ["400x0", "800x0", "1200x0", "1920x0"], "protected": false },
+      { "type": "autodate", "name": "created", "onCreate": true, "onUpdate": false },
+      { "type": "autodate", "name": "updated", "onCreate": true, "onUpdate": true }
+    ],
+    "indexes": [],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null
   }
 ]

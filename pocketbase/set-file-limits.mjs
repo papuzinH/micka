@@ -34,10 +34,22 @@ if (!URL || !EMAIL || !PASSWORD) {
 
 const LIMIT = 15 * 1024 * 1024; // 15 MB
 const TARGETS = {
-  albums: "cover",
-  photos: "image",
-  reviews: "avatar",
-  collabs: "logo",
+  albums: ["cover"],
+  photos: ["image"],
+  reviews: ["avatar"],
+  collabs: ["logo"],
+  site_images: [
+    "home_hero",
+    "home_portrait",
+    "home_strip_1",
+    "home_strip_2",
+    "home_strip_3",
+    "home_editorial_1",
+    "home_editorial_2",
+    "home_craft_1",
+    "home_craft_2",
+    "about_portrait",
+  ],
 };
 
 const pb = new PocketBase(URL);
@@ -47,13 +59,13 @@ async function main() {
   await pb.collection("_superusers").authWithPassword(EMAIL, PASSWORD);
   console.log("✓ Autenticado como superuser\n");
 
-  for (const [collection, fieldName] of Object.entries(TARGETS)) {
+  for (const [collection, fieldNames] of Object.entries(TARGETS)) {
     const col = await pb.collections.getOne(collection);
     const fields = col.fields.map((f) =>
-      f.name === fieldName ? { ...f, maxSize: LIMIT } : f,
+      fieldNames.includes(f.name) ? { ...f, maxSize: LIMIT } : f,
     );
     await pb.collections.update(col.id, { fields });
-    console.log(`✓ ${collection}.${fieldName}: maxSize → ${LIMIT} bytes`);
+    console.log(`✓ ${collection}: ${fieldNames.join(", ")} → maxSize ${LIMIT}`);
   }
 
   console.log("\n✓ Límites de archivo actualizados a 15 MB.");

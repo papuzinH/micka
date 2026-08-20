@@ -36,3 +36,51 @@ describe("pb schema", () => {
     expect(cm.listRule).toBeNull();
   });
 });
+
+const SITE_IMAGE_FIELDS = [
+  "home_hero",
+  "home_portrait",
+  "home_strip_1",
+  "home_strip_2",
+  "home_strip_3",
+  "home_editorial_1",
+  "home_editorial_2",
+  "home_craft_1",
+  "home_craft_2",
+  "about_portrait",
+];
+
+describe("site_images", () => {
+  const col = () =>
+    (schema as Array<Record<string, unknown>>).find(
+      (c) => c.name === "site_images",
+    ) as {
+      fields: Array<{
+        name: string;
+        type: string;
+        maxSize?: number;
+        thumbs?: string[];
+      }>;
+      listRule: string | null;
+      viewRule: string | null;
+      createRule: string | null;
+    };
+
+  it("existe y declara los diez campos de imagen", () => {
+    const fields = col().fields.filter((f) => f.type === "file");
+    expect(fields.map((f) => f.name)).toEqual(SITE_IMAGE_FIELDS);
+  });
+
+  it("cada campo acepta 15MB y declara el whitelist completo de thumbs", () => {
+    for (const f of col().fields.filter((f) => f.type === "file")) {
+      expect(f.maxSize).toBe(15728640);
+      expect(f.thumbs).toEqual(["400x0", "800x0", "1200x0", "1920x0"]);
+    }
+  });
+
+  it("es de lectura pública y no se puede crear ni borrar desde la API", () => {
+    expect(col().listRule).toBe("");
+    expect(col().viewRule).toBe("");
+    expect(col().createRule).toBeNull();
+  });
+});
