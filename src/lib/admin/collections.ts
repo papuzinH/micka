@@ -47,6 +47,8 @@ export interface CollectionConfig {
   /** contact_messages no se crea desde el admin (bandeja de entrada). */
   canCreate?: boolean;
   canEdit?: boolean;
+  /** Colección de un solo registro: el listado redirige directo a su form. */
+  singleton?: boolean;
 }
 
 export const COLLECTIONS: CollectionConfig[] = [
@@ -158,6 +160,28 @@ export const COLLECTIONS: CollectionConfig[] = [
       { name: "email", label: "Email", type: "email", required: true },
       { name: "message", label: "Message", type: "textarea", required: true },
       { name: "locale", label: "Locale", type: "select", options: ["en", "fr"] },
+    ],
+  },
+  {
+    name: "site_images",
+    slug: "site-images",
+    label: "Site images",
+    labelSingular: "Site images",
+    titleField: "id",
+    defaultSort: "created",
+    canCreate: false,
+    singleton: true,
+    fields: [
+      { name: "home_hero", label: "Home — hero background", type: "file", thumb: "1920x0", help: "The full-width photo behind your name at the top of the Home page. Landscape works best." },
+      { name: "home_portrait", label: "Home — portrait", type: "file", thumb: "400x0", help: "The small portrait of you next to your name on the Home page. Portrait orientation." },
+      { name: "home_strip_1", label: "Home — strip photo 1", type: "file", thumb: "800x0", help: "First of the three photos beside the Home heading. The widest of the three." },
+      { name: "home_strip_2", label: "Home — strip photo 2", type: "file", thumb: "800x0", help: "Second of the three photos beside the Home heading." },
+      { name: "home_strip_3", label: "Home — strip photo 3", type: "file", thumb: "800x0", help: "Third of the three photos beside the Home heading." },
+      { name: "home_editorial_1", label: "Home — editorial photo 1", type: "file", thumb: "800x0", help: "Left photo in the four-column text-and-image band on the Home page." },
+      { name: "home_editorial_2", label: "Home — editorial photo 2", type: "file", thumb: "800x0", help: "Right photo in the four-column text-and-image band on the Home page." },
+      { name: "home_craft_1", label: "Home — craft photo 1", type: "file", thumb: "800x0", help: "Left photo in the band below your featured albums." },
+      { name: "home_craft_2", label: "Home — craft photo 2", type: "file", thumb: "800x0", help: "Right photo in the band below your featured albums." },
+      { name: "about_portrait", label: "About — portrait", type: "file", thumb: "1200x0", help: "The large portrait on the About page. Can be the same photo as the Home portrait, but this one is shown much bigger." },
     ],
   },
 ];
