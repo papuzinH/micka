@@ -312,6 +312,45 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-08-20** — **Las imágenes fijas del sitio salen del CMS: colección `site_images`.**
+  Micka escribió el 18-ago preguntando cómo cambiar la foto del About: podía editar el texto pero no
+  la imagen. No estaba perdido en la UI — **la funcionalidad no existía**. Diez fotos (Hero, retrato
+  del BioBlock, la tira de tres, las dos de EditorialIntro, las dos de CraftBlock y el retrato del
+  About) estaban hardcodeadas a `/placeholders`, y `site_content` solo admite texto. Ahora hay una
+  colección **`site_images` de un solo registro con diez campos `file`**, que el panel muestra como
+  un formulario de diez slots etiquetados con su ayuda y el preview de la foto vigente.
+  **(A) Por qué un registro y no diez filas `key`+`image`.** `CollectionList` pinta solo el
+  `titleField` como texto plano, sin miniatura, y el `help` del CRUD se define por campo, no por
+  fila: con diez filas el cliente habría visto diez ids crudos de 15 caracteres sin pista de cuál es
+  cuál. La rigidez del modelo (sumar un slot toca el esquema) no es costo real porque cada slot es un
+  `<Image>` puesto a mano — pero sí lo es para el futuro: `seed-collections.mjs` saltea colecciones
+  existentes, así que **un slot nuevo no se puede aplicar a producción con ningún script del repo**,
+  hay que hacerlo a mano o escribir uno.
+  **(B) El fallback es lo que hace esto seguro.** `siteImageUrl()` cae al placeholder local cuando el
+  slot está vacío, cuando el registro no existe y cuando el backend no responde. El sitio queda
+  pixel-idéntico hasta que el cliente suba algo, así que **se puede mergear y deployar antes de tocar
+  el PocketBase de producción, en cualquier orden**.
+  **(C) Dos bugs latentes que aparecieron por el camino.** `FormField` era la única de sus tres ramas
+  que no renderizaba `field.help`: los diez textos de ayuda no se habrían visto nunca. Y
+  **`bodySizeLimit` de Server Actions estaba en el default de 1 MB** mientras los campos aceptan 15 MB
+  y `/admin/help` promete 15 MB — o sea que ninguna foto real del cliente entraba por el panel.
+  Subido a `16mb` en `next.config.ts` y **verificado en vivo con una subida de 3,48 MB**. ⚠️ Queda un
+  segundo techo fuera de nuestro control: **Vercel corta el body de sus funciones en ~4,5 MB**, y eso
+  no lo levanta ninguna config de Next. Sin medir contra un preview desplegado; si muerde, las
+  salidas son subida directa del navegador a PocketBase o bajar el límite prometido.
+  **(D) Rollout ejecutado (2026-08-20)** contra `micka.lhstudio.com.ar`: `seed-collections.mjs` creó
+  `site_images` (`pbc_1614820161`), `set-file-limits.mjs` aplicó los 15 MB a los diez campos y
+  `seed-site-images.mjs` creó el registro único (`0t3j92s8nywzmtx`) **con los diez slots vacíos**.
+  Verificado a mano en el navegador: el listado singleton redirige al formulario, los diez slots
+  muestran label y ayuda, una subida real se sirve con `?thumb=1200x0`, guardar sin elegir archivo
+  conserva lo ya cargado, y la Home con los slots vacíos se ve igual que antes. La imagen de prueba
+  se borró después: el registro se entrega vacío.
+  **(E) Trampa del entorno de tests, para la próxima.** `playwright.config.ts` usa
+  `reuseExistingServer: true` en local, así que si el puerto 3000 está ocupado por **otro** proyecto,
+  los e2e corren contra esa app ajena y fallan de formas desconcertantes (acá el 3000 lo tenía
+  Chanchito). Si los e2e fallan raro, chequear primero quién está en el 3000.
+
+
 - **2026-07-27** — **CI arreglado (nunca había funcionado) + toggle de idioma acelerado.**
   **(A) CI.** El hallazgo salió de una pregunta lateral ("¿para qué sirven los secrets del CI?"):
   al ir a explicarlo apareció que el único run de Actions de la historia del repo había fallado en
