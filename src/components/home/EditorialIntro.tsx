@@ -8,7 +8,11 @@ import { GrowLine } from "@/lib/motion/GrowLine";
  *  izquierdo violeta que "se dibuja" al entrar (la "Line 1" del Figma); las
  *  imágenes van sin fondo. En 2b los textos saldrán de `site_content`; por
  *  ahora vienen de i18n. */
-export function EditorialIntro() {
+export function EditorialIntro({
+  images,
+}: {
+  images: readonly [string, string];
+}) {
   const t = useTranslations("home.editorial");
   return (
     <section className="mx-auto max-w-360 px-5 py-16 md:px-10">
@@ -32,7 +36,7 @@ export function EditorialIntro() {
           className="relative h-44 overflow-hidden md:h-full md:min-h-44"
         >
           <Image
-            src="/placeholders/cyclist-duo.jpg"
+            src={images[0]}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 325px"
@@ -62,7 +66,7 @@ export function EditorialIntro() {
           className="relative h-44 overflow-hidden md:h-full md:min-h-44"
         >
           <Image
-            src="/placeholders/cyclist-bw-race.jpg"
+            src={images[1]}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 325px"

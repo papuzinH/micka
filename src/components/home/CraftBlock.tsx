@@ -4,7 +4,11 @@ import { Reveal } from "@/lib/motion/Reveal";
 import { SplitReveal } from "@/lib/motion/SplitReveal";
 
 /** Bloque editorial "craft": dos pares foto + texto sobre fondo negro. */
-export function CraftBlock() {
+export function CraftBlock({
+  images,
+}: {
+  images: readonly [string, string];
+}) {
   const t = useTranslations("home.craft");
   return (
     <section className="mx-auto max-w-360 px-5 py-16 md:px-10">
@@ -14,7 +18,7 @@ export function CraftBlock() {
           className="relative h-56 overflow-hidden md:h-full md:min-h-56"
         >
           <Image
-            src="/placeholders/cyclist-pack.jpg"
+            src={images[0]}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 307px"
@@ -33,7 +37,7 @@ export function CraftBlock() {
           className="relative h-56 overflow-hidden md:h-full md:min-h-56"
         >
           <Image
-            src="/placeholders/cyclist-portrait.jpg"
+            src={images[1]}
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 309px"
