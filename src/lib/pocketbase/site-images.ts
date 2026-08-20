@@ -35,9 +35,10 @@ export function siteImageUrl(
   slot: SiteImageSlotName,
 ): string {
   const { field, thumb, fallback } = SITE_IMAGE_SLOTS[slot];
-  const filename = record?.[field];
+  if (!record) return fallback;
+  const filename = record[field];
   if (!filename) return fallback;
-  return fileUrl({ collectionName: "site_images", id: record!.id }, filename, {
+  return fileUrl({ collectionName: "site_images", id: record.id }, filename, {
     thumb,
   });
 }
