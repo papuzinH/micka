@@ -56,6 +56,8 @@ Una entrada más en `COLLECTIONS` (`src/lib/admin/collections.ts`) con `canCreat
 
 Se suma un flag `singleton: true` a `CollectionConfig`: en `src/app/(admin)/admin/(panel)/[collection]/page.tsx`, una colección singleton redirige directo al formulario de su único registro en lugar de mostrar una lista de una fila. Sin eso, `recordTitle()` cae a `r.id` y Micka vería una fila titulada con un identificador crudo.
 
+También hay que arreglar `FormField.tsx`: su rama `file` es la única de las tres que no renderiza `field.help`, así que los diez textos de ayuda no se verían. Son dos líneas, pero sin eso la mitad del diseño del formulario no llega a la pantalla.
+
 Se suma la sección correspondiente a `/admin/help` (`HelpContent.tsx`), que es la guía a la que se lo derivó por mail y donde va a buscar cómo se hace.
 
 ## Testing
@@ -63,6 +65,8 @@ Se suma la sección correspondiente a `/admin/help` (`HelpContent.tsx`), que es 
 - `pocketbase/__tests__/schema.test.ts`: la colección existe, tiene los diez campos `file`, con el whitelist de thumbs y el límite de 15 MB.
 - Unit del helper: con archivo cargado devuelve la URL del CMS con el thumb pedido; sin archivo, el placeholder; con el registro en `null`, el placeholder.
 - Unit de la config: `site_images` declara `canCreate: false`, `singleton: true` y diez campos.
+- Unit de `singletonTarget`: devuelve la ruta del único registro, `null` si la colección es normal y `null` si el registro no existe todavía.
+- Render de `FormField` con un campo `file`: muestra el label y el texto de ayuda.
 - Los e2e no se tocan.
 
 ## Rollout
