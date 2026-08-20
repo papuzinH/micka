@@ -135,7 +135,10 @@ export async function getSiteContent(): Promise<Record<string, SiteContent>> {
 export async function getSiteImages(): Promise<SiteImages | null> {
   const pb = createPocketBase();
   const items = await safeList(() =>
-    pb.collection("site_images").getFullList<SiteImages>(),
+    // Mismo sort que `defaultSort: "created"` en `collections.ts`: si alguna
+    // vez aparece un segundo registro, el sitio y el admin deben coincidir
+    // en cuál es "el" registro editable.
+    pb.collection("site_images").getFullList<SiteImages>({ sort: "created" }),
   );
   return items[0] ?? null;
 }

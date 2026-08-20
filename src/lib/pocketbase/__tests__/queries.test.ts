@@ -132,6 +132,11 @@ describe("getSiteImages", () => {
     expect(record).toEqual({ id: "rec1", home_hero: "bg.jpg" });
   });
 
+  it("pide sort por created, igual que el defaultSort del admin", async () => {
+    await getSiteImages();
+    expect(getFullList).toHaveBeenCalledWith({ sort: "created" });
+  });
+
   it("devuelve null si la colección está vacía (falta correr el seed)", async () => {
     getFullList.mockResolvedValue([]);
     expect(await getSiteImages()).toBeNull();
