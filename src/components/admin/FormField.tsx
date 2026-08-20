@@ -122,6 +122,9 @@ export function FormField({
         <div className="mt-2">
           <FileInput name={field.name} currentUrl={fileUrl} />
         </div>
+        {field.help && (
+          <p className="mt-1 text-xs text-brand-white/40">{field.help}</p>
+        )}
       </div>
     );
   }
