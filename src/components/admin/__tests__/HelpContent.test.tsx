@@ -18,9 +18,9 @@ describe("HelpContent", () => {
     }
   });
 
-  it("menciona el límite de 15MB por imagen", () => {
+  it("menciona el límite real de subida (4MB, no el del backend)", () => {
     render(<HelpContent />);
-    expect(screen.getByText(/15\s?MB/i)).toBeInTheDocument();
+    expect(screen.getByText(/4\s?MB/i)).toBeInTheDocument();
   });
 
   it("explica que las imágenes sin cargar muestran una foto provisoria", () => {

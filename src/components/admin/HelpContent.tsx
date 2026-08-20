@@ -81,11 +81,13 @@ export function HelpContent() {
 
       <h2 className={h2}>Image guidelines</h2>
       <ul className="list-disc pl-5">
-        <li className={li}>Max file size: <strong>15 MB</strong> per image.</li>
+        <li className={li}>Max file size: <strong>4 MB</strong> per image.</li>
         <li className={li}>
-          JPG is best for photos. The site generates optimized thumbnails
-          automatically — upload your quality originals and don&apos;t worry about
-          resizing.
+          JPG is best for photos. Export them at around{" "}
+          <strong>2000-2500 px</strong> on the long edge: the site builds its own
+          optimized versions for every place a photo appears, so a heavier file
+          will not look any sharper on screen — it will only be slower to
+          upload.
         </li>
         <li className={li}>
           Always fill the <strong>alt</strong> text (EN/FR): it describes the photo for
