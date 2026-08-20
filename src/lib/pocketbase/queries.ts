@@ -6,6 +6,7 @@ import type {
   Photo,
   Review,
   SiteContent,
+  SiteImages,
 } from "./types";
 
 export type Locale = "en" | "fr";
@@ -124,4 +125,17 @@ export async function getSiteContent(): Promise<Record<string, SiteContent>> {
     pb.collection("site_content").getFullList<SiteContent>(),
   );
   return Object.fromEntries(items.map((item) => [item.key, item]));
+}
+
+/**
+ * El registro único de `site_images`. Devuelve `null` si no existe todavía
+ * (falta correr el seed) o si el backend no respondió: `siteImageUrl` resuelve
+ * ese caso cayendo a los placeholders locales.
+ */
+export async function getSiteImages(): Promise<SiteImages | null> {
+  const pb = createPocketBase();
+  const items = await safeList(() =>
+    pb.collection("site_images").getFullList<SiteImages>(),
+  );
+  return items[0] ?? null;
 }

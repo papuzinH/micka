@@ -18,3 +18,11 @@ export interface Collab {
 }
 export interface SiteContent { id: string; key: string; value_en: string; value_fr: string; }
 export interface ContactMessage { id: string; name: string; email: string; message: string; locale: "en" | "fr"; }
+export interface SiteImages {
+  id: string;
+  home_hero: string; home_portrait: string;
+  home_strip_1: string; home_strip_2: string; home_strip_3: string;
+  home_editorial_1: string; home_editorial_2: string;
+  home_craft_1: string; home_craft_2: string;
+  about_portrait: string;
+}
