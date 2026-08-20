@@ -21,6 +21,16 @@ if (!window.matchMedia) {
   });
 }
 
+// jsdom no implementa `URL.createObjectURL`, que `FileInput` usa para
+// previsualizar el archivo recién elegido. Node lo exponía en el global hasta
+// la v22 y lo removió en la v24, así que estos tests pasaban en local y se
+// caían en el CI. Se define **siempre**, no sólo si falta: si fuera
+// condicional, el test correría contra la implementación de Node en una
+// versión y contra este stub en otra — que es exactamente la clase de
+// diferencia que escondió el problema.
+URL.createObjectURL = () => "blob:preview-de-test";
+URL.revokeObjectURL = () => {};
+
 // Higiene global: matar cualquier ScrollTrigger que haya sobrevivido al
 // cleanup de un test (normalmente `useGSAP` los revierte al desmontar, pero
 // esto es una red de seguridad extra) — evita timers internos de ScrollTrigger

@@ -36,6 +36,10 @@ describe("FileInput", () => {
     elegir(input, archivoDe(2));
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    // Y muestra el preview del archivo elegido, que es lo que obliga a que
+    // `URL.createObjectURL` exista en el entorno de test (jsdom no lo trae y
+    // Node dejó de exponerlo en la v24).
+    expect(container.querySelector("img")).not.toBeNull();
   });
 
   it("un archivo válido después de uno rechazado limpia el aviso", () => {
