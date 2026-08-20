@@ -6,13 +6,13 @@ import { SplitReveal } from "@/lib/motion/SplitReveal";
 import { StaggerGroup } from "@/lib/motion/StaggerGroup";
 import { Parallax } from "@/lib/motion/Parallax";
 
-export function Hero() {
+export function Hero({ bgSrc }: { bgSrc: string }) {
   const t = useTranslations("home.hero");
   return (
     <section className="relative flex min-h-128 items-center overflow-hidden">
       <Parallax speed={0.08} oversize className="absolute inset-0">
         <Image
-          src="/placeholders/cyclist-road.jpg"
+          src={bgSrc}
           alt=""
           fill
           priority

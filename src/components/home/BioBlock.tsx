@@ -10,31 +10,19 @@ import { GrowLine } from "@/lib/motion/GrowLine";
 // Proporciones y offsets replican el Figma (Group 13, 2413:248): la foto 1 es
 // la más grande (~4:3), 2 y 3 más chicas (~5:4) y escalonadas verticalmente.
 // `depth` da profundidades de parallax distintas por foto (efecto de tira).
-const SIDE_PHOTOS = [
-  {
-    img: "cyclist-duo",
-    ratio: "aspect-[4/3]",
-    grow: "md:flex-[307]",
-    offset: "",
-    depth: 0.04,
-  },
-  {
-    img: "cyclist-road",
-    ratio: "aspect-[5/4]",
-    grow: "md:flex-[210]",
-    offset: "md:mt-[61px]",
-    depth: 0.08,
-  },
-  {
-    img: "cyclist-bw-race",
-    ratio: "aspect-[5/4]",
-    grow: "md:flex-[212]",
-    offset: "md:mt-2",
-    depth: 0.12,
-  },
+const SIDE_LAYOUT = [
+  { ratio: "aspect-[4/3]", grow: "md:flex-[307]", offset: "", depth: 0.04 },
+  { ratio: "aspect-[5/4]", grow: "md:flex-[210]", offset: "md:mt-[61px]", depth: 0.08 },
+  { ratio: "aspect-[5/4]", grow: "md:flex-[212]", offset: "md:mt-2", depth: 0.12 },
 ] as const;
 
-export function BioBlock() {
+export function BioBlock({
+  portrait,
+  strip,
+}: {
+  portrait: string;
+  strip: readonly [string, string, string];
+}) {
   const t = useTranslations("home.bio");
   return (
     <section className="mx-auto max-w-360 px-5 py-16 md:px-10">
@@ -47,7 +35,7 @@ export function BioBlock() {
             className="relative h-[220px] w-[132px] shrink-0 overflow-hidden sm:h-[267px] sm:w-[160px]"
           >
             <Image
-              src="/placeholders/cyclist-portrait.jpg"
+              src={portrait}
               alt={t("portraitAlt")}
               fill
               sizes="160px"
@@ -79,14 +67,14 @@ export function BioBlock() {
             {t("heading")}
           </SplitReveal>
           <div className="flex flex-col gap-3 md:flex-row md:items-start">
-            {SIDE_PHOTOS.map(({ img, ratio, grow, offset, depth }) => (
+            {SIDE_LAYOUT.map(({ ratio, grow, offset, depth }, i) => (
               <Parallax
-                key={img}
+                key={i}
                 speed={depth}
                 className={cn("relative overflow-hidden", ratio, grow, offset)}
               >
                 <Image
-                  src={`/placeholders/${img}.jpg`}
+                  src={strip[i]}
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 320px"
