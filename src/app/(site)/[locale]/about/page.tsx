@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/lib/motion/Reveal";
 import { SplitReveal } from "@/lib/motion/SplitReveal";
 import { pageAlternates } from "@/lib/seo/alternates";
-import { getSiteContent, localized } from "@/lib/pocketbase/queries";
+import { getSiteContent, getSiteImages, localized } from "@/lib/pocketbase/queries";
+import { siteImageUrl } from "@/lib/pocketbase/site-images";
 
 export const revalidate = 300;
 
@@ -29,7 +30,10 @@ export default async function AboutPage({
   setRequestLocale(locale);
   const t = await getTranslations("about");
 
-  const content = await getSiteContent();
+  const [content, siteImages] = await Promise.all([
+    getSiteContent(),
+    getSiteImages(),
+  ]);
   const intro = content.about_intro
     ? localized(content.about_intro, "value", locale)
     : "";
@@ -47,7 +51,7 @@ export default async function AboutPage({
             className="relative aspect-[3/4] w-full overflow-hidden bg-brand-gray"
           >
             <Image
-              src="/placeholders/cyclist-portrait.jpg"
+              src={siteImageUrl(siteImages, "aboutPortrait")}
               alt={t("role")}
               fill
               sizes="(max-width: 768px) 100vw, 480px"
