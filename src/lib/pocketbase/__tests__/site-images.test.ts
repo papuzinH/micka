@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { siteImageUrl, SITE_IMAGE_SLOTS } from "../site-images";
 import type { SiteImages } from "../types";
@@ -56,6 +58,10 @@ describe("siteImageUrl", () => {
     for (const slot of slots) {
       expect(slot.fallback).toMatch(/^\/placeholders\/[\w-]+\.(jpg|png)$/);
       expect(["400x0", "800x0", "1200x0", "1920x0"]).toContain(slot.thumb);
+      // `fallback` es una ruta pública ("/placeholders/x.jpg"); el archivo real
+      // vive en `public/`, así que se resuelve desde la raíz del repo.
+      const filePath = path.join(process.cwd(), "public", slot.fallback);
+      expect(fs.existsSync(filePath)).toBe(true);
     }
   });
 });

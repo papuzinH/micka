@@ -21,6 +21,7 @@ import {
   getReviews,
   getCollabs,
   getSiteContent,
+  getSiteImages,
 } from "../queries";
 
 beforeEach(() => {
@@ -123,9 +124,28 @@ describe("getSiteContent", () => {
   });
 });
 
+describe("getSiteImages", () => {
+  it("devuelve el único registro de la colección", async () => {
+    getFullList.mockResolvedValue([{ id: "rec1", home_hero: "bg.jpg" }]);
+    const record = await getSiteImages();
+    expect(collection).toHaveBeenCalledWith("site_images");
+    expect(record).toEqual({ id: "rec1", home_hero: "bg.jpg" });
+  });
+
+  it("devuelve null si la colección está vacía (falta correr el seed)", async () => {
+    getFullList.mockResolvedValue([]);
+    expect(await getSiteImages()).toBeNull();
+  });
+});
+
 describe("resiliencia", () => {
   it("getCategories devuelve [] si el backend falla", async () => {
     getFullList.mockRejectedValue(new Error("network"));
     expect(await getCategories()).toEqual([]);
+  });
+
+  it("getSiteImages devuelve null (no throw, no []) si el backend falla", async () => {
+    getFullList.mockRejectedValue(new Error("network"));
+    expect(await getSiteImages()).toBeNull();
   });
 });
