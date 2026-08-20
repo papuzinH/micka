@@ -15,8 +15,9 @@ import { FavesGallery, type FaveItem } from "@/components/home/FavesGallery";
 import { CraftBlock } from "@/components/home/CraftBlock";
 import { NothingBar } from "@/components/home/NothingBar";
 import { ContactCta } from "@/components/home/ContactCta";
-import { getStarredAlbums, getFavePhotos, localized } from "@/lib/pocketbase/queries";
+import { getStarredAlbums, getFavePhotos, getSiteImages, localized } from "@/lib/pocketbase/queries";
 import { fileUrl } from "@/lib/pocketbase/files";
+import { siteImageUrl } from "@/lib/pocketbase/site-images";
 
 // Revalida el contenido del CMS periódicamente (ISR) sin requerir rebuild.
 export const revalidate = 300;
@@ -54,9 +55,10 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [starredAlbums, favePhotos] = await Promise.all([
+  const [starredAlbums, favePhotos, siteImages] = await Promise.all([
     getStarredAlbums(),
     getFavePhotos(5),
+    getSiteImages(),
   ]);
 
   const starred: StarredAlbumItem[] = starredAlbums.length
@@ -87,12 +89,29 @@ export default async function HomePage({
           __html: JSON.stringify([personJsonLd(getSiteUrl()), websiteJsonLd(getSiteUrl())]),
         }}
       />
-      <Hero />
-      <BioBlock />
+      <Hero bgSrc={siteImageUrl(siteImages, "homeHero")} />
+      <BioBlock
+        portrait={siteImageUrl(siteImages, "homePortrait")}
+        strip={[
+          siteImageUrl(siteImages, "homeStrip1"),
+          siteImageUrl(siteImages, "homeStrip2"),
+          siteImageUrl(siteImages, "homeStrip3"),
+        ]}
+      />
       <Marquee />
-      <EditorialIntro />
+      <EditorialIntro
+        images={[
+          siteImageUrl(siteImages, "homeEditorial1"),
+          siteImageUrl(siteImages, "homeEditorial2"),
+        ]}
+      />
       <StarredAlbums albums={starred} />
-      <CraftBlock />
+      <CraftBlock
+        images={[
+          siteImageUrl(siteImages, "homeCraft1"),
+          siteImageUrl(siteImages, "homeCraft2"),
+        ]}
+      />
       <FavesGallery photos={faves} />
       <NothingBar />
       <ContactCta />
