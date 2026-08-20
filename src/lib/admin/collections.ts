@@ -4,6 +4,8 @@
  * cubrir las 7 colecciones con una sola implementación.
  */
 
+import type { ThumbSize } from "@/lib/thumb-sizes";
+
 export type FieldType =
   | "text"
   | "textarea"
@@ -30,7 +32,7 @@ export interface FieldConfig {
   /** Para `select`: valores posibles. */
   options?: string[];
   /** Para `file`: thumb de preview y si acepta imágenes. */
-  thumb?: string;
+  thumb?: ThumbSize;
   help?: string;
 }
 

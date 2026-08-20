@@ -1,12 +1,13 @@
 import { fileUrl } from "./files";
 import type { SiteImages } from "./types";
+import type { ThumbSize } from "@/lib/thumb-sizes";
 
 /** Un slot de imagen del sitio: el campo en `site_images`, el thumb que pide
  *  el componente que la muestra y el placeholder que se usa mientras el
  *  cliente no haya subido la suya. */
 export interface SiteImageSlot {
   field: keyof Omit<SiteImages, "id">;
-  thumb: string;
+  thumb: ThumbSize;
   fallback: string;
 }
 
