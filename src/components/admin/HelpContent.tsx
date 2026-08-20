@@ -59,6 +59,19 @@ export function HelpContent() {
         corrections to Lautaro and he&apos;ll apply them.
       </p>
 
+      <h2 className={h2}>Site images</h2>
+      <p className={p}>
+        <strong>Site images</strong> holds the fixed photos of the Home and
+        About pages — the ones that are not part of an album: the big photo at
+        the top of the Home, your portrait, and the photos in the bands between
+        the text.
+      </p>
+      <p className={p}>
+        Each slot is labelled with where it appears, and shows the photo that is
+        live right now. Pick a file and press Save to replace it. Any slot you
+        leave empty keeps showing a placeholder photo until you upload yours.
+      </p>
+
       <h2 className={h2}>Contact messages</h2>
       <p className={p}>
         Messages sent through the site&apos;s contact form land in

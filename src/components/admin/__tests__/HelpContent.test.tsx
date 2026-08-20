@@ -10,6 +10,7 @@ describe("HelpContent", () => {
       "Albums & photos",
       "Reviews & collabs",
       "Site texts",
+      "Site images",
       "Contact messages",
       "Image guidelines",
     ]) {
@@ -20,5 +21,10 @@ describe("HelpContent", () => {
   it("menciona el límite de 15MB por imagen", () => {
     render(<HelpContent />);
     expect(screen.getByText(/15\s?MB/i)).toBeInTheDocument();
+  });
+
+  it("explica que las imágenes sin cargar muestran una foto provisoria", () => {
+    render(<HelpContent />);
+    expect(screen.getByText(/placeholder/i)).toBeInTheDocument();
   });
 });
