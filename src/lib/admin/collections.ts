@@ -1,7 +1,7 @@
 /**
  * Configuración declarativa de las colecciones del CMS. Dirige el sidebar, las
  * listas, los formularios y la validación del admin (CRUD config-driven), para
- * cubrir las 7 colecciones con una sola implementación.
+ * cubrir las 8 colecciones con una sola implementación.
  */
 
 import type { ThumbSize } from "@/lib/thumb-sizes";

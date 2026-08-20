@@ -51,7 +51,7 @@ páginas + panel admin custom para que Micka gestione el contenido sin programad
 
 ## Modelo de datos (colecciones PocketBase)
 
-`categories`, `albums`, `photos`, `reviews`, `collabs`, `site_content`, `contact_messages`.
+`categories`, `albums`, `photos`, `reviews`, `collabs`, `site_content`, `contact_messages`, `site_images`.
 Esquema versionado en `pocketbase/pb_schema.json`. Detalle de campos en el spec (sección "Modelo de datos").
 
 ## Estructura de carpetas (objetivo)
