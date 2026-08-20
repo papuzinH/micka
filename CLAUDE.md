@@ -334,10 +334,17 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
   que no renderizaba `field.help`: los diez textos de ayuda no se habrían visto nunca. Y
   **`bodySizeLimit` de Server Actions estaba en el default de 1 MB** mientras los campos aceptan 15 MB
   y `/admin/help` promete 15 MB — o sea que ninguna foto real del cliente entraba por el panel.
-  Subido a `16mb` en `next.config.ts` y **verificado en vivo con una subida de 3,48 MB**. ⚠️ Queda un
-  segundo techo fuera de nuestro control: **Vercel corta el body de sus funciones en ~4,5 MB**, y eso
-  no lo levanta ninguna config de Next. Sin medir contra un preview desplegado; si muerde, las
-  salidas son subida directa del navegador a PocketBase o bajar el límite prometido.
+  Subido a `16mb` en `next.config.ts` y **verificado en vivo con una subida de 3,48 MB**. **El segundo
+  techo se midió (2026-08-20) contra el preview desplegado y sí muerde: 4 MB pasa, 4,3 MB devuelve
+  `413 FUNCTION_PAYLOAD_TOO_LARGE`.** Es un límite de plataforma de Vercel que ninguna config de Next
+  levanta. **Decisión:** se corrigió el copy de `/admin/help` — decía "15 MB" y "upload your quality
+  originals and don't worry about resizing", las dos cosas falsas en producción — a **4 MB** con una
+  guía de export a 2000-2500 px. El límite de 15 MB de los campos de PocketBase **se deja como está**:
+  no es la restricción vinculante y sería el techo correcto si algún día la subida evita Vercel. El
+  costo real de la limitación es nulo: el sitio sirve thumbs propios (400/800/1200/1920), así que un
+  original de 10 MB nunca llega a un visitante. Si alguna vez molesta, la salida barata es comprimir
+  en el navegador antes de subir; la subida directa a PocketBase obligaría a exponer el token del
+  panel en el browser para ganar algo que el sitio no muestra.
   **(D) Rollout ejecutado (2026-08-20)** contra `micka.lhstudio.com.ar`: `seed-collections.mjs` creó
   `site_images` (`pbc_1614820161`), `set-file-limits.mjs` aplicó los 15 MB a los diez campos y
   `seed-site-images.mjs` creó el registro único (`0t3j92s8nywzmtx`) **con los diez slots vacíos**.
