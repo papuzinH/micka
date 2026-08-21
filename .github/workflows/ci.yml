@@ -57,6 +57,28 @@ jobs:
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "::notice::E2E skipped - POCKETBASE_* secrets not configured in repo settings"
           fi
+      - name: Verify the secrets actually authenticate
+        if: steps.gate.outputs.run == 'true'
+        env:
+          PB_EMAIL: ${{ secrets.POCKETBASE_ADMIN_EMAIL }}
+          PB_PASSWORD: ${{ secrets.POCKETBASE_ADMIN_PASSWORD }}
+        run: |
+          # Un secret presente no es un secret que sirva. La clave de servicio
+          # de PocketBase se rota cada tanto y el secret del repo queda viejo
+          # sin que nada avise: el gate de arriba sólo mira que no esté vacío.
+          # Cuando eso pasa, los e2e mueren cinco minutos después con cuatro
+          # timeouts de `waitForURL` que no dicen nada sobre la causa real
+          # (ocurrió en el PR #2, 2026-08-21: el secret venía de julio y la
+          # clave se había rotado el 11-ago). Un login real acá falla en
+          # segundos y dice exactamente qué arreglar.
+          AUTH_URL="$NEXT_PUBLIC_POCKETBASE_URL/api/collections/_superusers/auth-with-password"
+          BODY=$(jq -nc --arg i "$PB_EMAIL" --arg p "$PB_PASSWORD" '{identity:$i,password:$p}')
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$AUTH_URL" -H 'Content-Type: application/json' --data "$BODY")
+          if [ "$code" != "200" ]; then
+            echo "::error::PocketBase rechazo POCKETBASE_ADMIN_* (HTTP $code). Si la clave de servicio se roto, actualiza los secrets en Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "Credenciales verificadas contra $NEXT_PUBLIC_POCKETBASE_URL"
       - if: steps.gate.outputs.run == 'true'
         run: npm ci
       - if: steps.gate.outputs.run == 'true'
