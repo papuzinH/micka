@@ -312,6 +312,33 @@ Cada stage requiere aprobación expresa del cliente antes de avanzar. Un plan de
 
 ## Decisiones y cambios (changelog)
 
+- **2026-09-08** - **Dominio: alta cross-account en Vercel (a la espera del TXT del cliente) + CLI
+  instalada.** Micka confirmó por mail (6-sep) que compró `donmickadelavega.com` **en Vercel con su
+  propia cuenta** (`donmickadelavega@gmail.com`): escenario cross-account, dominio en su scope y
+  proyecto en `hudson9s-projects`.
+  **(A) El alta de un dominio de otro scope no se puede hacer por CLI ni por el conector MCP.**
+  `vercel domains add` opera a nivel *cuenta* y devuelve `403 domain_not_owned`; no existe un
+  subcomando de "dominio de proyecto" (los de `vercel project` son members/protection/analytics/
+  pause/rename); y el MCP de Vercel expone `buy_domain` y afines pero **no** project domains. El
+  endpoint real es `POST /v10/projects/{id}/domains`, que solo llama el dashboard. Alta hecha desde
+  ahí. Se descartó extraer el token de la CLI para hacer el POST a mano: la CLI acá no guarda
+  `auth.json` (la credencial la provee el plugin de Vercel de Claude Code) y no corresponde.
+  **(B) El apex va sin redirect.** `getSiteUrl()` (`src/lib/seo/site.ts`) alimenta canonical,
+  hreflang, `metadataBase`, og-image, JSON-LD del Home, `sitemap.xml` y `robots.txt`; el apex va a
+  ser `NEXT_PUBLIC_SITE_URL`, así que si redirigiera a `www` todas esas URLs canónicas apuntarían a
+  una que redirige. `www` queda para después, y con 308 **hacia** el apex.
+  **(C) Estado y decisión de secuencia.** `project.attached: true`, `verified: false`,
+  `configurationStatus: "configured-correctly"` e `ipStatus: "no-change"` (Vercel ya había puesto
+  los A al comprar) → **el TXT `_vercel` es el único paso del cliente**, pedido por mail el 8-sep con
+  el valor exacto. **`NEXT_PUBLIC_SITE_URL` se deja sin tocar a propósito** hasta que el dominio
+  verifique: activarla antes haría que el sitio emita canonicals y sitemap hacia una URL que todavía
+  no responde por TLS. `docs/domain-launch-runbook.md` reescrito con los dos casos (A cross-account /
+  B registrar externo) y con `vercel domains verify` documentado como la herramienta de diagnóstico
+  (devuelve ownership, configuración, challenges y estado de verificación en un JSON).
+  **(D) Vercel CLI instalada** en la PC de escritorio (`npm i -g vercel`, v59.11.7, autenticada como
+  `hudson9`). Sirve para el paso siguiente (env var + redeploy). Si `vercel whoami` imprime
+  `Failed to spawn get latest worker: EPIPE`, es el chequeo de actualización y no un fallo de auth.
+
 - **2026-08-20** — **Las imágenes fijas del sitio salen del CMS: colección `site_images`.**
   Micka escribió el 18-ago preguntando cómo cambiar la foto del About: podía editar el texto pero no
   la imagen. No estaba perdido en la UI — **la funcionalidad no existía**. Diez fotos (Hero, retrato
